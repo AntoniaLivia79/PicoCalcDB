@@ -1,0 +1,855 @@
+﻿date,weekday,category,event,detail,saying_or_lore,place,certainty
+2026-10-01,Thu,Almanac Day,"Sun up 07:00, down 18:37; day 11h36m (Cambridge)",Moon 69% lit: waning gibbous,,Cambridge,computed
+2026-10-01,Thu,Month,October - Old English 'Winterfylleth' ('winter full moon'),"Bede's Anglo-Saxon month names (De Temporum Ratione, 725 AD)","Good October, a good blast, to blow the hog acorn and mast.",England,fixed
+2026-10-02,Fri,Almanac Day,"Sun up 07:02, down 18:35; day 11h32m (Cambridge)",Moon 58% lit: last quarter,,Cambridge,computed
+2026-10-03,Sat,Almanac Day,"Sun up 07:04, down 18:32; day 11h28m (Cambridge)",Moon 48% lit: last quarter,,Cambridge,computed
+2026-10-03,Sat,Moon Phase,Last Quarter Moon at 14:25 UK time,Half-lit; rises near midnight; neap tides,,Cambridge,computed
+2026-10-04,Sun,Almanac Day,"Sun up 07:05, down 18:30; day 11h24m (Cambridge)",Moon 37% lit: waning crescent,,Cambridge,computed
+2026-10-04,Sun,Astronomical,Saturn at opposition,Saturn closest and brightest of the year; up all night,,Global,published
+2026-10-05,Mon,Almanac Day,"Sun up 07:07, down 18:28; day 11h20m (Cambridge)",Moon 27% lit: waning crescent,,Cambridge,computed
+2026-10-06,Tue,Almanac Day,"Sun up 07:09, down 18:26; day 11h16m (Cambridge)",Moon 18% lit: waning crescent,,Cambridge,computed
+2026-10-06,Tue,Tradition,"Cambridge University Michaelmas Term begins (full term, approx)","Gowns, matriculation dinners; freshers arrive",,Cambridgeshire,approx
+2026-10-07,Wed,Almanac Day,"Sun up 07:10, down 18:23; day 11h12m (Cambridge)",Moon 11% lit: waning crescent,,Cambridge,computed
+2026-10-08,Thu,Almanac Day,"Sun up 07:12, down 18:21; day 11h08m (Cambridge)",Moon 5% lit: waning crescent,,Cambridge,computed
+2026-10-08,Thu,Astronomical,Draconid meteors peak,Weak most years (~10/hr); best at dusk; comet Giacobini-Zinner,Moon that night: 3% lit (waning crescent),England,approx
+2026-10-09,Fri,Almanac Day,"Sun up 07:14, down 18:19; day 11h04m (Cambridge)",Moon 2% lit: waning crescent,,Cambridge,computed
+2026-10-10,Sat,Almanac Day,"Sun up 07:16, down 18:16; day 11h00m (Cambridge)",Moon 0% lit: new moon,,Cambridge,computed
+2026-10-10,Sat,Moon Phase,New Moon at 16:50 UK time,Dark skies for stargazing; spring tides follow in 1-2 days,,Cambridge,computed
+2026-10-10,Sat,Folklore,Pepys searches for buried gold at Brampton (1667) [359th anniv.],Pepys's father buried coin in the Hunts garden during the Dutch scare,"'And so to bed' - Pepys, Diary",Huntingdonshire,approx
+2026-10-11,Sun,Almanac Day,"Sun up 07:17, down 18:14; day 10h56m (Cambridge)",Moon 1% lit: new moon,,Cambridge,computed
+2026-10-11,Sun,Folklore,Old Michaelmas Day,Blackberries unlucky to pick: the Devil spat or stamped on them,Old Michaelmas: Devil's Day for brambles,England,tradition
+2026-10-12,Mon,Almanac Day,"Sun up 07:19, down 18:12; day 10h52m (Cambridge)",Moon 4% lit: waxing crescent,,Cambridge,computed
+2026-10-12,Mon,Tradition,"St Ives Michaelmas Fair (second Monday Oct, approx)",Huntingdonshire pleasure fair; former livestock fair,,Huntingdonshire,approx
+2026-10-12,Mon,History,King John loses his baggage train in the Wash (1216) [810th anniv.],Fenland/Wash crossing; the treasure legend is still hunted,,Fens,fixed
+2026-10-13,Tue,Almanac Day,"Sun up 07:21, down 18:10; day 10h48m (Cambridge)",Moon 9% lit: waxing crescent,,Cambridge,computed
+2026-10-14,Wed,Almanac Day,"Sun up 07:23, down 18:07; day 10h44m (Cambridge)",Moon 16% lit: waxing crescent,,Cambridge,computed
+2026-10-14,Wed,History,Battle of Hastings [960th anniv.],Norman conquest; Fenland rebels under Hereward held out at Ely to 1071,,England,fixed
+2026-10-15,Thu,Almanac Day,"Sun up 07:24, down 18:05; day 10h40m (Cambridge)",Moon 24% lit: waxing crescent,,Cambridge,computed
+2026-10-15,Thu,Nature,Redwings and fieldfares arrive from Scandinavia (approx),Thrushes strip hawthorn berries across Fen hedges,,East Anglia,approx
+2026-10-16,Fri,Almanac Day,"Sun up 07:26, down 18:03; day 10h37m (Cambridge)",Moon 34% lit: waxing crescent,,Cambridge,computed
+2026-10-16,Fri,Meteorological,Great Storm of 1987 (night of 15-16 Oct) [39th anniv.],Hurricane-force gusts felled ~15 million trees in SE England/East Anglia,,UK,fixed
+2026-10-17,Sat,Almanac Day,"Sun up 07:28, down 18:01; day 10h33m (Cambridge)",Moon 44% lit: first quarter,,Cambridge,computed
+2026-10-17,Sat,Church,"Translation of St Etheldreda, Ely [920th anniv.]",Ely Cathedral marks her relics' move (1106); Ely = 'eel district',St Audrey's fair lace gave us 'tawdry',Cambridgeshire,fixed
+2026-10-18,Sun,Almanac Day,"Sun up 07:30, down 17:59; day 10h29m (Cambridge)",Moon 55% lit: first quarter,,Cambridge,computed
+2026-10-18,Sun,Moon Phase,First Quarter Moon at 17:12 UK time,Half-lit and rising; neap tides; best for crater viewing at the terminator,,Cambridge,computed
+2026-10-18,Sun,Weather lore,St Luke's Little Summer,A spell of fine mild weather around St Luke's Day,,England,tradition
+2026-10-19,Mon,Almanac Day,"Sun up 07:31, down 17:57; day 10h25m (Cambridge)",Moon 65% lit: waxing gibbous,,Cambridge,computed
+2026-10-20,Tue,Almanac Day,"Sun up 07:33, down 17:54; day 10h21m (Cambridge)",Moon 75% lit: waxing gibbous,,Cambridge,computed
+2026-10-21,Wed,Almanac Day,"Sun up 07:35, down 17:52; day 10h17m (Cambridge)",Moon 83% lit: waxing gibbous,,Cambridge,computed
+2026-10-21,Wed,Astronomical,Orionid meteors peak,"~20/hr; Halley's Comet debris; fast, radiant near Betelgeuse",Moon that night: 87% lit (waxing gibbous),England,approx
+2026-10-21,Wed,National,Trafalgar Day [221st anniv.],Nelson's victory 1805; Nelson was an East Anglian (born Norfolk),England expects that every man will do his duty,UK,fixed
+2026-10-21,Wed,Tradition,"Apple Day (Common Ground, since 1990)","Celebrates English orchards, local varieties, cider and juice",An apple a day keeps the doctor away,England,fixed
+2026-10-22,Thu,Almanac Day,"Sun up 07:37, down 17:50; day 10h13m (Cambridge)",Moon 90% lit: waxing gibbous,,Cambridge,computed
+2026-10-23,Fri,Almanac Day,"Sun up 07:38, down 17:48; day 10h09m (Cambridge)",Moon 96% lit: waxing gibbous,,Cambridge,computed
+2026-10-23,Fri,Astrological,Sun enters Scorpio (the Scorpion),Tropical zodiac ingress; date of Sun's crossing of the sign boundary,,Global,computed
+2026-10-24,Sat,Almanac Day,"Sun up 07:40, down 17:46; day 10h05m (Cambridge)",Moon 99% lit: waxing gibbous,,Cambridge,computed
+2026-10-24,Sat,Astrological,Mercury retrograde starts (approx),Mercury appears to move backwards against the stars,,Global,approx
+2026-10-25,Sun,Almanac Day,"Sun up 06:42, down 16:44; day 10h02m (Cambridge)",Moon 100% lit: full moon,,Cambridge,computed
+2026-10-25,Sun,Calendar,British Summer Time ends - clocks BACK 1 hr at 02:00,02:00 BST becomes 01:00 GMT; an extra hour in bed,"Spring forward, fall back",UK,computed
+2026-10-25,Sun,Tradition,"St Crispin's Day (Agincourt, 1415) [611th anniv.]",Patron saint of cobblers and shoemakers,This day is called the feast of Crispian - Henry V,England,fixed
+2026-10-25,Sun,Nature,Bewick's & whooper swans gather on the Ouse Washes (approx),Winter swans from Siberia/Iceland at Welney and Ouse Washes,,Fens,approx
+2026-10-26,Mon,Almanac Day,"Sun up 06:44, down 16:42; day 9h58m (Cambridge)",Moon 99% lit: waning gibbous,,Cambridge,computed
+2026-10-26,Mon,Moon Phase,Full Moon at 04:11 UK time,Spring tides follow; the Fen skies glow; rises near sunset,,Cambridge,computed
+2026-10-26,Mon,Moon Name,Hunter's Moon,"English: Blood Moon, Wine Moon","Also: Travel Moon, Dying Grass Moon. First full moon after the Harvest Moon; fields cleared, game fattened",England,computed
+2026-10-27,Tue,Almanac Day,"Sun up 06:46, down 16:40; day 9h54m (Cambridge)",Moon 95% lit: waning gibbous,,Cambridge,computed
+2026-10-28,Wed,Almanac Day,"Sun up 06:47, down 16:38; day 9h50m (Cambridge)",Moon 90% lit: waning gibbous,,Cambridge,computed
+2026-10-28,Wed,Church,Saints Simon & Jude,Folk belief: stormy weather likely around this day,,England,tradition
+2026-10-29,Thu,Almanac Day,"Sun up 06:49, down 16:36; day 9h46m (Cambridge)",Moon 83% lit: waning gibbous,,Cambridge,computed
+2026-10-30,Fri,Almanac Day,"Sun up 06:51, down 16:34; day 9h43m (Cambridge)",Moon 74% lit: waning gibbous,,Cambridge,computed
+2026-10-31,Sat,Almanac Day,"Sun up 06:53, down 16:32; day 9h39m (Cambridge)",Moon 64% lit: waning gibbous,,Cambridge,computed
+2026-10-31,Sat,Pagan,Samhain / All Hallows' Eve (Halloween),"Celtic/Pagan year-end; veil between worlds thin; turnip lanterns, guising","A soul, a soul, a soul-cake; please good missus, a soul-cake",England,fixed
+2026-10-31,Sat,Folklore,"Wandlebury Ring spectral-knight legend, Gog Magog Hills",Told on moonlit nights: a ghostly knight challenges riders to joust,,Cambridgeshire,legend
+2026-11-01,Sun,Almanac Day,"Sun up 06:55, down 16:30; day 9h35m (Cambridge)",Moon 54% lit: last quarter,,Cambridge,computed
+2026-11-01,Sun,Month,November - Old English 'Blotmonath' (month of sacrifice),"Bede's Anglo-Saxon month names (De Temporum Ratione, 725 AD)","November take flail, let ships no more sail.",England,fixed
+2026-11-01,Sun,Moon Phase,Last Quarter Moon at 20:28 UK time,Half-lit; rises near midnight; neap tides,,Cambridge,computed
+2026-11-01,Sun,Church,All Saints' Day (Hallowmas),Day of all the saints; the start of Allhallowtide,,England,fixed
+2026-11-02,Mon,Almanac Day,"Sun up 06:56, down 16:29; day 9h32m (Cambridge)",Moon 43% lit: last quarter,,Cambridge,computed
+2026-11-02,Mon,Church,All Souls' Day - Souling,Soul-cakes given to soulers who sing for the dead,"Soul, soul, for an apple or two",England,fixed
+2026-11-03,Tue,Almanac Day,"Sun up 06:58, down 16:27; day 9h28m (Cambridge)",Moon 33% lit: waning crescent,,Cambridge,computed
+2026-11-04,Wed,Almanac Day,"Sun up 07:00, down 16:25; day 9h24m (Cambridge)",Moon 24% lit: waning crescent,,Cambridge,computed
+2026-11-04,Wed,Folklore,Mischief Night (eastern & northern England),Night-before-Bonfire pranks; in some places held on 30 Oct,,East Anglia,tradition
+2026-11-05,Thu,Almanac Day,"Sun up 07:02, down 16:23; day 9h21m (Cambridge)",Moon 15% lit: waning crescent,,Cambridge,computed
+2026-11-05,Thu,Astronomical,South Taurid meteors peak,Slow bright fireballs; comet Encke debris; broad peak into mid-Nov,Moon that night: 12% lit (waning crescent),England,approx
+2026-11-05,Thu,National,Guy Fawkes Night (Bonfire Night) [421st anniv.],"Gunpowder Plot 1605; bonfires, fireworks, parkin and treacle toffee","Remember, remember, the fifth of November",England,fixed
+2026-11-06,Fri,Almanac Day,"Sun up 07:04, down 16:21; day 9h17m (Cambridge)",Moon 9% lit: waning crescent,,Cambridge,computed
+2026-11-07,Sat,Almanac Day,"Sun up 07:06, down 16:20; day 9h14m (Cambridge)",Moon 4% lit: waning crescent,,Cambridge,computed
+2026-11-08,Sun,Almanac Day,"Sun up 07:07, down 16:18; day 9h10m (Cambridge)",Moon 1% lit: new moon,,Cambridge,computed
+2026-11-08,Sun,Festival,Diwali (Hindu/Sikh/Jain festival of lights),"Lamps, rangoli, sweets; Leicester holds UK's biggest celebration",,UK,published
+2026-11-08,Sun,National,Remembrance Sunday,Cenotaph service; poppies; two-minute silence at 11 am,,UK,computed
+2026-11-09,Mon,Almanac Day,"Sun up 07:09, down 16:16; day 9h07m (Cambridge)",Moon 0% lit: new moon,,Cambridge,computed
+2026-11-09,Mon,Moon Phase,New Moon at 07:02 UK time,Dark skies for stargazing; spring tides follow in 1-2 days,,Cambridge,computed
+2026-11-10,Tue,Almanac Day,"Sun up 07:11, down 16:15; day 9h03m (Cambridge)",Moon 2% lit: waxing crescent,,Cambridge,computed
+2026-11-11,Wed,Almanac Day,"Sun up 07:13, down 16:13; day 9h00m (Cambridge)",Moon 5% lit: waxing crescent,,Cambridge,computed
+2026-11-11,Wed,National,Armistice Day - 11 am silence [108th anniv.],End of WWI 1918; poppies worn,"At the going down of the sun and in the morning, we will remember them",UK,fixed
+2026-11-11,Wed,Tradition,Martinmas (St Martin's Day),Old hiring/term day; animals slaughtered for winter; St Martin's summer,,England,tradition
+2026-11-12,Thu,Almanac Day,"Sun up 07:15, down 16:12; day 8h57m (Cambridge)",Moon 11% lit: waxing crescent,,Cambridge,computed
+2026-11-12,Thu,Astronomical,North Taurid meteors peak,Few but brilliant fireballs; slow-moving,Moon that night: 14% lit (waxing crescent),England,approx
+2026-11-13,Fri,Almanac Day,"Sun up 07:16, down 16:10; day 8h53m (Cambridge)",Moon 18% lit: waxing crescent,,Cambridge,computed
+2026-11-13,Fri,Astrological,Mercury retrograde ends (approx),Mercury appears to move backwards against the stars,,Global,approx
+2026-11-14,Sat,Almanac Day,"Sun up 07:18, down 16:09; day 8h50m (Cambridge)",Moon 27% lit: waxing crescent,,Cambridge,computed
+2026-11-14,Sat,Royal,Birthday of King Charles III [78th anniv.],Born 14 Nov 1948 at Buckingham Palace,,UK,fixed
+2026-11-15,Sun,Almanac Day,"Sun up 07:20, down 16:07; day 8h47m (Cambridge)",Moon 37% lit: waxing crescent,,Cambridge,computed
+2026-11-16,Mon,Almanac Day,"Sun up 07:22, down 16:06; day 8h44m (Cambridge)",Moon 48% lit: first quarter,,Cambridge,computed
+2026-11-17,Tue,Almanac Day,"Sun up 07:23, down 16:05; day 8h41m (Cambridge)",Moon 58% lit: first quarter,,Cambridge,computed
+2026-11-17,Tue,Astronomical,Leonid meteors peak,~15/hr; comet Tempel-Tuttle; fast with persistent trains,Moon that night: 63% lit (waxing gibbous),England,approx
+2026-11-17,Tue,Moon Phase,First Quarter Moon at 11:47 UK time,Half-lit and rising; neap tides; best for crater viewing at the terminator,,Cambridge,computed
+2026-11-18,Wed,Almanac Day,"Sun up 07:25, down 16:03; day 8h38m (Cambridge)",Moon 68% lit: waxing gibbous,,Cambridge,computed
+2026-11-19,Thu,Almanac Day,"Sun up 07:27, down 16:02; day 8h35m (Cambridge)",Moon 78% lit: waxing gibbous,,Cambridge,computed
+2026-11-20,Fri,Almanac Day,"Sun up 07:28, down 16:01; day 8h32m (Cambridge)",Moon 86% lit: waxing gibbous,,Cambridge,computed
+2026-11-20,Fri,Church,"St Edmund's Day (martyr-king of East Anglia, d. 869) [1157th anniv.]","Patron of East Anglia, once England's patron saint; killed by Danes",,East Anglia,fixed
+2026-11-21,Sat,Almanac Day,"Sun up 07:30, down 16:00; day 8h29m (Cambridge)",Moon 92% lit: waxing gibbous,,Cambridge,computed
+2026-11-22,Sun,Almanac Day,"Sun up 07:32, down 15:58; day 8h26m (Cambridge)",Moon 97% lit: waxing gibbous,,Cambridge,computed
+2026-11-22,Sun,Astrological,Sun enters Sagittarius (the Archer),Tropical zodiac ingress; date of Sun's crossing of the sign boundary,,Global,computed
+2026-11-22,Sun,Folklore,Stir-up Sunday,"Christmas puddings stirred, each family member wishing","Stir up, we beseech thee, O Lord, the wills of thy faithful people",England,computed
+2026-11-22,Sun,Church,St Cecilia's Day,Patron saint of music; concerts and carols in many colleges,,England,fixed
+2026-11-23,Mon,Almanac Day,"Sun up 07:33, down 15:57; day 8h23m (Cambridge)",Moon 100% lit: full moon,,Cambridge,computed
+2026-11-23,Mon,Tradition,St Clement's Day (Clementing),Blacksmiths' patron; children went house to house for apples,,England,tradition
+2026-11-24,Tue,Almanac Day,"Sun up 07:35, down 15:56; day 8h21m (Cambridge)",Moon 100% lit: full moon,,Cambridge,computed
+2026-11-24,Tue,Moon Phase,Full Moon at 14:53 UK time,Spring tides follow; the Fen skies glow; rises near sunset,,Cambridge,computed
+2026-11-24,Tue,Moon Name,Beaver Moon,"English: Snow Moon, Fog Moon, Mourning Moon","Also: Frost Moon, Frosty Moon. Traps set before the freeze; first hard frosts",England,computed
+2026-11-25,Wed,Almanac Day,"Sun up 07:37, down 15:55; day 8h18m (Cambridge)",Moon 98% lit: waning gibbous,,Cambridge,computed
+2026-11-25,Wed,Tradition,St Catherine's Day (Cattern Day),"Lacemakers' holiday in lace-making counties; cattern cakes, Catherine wheels",,Beds/Hunts border,tradition
+2026-11-26,Thu,Almanac Day,"Sun up 07:38, down 15:54; day 8h16m (Cambridge)",Moon 94% lit: waning gibbous,,Cambridge,computed
+2026-11-26,Thu,Meteorological,Great Storm of 1703 (26-27 Nov) [323rd anniv.],Worst storm in recorded English history; Eddystone Lighthouse lost,,England,fixed
+2026-11-27,Fri,Almanac Day,"Sun up 07:40, down 15:53; day 8h13m (Cambridge)",Moon 88% lit: waning gibbous,,Cambridge,computed
+2026-11-28,Sat,Almanac Day,"Sun up 07:41, down 15:53; day 8h11m (Cambridge)",Moon 80% lit: waning gibbous,,Cambridge,computed
+2026-11-29,Sun,Almanac Day,"Sun up 07:43, down 15:52; day 8h08m (Cambridge)",Moon 71% lit: waning gibbous,,Cambridge,computed
+2026-11-29,Sun,Church,Advent Sunday,Start of the Christian year; Advent wreath and calendar,,England,computed
+2026-11-30,Mon,Almanac Day,"Sun up 07:44, down 15:51; day 8h06m (Cambridge)",Moon 62% lit: waning gibbous,,Cambridge,computed
+2026-11-30,Mon,National,St Andrew's Day (Scotland),Scotland's patron saint; bank holiday in Scotland,,Scotland,fixed
+2026-12-01,Tue,Almanac Day,"Sun up 07:46, down 15:50; day 8h04m (Cambridge)",Moon 51% lit: last quarter,,Cambridge,computed
+2026-12-01,Tue,Month,December - Old English 'Aerra Geola' ('Before Yule'),"Bede's Anglo-Saxon month names (De Temporum Ratione, 725 AD)",A green Christmas makes a fat churchyard.,England,fixed
+2026-12-01,Tue,Season,Meteorological winter begins (Dec-Feb),Met Office convention: whole calendar months,,UK,fixed
+2026-12-01,Tue,Moon Phase,Last Quarter Moon at 06:08 UK time,Half-lit; rises near midnight; neap tides,,Cambridge,computed
+2026-12-02,Wed,Almanac Day,"Sun up 07:47, down 15:50; day 8h02m (Cambridge)",Moon 41% lit: waning crescent,,Cambridge,computed
+2026-12-03,Thu,Almanac Day,"Sun up 07:49, down 15:49; day 8h00m (Cambridge)",Moon 30% lit: waning crescent,,Cambridge,computed
+2026-12-04,Fri,Almanac Day,"Sun up 07:50, down 15:49; day 7h58m (Cambridge)",Moon 21% lit: waning crescent,,Cambridge,computed
+2026-12-04,Fri,Astronomical,Horrocks observes transit of Venus (1639; 24 Nov OS) [387th anniv.],"Jeremiah Horrocks, Emmanuel College alumnus, first saw a Venus transit",,Cambridgeshire,fixed
+2026-12-04,Fri,Festival,Hanukkah begins at sunset (to 12 Dec),Jewish festival of lights; menorah lit nightly,,UK,published
+2026-12-05,Sat,Almanac Day,"Sun up 07:51, down 15:48; day 7h56m (Cambridge)",Moon 13% lit: waning crescent,,Cambridge,computed
+2026-12-06,Sun,Almanac Day,"Sun up 07:52, down 15:48; day 7h55m (Cambridge)",Moon 7% lit: waning crescent,,Cambridge,computed
+2026-12-06,Sun,Church,St Nicholas's Day,Boy bishop customs; gifts left in shoes,,England,fixed
+2026-12-07,Mon,Almanac Day,"Sun up 07:54, down 15:47; day 7h53m (Cambridge)",Moon 3% lit: waning crescent,,Cambridge,computed
+2026-12-08,Tue,Almanac Day,"Sun up 07:55, down 15:47; day 7h52m (Cambridge)",Moon 0% lit: new moon,,Cambridge,computed
+2026-12-09,Wed,Almanac Day,"Sun up 07:56, down 15:47; day 7h50m (Cambridge)",Moon 0% lit: new moon,,Cambridge,computed
+2026-12-09,Wed,Moon Phase,New Moon at 00:51 UK time,Dark skies for stargazing; spring tides follow in 1-2 days,,Cambridge,computed
+2026-12-09,Wed,Literary,John Milton born (Christ's College student 1625-32) [418th anniv.],Poet of Paradise Lost; legend of his mulberry tree at Christ's,,Cambridgeshire,fixed
+2026-12-10,Thu,Almanac Day,"Sun up 07:57, down 15:47; day 7h49m (Cambridge)",Moon 2% lit: waxing crescent,,Cambridge,computed
+2026-12-11,Fri,Almanac Day,"Sun up 07:58, down 15:46; day 7h48m (Cambridge)",Moon 7% lit: waxing crescent,,Cambridge,computed
+2026-12-11,Fri,Astronomical,"Earliest sunset of the year (15:46 UK, Cambridge)",Falls before the December solstice,,Cambridgeshire,computed
+2026-12-12,Sat,Almanac Day,"Sun up 07:59, down 15:46; day 7h47m (Cambridge)",Moon 13% lit: waxing crescent,,Cambridge,computed
+2026-12-13,Sun,Almanac Day,"Sun up 08:00, down 15:46; day 7h46m (Cambridge)",Moon 21% lit: waxing crescent,,Cambridge,computed
+2026-12-13,Sun,Church,St Lucy's Day (old-style shortest day),Pre-1752 midwinter; Donne wrote a Nocturnal upon it,"Lucy light, the shortest day and the longest night",England,tradition
+2026-12-14,Mon,Almanac Day,"Sun up 08:01, down 15:46; day 7h45m (Cambridge)",Moon 30% lit: waxing crescent,,Cambridge,computed
+2026-12-14,Mon,Astronomical,Geminid meteors peak,"Best shower of the year, 100+/hr; asteroid Phaethon debris",Moon that night: 34% lit (waxing crescent),England,approx
+2026-12-15,Tue,Almanac Day,"Sun up 08:02, down 15:46; day 7h44m (Cambridge)",Moon 40% lit: waxing crescent,,Cambridge,computed
+2026-12-16,Wed,Almanac Day,"Sun up 08:03, down 15:47; day 7h43m (Cambridge)",Moon 50% lit: first quarter,,Cambridge,computed
+2026-12-17,Thu,Almanac Day,"Sun up 08:03, down 15:47; day 7h43m (Cambridge)",Moon 61% lit: waxing gibbous,,Cambridge,computed
+2026-12-17,Thu,Moon Phase,First Quarter Moon at 05:42 UK time,Half-lit and rising; neap tides; best for crater viewing at the terminator,,Cambridge,computed
+2026-12-17,Thu,Pagan,"Saturnalia begins (Roman, to 23 Dec)","Roman midwinter revels; gifts, role reversal, feasting",Io Saturnalia!,England,fixed
+2026-12-18,Fri,Almanac Day,"Sun up 08:04, down 15:47; day 7h42m (Cambridge)",Moon 71% lit: waxing gibbous,,Cambridge,computed
+2026-12-19,Sat,Almanac Day,"Sun up 08:05, down 15:47; day 7h42m (Cambridge)",Moon 80% lit: waxing gibbous,,Cambridge,computed
+2026-12-20,Sun,Almanac Day,"Sun up 08:05, down 15:48; day 7h42m (Cambridge)",Moon 87% lit: waxing gibbous,,Cambridge,computed
+2026-12-21,Mon,Almanac Day,"Sun up 08:06, down 15:48; day 7h42m (Cambridge)",Moon 94% lit: waxing gibbous,,Cambridge,computed
+2026-12-21,Mon,Astronomical,December solstice (midwinter) at 20:50 UK time,Shortest day; the Sun's turning point,,Global,computed
+2026-12-21,Mon,Pagan,Yule (pagan wheel of the year),Shortest day; the Sun's turning point,"Yule log, evergreen, boar's head and wassail",England,computed
+2026-12-21,Mon,Church,St Thomas's Day (Doleing / Mumping Day),Poor folk visited for alms and gifts of corn or wheat,,England,tradition
+2026-12-22,Tue,Almanac Day,"Sun up 08:06, down 15:49; day 7h42m (Cambridge)",Moon 98% lit: waxing gibbous,,Cambridge,computed
+2026-12-22,Tue,Astronomical,Ursid meteors peak,~10/hr; comet Tuttle; a solstice treat from the north sky,Moon that night: 99% lit (waxing gibbous),England,approx
+2026-12-22,Tue,Astrological,Sun enters Capricorn (the Sea-goat),Tropical zodiac ingress; date of Sun's crossing of the sign boundary,,Global,computed
+2026-12-23,Wed,Almanac Day,"Sun up 08:07, down 15:49; day 7h42m (Cambridge)",Moon 100% lit: full moon,,Cambridge,computed
+2026-12-24,Thu,Almanac Day,"Sun up 08:07, down 15:50; day 7h42m (Cambridge)",Moon 100% lit: full moon,,Cambridge,computed
+2026-12-24,Thu,Moon Phase,Full Moon at 01:28 UK time,Spring tides follow; the Fen skies glow; rises near sunset,,Cambridge,computed
+2026-12-24,Thu,Moon Name,Cold Moon,"English: Oak Moon, Long Night Moon, Moon Before Yule",Also: Big Winter Moon. Longest nights near midwinter; the moon rides high,England,computed
+2026-12-24,Thu,Church,"Nine Lessons & Carols, King's College, Cambridge (3 pm) [108th anniv.]",First held 1918; broadcast by the BBC since 1928,,Cambridgeshire,fixed
+2026-12-24,Thu,Pagan,Modranicht - 'Mothers' Night' (Anglo-Saxon),Recorded by Bede as the pagan English start of Yule,,England,fixed
+2026-12-25,Fri,Almanac Day,"Sun up 08:08, down 15:51; day 7h43m (Cambridge)",Moon 97% lit: waning gibbous,,Cambridge,computed
+2026-12-25,Fri,National Holiday,Bank holiday (England & Wales): Christmas Day,Public holiday,,England,computed
+2026-12-25,Fri,National,Christmas Day,Bank holiday; also a quarter day,At Christmas play and make good cheer - Thomas Tusser,UK,fixed
+2026-12-25,Fri,History,"Isaac Newton born, Old Style (4 Jan 1643 NS) [384th anniv.]","Lincolnshire-born; Trinity College, Cambridge 1661 onwards",,Cambridgeshire,fixed
+2026-12-25,Fri,Literary,Milton's Nativity Ode written at Christ's College (1629) [397th anniv.],Composed as a Cambridge undergraduate on Christmas morning,"It was the winter wild, while the heav'n-born child...",Cambridgeshire,fixed
+2026-12-26,Sat,Almanac Day,"Sun up 08:08, down 15:51; day 7h43m (Cambridge)",Moon 93% lit: waning gibbous,,Cambridge,computed
+2026-12-26,Sat,National,Boxing Day / St Stephen's Day,"Bank holiday; hunt meets, Wren Day customs, alms boxes",Good King Wenceslas looked out on the Feast of Stephen,UK,fixed
+2026-12-27,Sun,Almanac Day,"Sun up 08:08, down 15:52; day 7h44m (Cambridge)",Moon 87% lit: waning gibbous,,Cambridge,computed
+2026-12-28,Mon,Almanac Day,"Sun up 08:08, down 15:53; day 7h44m (Cambridge)",Moon 79% lit: waning gibbous,,Cambridge,computed
+2026-12-28,Mon,National Holiday,Bank holiday (England & Wales): Boxing Day (substitute day),Public holiday,,England,computed
+2026-12-28,Mon,Church,Holy Innocents (Childermas),Folk belief: unlucky to begin any new work today,,England,tradition
+2026-12-29,Tue,Almanac Day,"Sun up 08:08, down 15:54; day 7h45m (Cambridge)",Moon 69% lit: waning gibbous,,Cambridge,computed
+2026-12-29,Tue,History,"Thomas Becket murdered, Canterbury (1170) [856th anniv.]",Medieval pilgrim saint of England,,England,fixed
+2026-12-30,Wed,Almanac Day,"Sun up 08:08, down 15:55; day 7h46m (Cambridge)",Moon 59% lit: waning gibbous,,Cambridge,computed
+2026-12-30,Wed,Moon Phase,Last Quarter Moon at 18:59 UK time,Half-lit; rises near midnight; neap tides,,Cambridge,computed
+2026-12-31,Thu,Almanac Day,"Sun up 08:08, down 15:56; day 7h47m (Cambridge)",Moon 49% lit: last quarter,,Cambridge,computed
+2026-12-31,Thu,National,New Year's Eve / Hogmanay,"Watchnight, bell ringing, first-footing in Scotland and the North","Ring out the old, ring in the new - Tennyson (Trinity College)",UK,fixed
+2027-01-01,Fri,Almanac Day,"Sun up 08:08, down 15:57; day 7h48m (Cambridge)",Moon 38% lit: waning crescent,,Cambridge,computed
+2027-01-01,Fri,Month,January - Old English 'Aefterra Geola' ('After Yule'),"Bede's Anglo-Saxon month names (De Temporum Ratione, 725 AD)",A January spring is worth nothing.,England,fixed
+2027-01-01,Fri,Astronomical,"Latest sunrise of the year (08:08 UK, Cambridge)",Falls after the December solstice,,Cambridgeshire,computed
+2027-01-01,Fri,National Holiday,Bank holiday (England & Wales): New Year's Day,Public holiday,,England,computed
+2027-01-01,Fri,National,New Year's Day,"Bank holiday; resolutions; first-footing with coal, bread, salt",,UK,fixed
+2027-01-01,Fri,Literary,Pepys begins his diary (1660) [367th anniv.],"Samuel Pepys, Magdalene man and Brampton (Hunts) landowner",And so to bed.,Cambs/Hunts,fixed
+2027-01-02,Sat,Almanac Day,"Sun up 08:08, down 15:58; day 7h49m (Cambridge)",Moon 29% lit: waning crescent,,Cambridge,computed
+2027-01-02,Sat,National Holiday,2 January - bank holiday in Scotland,Scottish public holiday after Hogmanay,,Scotland,fixed
+2027-01-03,Sun,Almanac Day,"Sun up 08:08, down 15:59; day 7h51m (Cambridge)",Moon 20% lit: waning crescent,,Cambridge,computed
+2027-01-03,Sun,Astronomical,Earth at perihelion,Closest to the Sun (~147 m km) - during UK winter,,Global,approx
+2027-01-03,Sun,Astronomical,Quadrantid meteors peak,"Up to ~80/hr; sharp short peak, radiant in Bootes; fine in a dark Fen sky",Moon that night: 16% lit (waning crescent),England,approx
+2027-01-04,Mon,Almanac Day,"Sun up 08:08, down 16:00; day 7h52m (Cambridge)",Moon 12% lit: waning crescent,,Cambridge,computed
+2027-01-04,Mon,History,"Newtonmas: Isaac Newton's birthday, New Style (1643) [384th anniv.]","Newton's Principia was written at Trinity College, Cambridge",,Cambridgeshire,fixed
+2027-01-05,Tue,Almanac Day,"Sun up 08:07, down 16:01; day 7h54m (Cambridge)",Moon 6% lit: waning crescent,,Cambridge,computed
+2027-01-05,Tue,Folklore,Twelfth Night,"Twelfth Cake, wassail, Lord of Misrule; decorations come down","If music be the food of love, play on - Twelfth Night",England,fixed
+2027-01-06,Wed,Almanac Day,"Sun up 08:07, down 16:03; day 7h55m (Cambridge)",Moon 2% lit: waning crescent,,Cambridge,computed
+2027-01-06,Wed,Church,Epiphany / Old Christmas Day,Three Kings; Old Christmas by the Julian calendar,,England,fixed
+2027-01-07,Thu,Almanac Day,"Sun up 08:06, down 16:04; day 7h57m (Cambridge)",Moon 0% lit: new moon,,Cambridge,computed
+2027-01-07,Thu,Moon Phase,New Moon at 20:24 UK time,Dark skies for stargazing; spring tides follow in 1-2 days,,Cambridge,computed
+2027-01-07,Thu,History,Catherine of Aragon dies at Kimbolton Castle (1536) [491st anniv.],Henry VIII's first queen died in Huntingdonshire; buried Peterborough,,Huntingdonshire,fixed
+2027-01-07,Thu,Folklore,St Distaff's Day (Rock Day),Women return to the spinning wheel; pranks with flax and fire,,England,tradition
+2027-01-08,Fri,Almanac Day,"Sun up 08:06, down 16:05; day 7h59m (Cambridge)",Moon 0% lit: new moon,,Cambridge,computed
+2027-01-08,Fri,Astronomical,Stephen Hawking born (1942); Cambridge cosmologist [85th anniv.],"Lucasian Professor 1979-2009; Gonville & Caius, Cambridge",,Cambridgeshire,fixed
+2027-01-09,Sat,Almanac Day,"Sun up 08:05, down 16:07; day 8h01m (Cambridge)",Moon 3% lit: waxing crescent,,Cambridge,computed
+2027-01-09,Sat,Tradition,"Whittlesey Straw Bear Festival (second weekend Jan, approx)",Man in straw costume led through town; fen custom revived 1980,,Cambridgeshire,approx
+2027-01-10,Sun,Almanac Day,"Sun up 08:05, down 16:08; day 8h03m (Cambridge)",Moon 8% lit: waxing crescent,,Cambridge,computed
+2027-01-10,Sun,Folklore,Plough Sunday,Ploughs blessed in church before the working year,,Cambridgeshire,computed
+2027-01-11,Mon,Almanac Day,"Sun up 08:04, down 16:09; day 8h05m (Cambridge)",Moon 14% lit: waxing crescent,,Cambridge,computed
+2027-01-11,Mon,Folklore,Plough Monday - Molly dancers & Straw Bears,Fen ploughmen blacked faces; Molly dancing in Cambs/Ely,A fen plough-boy's holiday,Cambridgeshire,computed
+2027-01-12,Tue,Almanac Day,"Sun up 08:04, down 16:11; day 8h07m (Cambridge)",Moon 22% lit: waxing crescent,,Cambridge,computed
+2027-01-13,Wed,Almanac Day,"Sun up 08:03, down 16:12; day 8h09m (Cambridge)",Moon 31% lit: waxing crescent,,Cambridge,computed
+2027-01-13,Wed,Church,St Hilary's Day,Traditionally the coldest day; old legal term named for him,,England,tradition
+2027-01-14,Thu,Almanac Day,"Sun up 08:02, down 16:14; day 8h12m (Cambridge)",Moon 42% lit: first quarter,,Cambridge,computed
+2027-01-15,Fri,Almanac Day,"Sun up 08:01, down 16:16; day 8h14m (Cambridge)",Moon 52% lit: first quarter,,Cambridge,computed
+2027-01-15,Fri,Moon Phase,First Quarter Moon at 20:34 UK time,Half-lit and rising; neap tides; best for crater viewing at the terminator,,Cambridge,computed
+2027-01-15,Fri,Nature,"Fen skating season, if the washes freeze",Fenland 'Fen Tigers' skated Ouse Washes; Welney race meetings,,Fens,approx
+2027-01-16,Sat,Almanac Day,"Sun up 08:00, down 16:17; day 8h16m (Cambridge)",Moon 62% lit: waxing gibbous,,Cambridge,computed
+2027-01-17,Sun,Almanac Day,"Sun up 07:59, down 16:19; day 8h19m (Cambridge)",Moon 72% lit: waxing gibbous,,Cambridge,computed
+2027-01-17,Sun,Folklore,Old Twelfth Night - orchard wassailing,"Cider poured on apple roots, toast hung in boughs, guns fired","Old apple tree, we wassail thee",England,tradition
+2027-01-18,Mon,Almanac Day,"Sun up 07:58, down 16:20; day 8h22m (Cambridge)",Moon 81% lit: waxing gibbous,,Cambridge,computed
+2027-01-19,Tue,Almanac Day,"Sun up 07:57, down 16:22; day 8h24m (Cambridge)",Moon 89% lit: waxing gibbous,,Cambridge,computed
+2027-01-19,Tue,Tradition,"Cambridge Lent Term begins (full term, approx)",Lent Bumps rowing races on the Cam in late Feb,,Cambridgeshire,approx
+2027-01-20,Wed,Almanac Day,"Sun up 07:56, down 16:24; day 8h27m (Cambridge)",Moon 94% lit: waxing gibbous,,Cambridge,computed
+2027-01-20,Wed,Astrological,Sun enters Aquarius (the Water-bearer),Tropical zodiac ingress; date of Sun's crossing of the sign boundary,,Global,computed
+2027-01-20,Wed,Folklore,St Agnes' Eve,Maidens fast to dream of a future husband,"St Agnes' Eve - Ah, bitter chill it was! - Keats",England,tradition
+2027-01-20,Wed,Nature,Snowdrops at Anglesey Abbey & Wimpole (approx),"Candlemas bells carpet Cambridgeshire gardens, Jan-Feb",,Cambridgeshire,approx
+2027-01-21,Thu,Almanac Day,"Sun up 07:55, down 16:26; day 8h30m (Cambridge)",Moon 98% lit: waxing gibbous,,Cambridge,computed
+2027-01-22,Fri,Almanac Day,"Sun up 07:54, down 16:27; day 8h33m (Cambridge)",Moon 100% lit: full moon,,Cambridge,computed
+2027-01-22,Fri,Moon Phase,Full Moon at 12:17 UK time,Spring tides follow; the Fen skies glow; rises near sunset,,Cambridge,computed
+2027-01-22,Fri,Moon Name,Wolf Moon,"English: Old Moon, Moon After Yule","Also: Ice Moon, Cold Moon. Hungry wolves howled by villages in deep winter",England,computed
+2027-01-23,Sat,Almanac Day,"Sun up 07:53, down 16:29; day 8h36m (Cambridge)",Moon 99% lit: full moon,,Cambridge,computed
+2027-01-24,Sun,Almanac Day,"Sun up 07:51, down 16:31; day 8h39m (Cambridge)",Moon 97% lit: waning gibbous,,Cambridge,computed
+2027-01-25,Mon,Almanac Day,"Sun up 07:50, down 16:33; day 8h42m (Cambridge)",Moon 92% lit: waning gibbous,,Cambridge,computed
+2027-01-25,Mon,National,Burns Night,"Haggis, neeps and tatties, Address to the Haggis","Wee, sleekit, cow'rin, tim'rous beastie - Burns",Scotland,fixed
+2027-01-25,Mon,Weather lore,Conversion of St Paul,Weather on this day foretells the year's harvest,"If St Paul's Day be fair and clear, it doth betide a happy year",England,tradition
+2027-01-26,Tue,Almanac Day,"Sun up 07:49, down 16:34; day 8h45m (Cambridge)",Moon 85% lit: waning gibbous,,Cambridge,computed
+2027-01-27,Wed,Almanac Day,"Sun up 07:47, down 16:36; day 8h48m (Cambridge)",Moon 77% lit: waning gibbous,,Cambridge,computed
+2027-01-28,Thu,Almanac Day,"Sun up 07:46, down 16:38; day 8h52m (Cambridge)",Moon 68% lit: waning gibbous,,Cambridge,computed
+2027-01-29,Fri,Almanac Day,"Sun up 07:44, down 16:40; day 8h55m (Cambridge)",Moon 57% lit: last quarter,,Cambridge,computed
+2027-01-29,Fri,Moon Phase,Last Quarter Moon at 10:55 UK time,Half-lit; rises near midnight; neap tides,,Cambridge,computed
+2027-01-29,Fri,History,Catherine of Aragon buried at Peterborough Abbey (1536) [491st anniv.],Peterborough Cathedral commemorates her each January,,Cambridgeshire,fixed
+2027-01-30,Sat,Almanac Day,"Sun up 07:43, down 16:42; day 8h58m (Cambridge)",Moon 47% lit: last quarter,,Cambridge,computed
+2027-01-30,Sat,History,Charles I executed (1649); Cromwell's corpse hanged (1661) [378th anniv.],"Cromwell's head later rested at Sidney Sussex College, Cambridge",,Cambs/Hunts,fixed
+2027-01-31,Sun,Almanac Day,"Sun up 07:41, down 16:43; day 9h02m (Cambridge)",Moon 37% lit: waning crescent,,Cambridge,computed
+2027-02-01,Mon,Almanac Day,"Sun up 07:40, down 16:45; day 9h05m (Cambridge)",Moon 27% lit: waning crescent,,Cambridge,computed
+2027-02-01,Mon,Month,February - Old English 'Solmonath' (mud/cakes month),"Bede's Anglo-Saxon month names (De Temporum Ratione, 725 AD)","February fill dyke, be it black or be it white. - Tusser",England,fixed
+2027-02-01,Mon,Pagan,Imbolc / St Brigid's Eve,"Cross-quarter feast: lambing, ewes' milk, first stirrings of spring",,England,fixed
+2027-02-02,Tue,Almanac Day,"Sun up 07:38, down 16:47; day 9h09m (Cambridge)",Moon 18% lit: waning crescent,,Cambridge,computed
+2027-02-02,Tue,Church,Candlemas (Presentation of Christ),Christmas greenery cleared; snowdrops are 'Candlemas bells',"If Candlemas Day be fair and bright, winter will have another flight",England,tradition
+2027-02-03,Wed,Almanac Day,"Sun up 07:37, down 16:49; day 9h12m (Cambridge)",Moon 11% lit: waning crescent,,Cambridge,computed
+2027-02-04,Thu,Almanac Day,"Sun up 07:35, down 16:51; day 9h16m (Cambridge)",Moon 5% lit: waning crescent,,Cambridge,computed
+2027-02-05,Fri,Almanac Day,"Sun up 07:33, down 16:53; day 9h19m (Cambridge)",Moon 1% lit: waning crescent,,Cambridge,computed
+2027-02-06,Sat,Almanac Day,"Sun up 07:31, down 16:55; day 9h23m (Cambridge)",Moon 0% lit: new moon,,Cambridge,computed
+2027-02-06,Sat,Astronomical,Eclipse: Annular solar eclipse,"Visible S America, Atlantic, W Africa; not from UK",,Global,published
+2027-02-06,Sat,Moon Phase,New Moon at 15:56 UK time,Dark skies for stargazing; spring tides follow in 1-2 days,,Cambridge,computed
+2027-02-06,Sat,Festival,Chinese New Year - Year of the Goat,"Lunar New Year; red lanterns, dragon dances, family feasts",,UK,published
+2027-02-06,Sat,Royal,"Accession Day (Queen Elizabeth II, 1952) [75th anniv.]",Accession anniversary marked by gun salutes,,UK,fixed
+2027-02-07,Sun,Almanac Day,"Sun up 07:30, down 16:57; day 9h26m (Cambridge)",Moon 1% lit: new moon,,Cambridge,computed
+2027-02-08,Mon,Almanac Day,"Sun up 07:28, down 16:58; day 9h30m (Cambridge)",Moon 4% lit: waxing crescent,,Cambridge,computed
+2027-02-08,Mon,Festival,Ramadan begins (approx),Muslim month of fasting; start depends on moon sighting,,UK,approx
+2027-02-08,Mon,Folklore,Collop Monday,Eggs and bacon used up before Lent; Egg Saturday customs,,England,computed
+2027-02-09,Tue,Almanac Day,"Sun up 07:26, down 17:00; day 9h34m (Cambridge)",Moon 9% lit: waxing crescent,,Cambridge,computed
+2027-02-09,Tue,Astrological,Mercury retrograde starts (approx),Mercury appears to move backwards against the stars,,Global,approx
+2027-02-09,Tue,Church,Shrove Tuesday (Pancake Day),"Pancake races, bell ringing, football; Olney race since 1445",Pancakes and fritters...,England,computed
+2027-02-10,Wed,Almanac Day,"Sun up 07:24, down 17:02; day 9h37m (Cambridge)",Moon 16% lit: waxing crescent,,Cambridge,computed
+2027-02-10,Wed,Church,Ash Wednesday - Lent begins,"40 days of fasting before Easter, excluding Sundays",,England,computed
+2027-02-11,Thu,Almanac Day,"Sun up 07:22, down 17:04; day 9h41m (Cambridge)",Moon 24% lit: waxing crescent,,Cambridge,computed
+2027-02-11,Thu,Astronomical,Jupiter at opposition,"Jupiter rises at sunset, brilliant all night in Gemini/Cancer",,Global,published
+2027-02-12,Fri,Almanac Day,"Sun up 07:21, down 17:06; day 9h45m (Cambridge)",Moon 33% lit: waxing crescent,,Cambridge,computed
+2027-02-12,Fri,Science,"Charles Darwin born (1809); Christ's College, Cambridge [218th anniv.]",Studied beetles in Cambridgeshire fens (Wicken Fen) as a student,,Cambridgeshire,fixed
+2027-02-12,Fri,History,Central tower of Ely Cathedral collapses (1322) [705th anniv.],"Replaced by the Octagon and Lantern, 'Ship of the Fens'",,Cambridgeshire,approx
+2027-02-13,Sat,Almanac Day,"Sun up 07:19, down 17:08; day 9h49m (Cambridge)",Moon 44% lit: first quarter,,Cambridge,computed
+2027-02-14,Sun,Almanac Day,"Sun up 07:17, down 17:10; day 9h53m (Cambridge)",Moon 54% lit: first quarter,,Cambridge,computed
+2027-02-14,Sun,Moon Phase,First Quarter Moon at 07:58 UK time,Half-lit and rising; neap tides; best for crater viewing at the terminator,,Cambridge,computed
+2027-02-14,Sun,Festival,St Valentine's Day,Birds are said to choose their mates today,For this was on seynt Valentynes day - Chaucer,England,fixed
+2027-02-15,Mon,Almanac Day,"Sun up 07:15, down 17:12; day 9h56m (Cambridge)",Moon 65% lit: waxing gibbous,,Cambridge,computed
+2027-02-15,Mon,Pagan,Lupercalia (Roman fertility festival),Old Roman rite of spring purification,,England,fixed
+2027-02-16,Tue,Almanac Day,"Sun up 07:13, down 17:13; day 10h00m (Cambridge)",Moon 74% lit: waxing gibbous,,Cambridge,computed
+2027-02-17,Wed,Almanac Day,"Sun up 07:11, down 17:15; day 10h04m (Cambridge)",Moon 83% lit: waxing gibbous,,Cambridge,computed
+2027-02-17,Wed,Tradition,"Cambridge Lent Bumps (late Feb, approx)",College boat races on the Cam,,Cambridgeshire,approx
+2027-02-18,Thu,Almanac Day,"Sun up 07:09, down 17:17; day 10h08m (Cambridge)",Moon 90% lit: waxing gibbous,,Cambridge,computed
+2027-02-19,Fri,Almanac Day,"Sun up 07:07, down 17:19; day 10h12m (Cambridge)",Moon 95% lit: waxing gibbous,,Cambridge,computed
+2027-02-19,Fri,Astronomical,Mars at opposition,Mars at its brightest since 2022-23; red and conspicuous,,Global,published
+2027-02-19,Fri,Astrological,Sun enters Pisces (the Fishes),Tropical zodiac ingress; date of Sun's crossing of the sign boundary,,Global,computed
+2027-02-20,Sat,Almanac Day,"Sun up 07:05, down 17:21; day 10h16m (Cambridge)",Moon 99% lit: waxing gibbous,,Cambridge,computed
+2027-02-20,Sat,Astronomical,Eclipse: Penumbral lunar eclipse,Faint shading only; hard to see by eye,,Global,published
+2027-02-20,Sat,Moon Phase,Full Moon at 23:23 UK time,Spring tides follow; the Fen skies glow; rises near sunset,,Cambridge,computed
+2027-02-20,Sat,Moon Name,Snow Moon,"English: Storm Moon, Hunger Moon, Horning Moon",Also: Candlemas Moon. Heaviest snows of the year; hunger moon in lean winters,England,computed
+2027-02-21,Sun,Almanac Day,"Sun up 07:02, down 17:23; day 10h20m (Cambridge)",Moon 100% lit: full moon,,Cambridge,computed
+2027-02-22,Mon,Almanac Day,"Sun up 07:00, down 17:25; day 10h24m (Cambridge)",Moon 99% lit: waning gibbous,,Cambridge,computed
+2027-02-23,Tue,Almanac Day,"Sun up 06:58, down 17:27; day 10h28m (Cambridge)",Moon 96% lit: waning gibbous,,Cambridge,computed
+2027-02-23,Tue,Literary,"Samuel Pepys born (1633); Magdalene, Cambridge [394th anniv.]",Educated at Huntingdon Grammar School; later lived at Brampton,,Cambs/Hunts,fixed
+2027-02-24,Wed,Almanac Day,"Sun up 06:56, down 17:28; day 10h32m (Cambridge)",Moon 90% lit: waning gibbous,,Cambridge,computed
+2027-02-25,Thu,Almanac Day,"Sun up 06:54, down 17:30; day 10h36m (Cambridge)",Moon 83% lit: waning gibbous,,Cambridge,computed
+2027-02-26,Fri,Almanac Day,"Sun up 06:52, down 17:32; day 10h40m (Cambridge)",Moon 75% lit: waning gibbous,,Cambridge,computed
+2027-02-27,Sat,Almanac Day,"Sun up 06:50, down 17:34; day 10h44m (Cambridge)",Moon 65% lit: waning gibbous,,Cambridge,computed
+2027-02-28,Sun,Almanac Day,"Sun up 06:47, down 17:36; day 10h48m (Cambridge)",Moon 55% lit: last quarter,,Cambridge,computed
+2027-02-28,Sun,Moon Phase,Last Quarter Moon at 05:16 UK time,Half-lit; rises near midnight; neap tides,,Cambridge,computed
+2027-02-28,Sun,Science,"Crick & Watson announce DNA at the Eagle pub, Cambridge (1953) [74th anniv.]",Crick: 'we have found the secret of life',,Cambridgeshire,fixed
+2027-03-01,Mon,Almanac Day,"Sun up 06:45, down 17:37; day 10h52m (Cambridge)",Moon 44% lit: last quarter,,Cambridge,computed
+2027-03-01,Mon,Month,March - Old English 'Hrethmonath' (month of the goddess Hretha),"Bede's Anglo-Saxon month names (De Temporum Ratione, 725 AD)",March winds and April showers bring forth May flowers.,England,fixed
+2027-03-01,Mon,Season,Meteorological spring begins (Mar-May),Met Office convention: whole calendar months,,UK,fixed
+2027-03-01,Mon,National,St David's Day (Wales),Daffodils and leeks worn; patron saint of Wales,Do the little things - attributed to St David,Wales,fixed
+2027-03-02,Tue,Almanac Day,"Sun up 06:43, down 17:39; day 10h56m (Cambridge)",Moon 34% lit: waning crescent,,Cambridge,computed
+2027-03-03,Wed,Almanac Day,"Sun up 06:41, down 17:41; day 11h00m (Cambridge)",Moon 24% lit: waning crescent,,Cambridge,computed
+2027-03-03,Wed,Astrological,Mercury retrograde ends (approx),Mercury appears to move backwards against the stars,,Global,approx
+2027-03-04,Thu,Almanac Day,"Sun up 06:39, down 17:43; day 11h04m (Cambridge)",Moon 16% lit: waning crescent,,Cambridge,computed
+2027-03-05,Fri,Almanac Day,"Sun up 06:36, down 17:45; day 11h08m (Cambridge)",Moon 9% lit: waning crescent,,Cambridge,computed
+2027-03-06,Sat,Almanac Day,"Sun up 06:34, down 17:47; day 11h12m (Cambridge)",Moon 4% lit: waning crescent,,Cambridge,computed
+2027-03-07,Sun,Almanac Day,"Sun up 06:32, down 17:48; day 11h16m (Cambridge)",Moon 1% lit: waning crescent,,Cambridge,computed
+2027-03-07,Sun,Church,Mothering Sunday (Mid-Lent),Visit the mother church; simnel cake and violets for mothers,,England,computed
+2027-03-08,Mon,Almanac Day,"Sun up 06:30, down 17:50; day 11h20m (Cambridge)",Moon 0% lit: new moon,,Cambridge,computed
+2027-03-08,Mon,Moon Phase,New Moon at 09:29 UK time,Dark skies for stargazing; spring tides follow in 1-2 days,,Cambridge,computed
+2027-03-09,Tue,Almanac Day,"Sun up 06:27, down 17:52; day 11h24m (Cambridge)",Moon 1% lit: waxing crescent,,Cambridge,computed
+2027-03-09,Tue,Festival,Eid al-Fitr (approx),Feast ending Ramadan; date depends on moon sighting,,UK,approx
+2027-03-10,Wed,Almanac Day,"Sun up 06:25, down 17:54; day 11h28m (Cambridge)",Moon 5% lit: waxing crescent,,Cambridge,computed
+2027-03-11,Thu,Almanac Day,"Sun up 06:23, down 17:55; day 11h32m (Cambridge)",Moon 10% lit: waxing crescent,,Cambridge,computed
+2027-03-12,Fri,Almanac Day,"Sun up 06:20, down 17:57; day 11h36m (Cambridge)",Moon 18% lit: waxing crescent,,Cambridge,computed
+2027-03-13,Sat,Almanac Day,"Sun up 06:18, down 17:59; day 11h40m (Cambridge)",Moon 27% lit: waxing crescent,,Cambridge,computed
+2027-03-14,Sun,Almanac Day,"Sun up 06:16, down 18:01; day 11h44m (Cambridge)",Moon 36% lit: waxing crescent,,Cambridge,computed
+2027-03-14,Sun,Science,Pi Day; Einstein born 1879; Hawking died 2018 (Cambridge) [9th anniv.],Stephen Hawking died at home in Cambridge,,Cambridgeshire,fixed
+2027-03-15,Mon,Almanac Day,"Sun up 06:13, down 18:02; day 11h49m (Cambridge)",Moon 47% lit: first quarter,,Cambridge,computed
+2027-03-15,Mon,Moon Phase,First Quarter Moon at 16:25 UK time,Half-lit and rising; neap tides; best for crater viewing at the terminator,,Cambridge,computed
+2027-03-15,Mon,Tradition,Ides of March,Roman mid-month; Caesar's assassination 44 BC,Beware the Ides of March - Julius Caesar,England,fixed
+2027-03-16,Tue,Almanac Day,"Sun up 06:11, down 18:04; day 11h53m (Cambridge)",Moon 57% lit: first quarter,,Cambridge,computed
+2027-03-16,Tue,Meteorological,Fenland floods of March 1947 (mid-March) [80th anniv.],Thaw and gales breached Ouse banks; thousands of acres flooded,,Fens,approx
+2027-03-17,Wed,Almanac Day,"Sun up 06:09, down 18:06; day 11h57m (Cambridge)",Moon 68% lit: waxing gibbous,,Cambridge,computed
+2027-03-17,Wed,National,St Patrick's Day (N. Ireland bank holiday),Shamrock worn; patron saint of Ireland,,N. Ireland,fixed
+2027-03-17,Wed,Folklore,Houghton Mill ghost legend (Juliet Tewkesbury),Miller's-girl ghost said to haunt the mill beside the Great Ouse,,Huntingdonshire,legend
+2027-03-18,Thu,Almanac Day,"Sun up 06:06, down 18:08; day 12h01m (Cambridge)",Moon 77% lit: waxing gibbous,,Cambridge,computed
+2027-03-19,Fri,Almanac Day,"Sun up 06:04, down 18:10; day 12h05m (Cambridge)",Moon 85% lit: waxing gibbous,,Cambridge,computed
+2027-03-20,Sat,Almanac Day,"Sun up 06:02, down 18:11; day 12h09m (Cambridge)",Moon 92% lit: waxing gibbous,,Cambridge,computed
+2027-03-20,Sat,Astronomical,March (vernal) equinox at 20:24 UK time,Spring begins; day and night nearly equal,,Global,computed
+2027-03-20,Sat,Pagan,Ostara (pagan wheel of the year),Spring begins; day and night nearly equal,"Eostre's festival: eggs, hares and new growth",England,computed
+2027-03-21,Sun,Almanac Day,"Sun up 05:59, down 18:13; day 12h13m (Cambridge)",Moon 97% lit: waxing gibbous,,Cambridge,computed
+2027-03-21,Sun,Astrological,Sun enters Aries (the Ram),Tropical zodiac ingress; date of Sun's crossing of the sign boundary,,Global,computed
+2027-03-21,Sun,Church,Palm Sunday,Willow 'palms' carried in England; Holy Week begins,,England,computed
+2027-03-22,Mon,Almanac Day,"Sun up 05:57, down 18:15; day 12h17m (Cambridge)",Moon 99% lit: full moon,,Cambridge,computed
+2027-03-22,Mon,Moon Phase,Full Moon at 10:43 UK time,Spring tides follow; the Fen skies glow; rises near sunset,,Cambridge,computed
+2027-03-22,Mon,Moon Name,Worm Moon,"English: Chaste Moon, Lenten Moon, Death Moon","Also: Crow Moon, Sap Moon. Soil thaws and earthworms stir; last moon of winter",England,computed
+2027-03-22,Mon,Festival,Holi (Hindu festival of colours),"Spring festival; coloured powders, bonfires the night before",,UK,published
+2027-03-23,Tue,Almanac Day,"Sun up 05:55, down 18:16; day 12h21m (Cambridge)",Moon 100% lit: full moon,,Cambridge,computed
+2027-03-24,Wed,Almanac Day,"Sun up 05:52, down 18:18; day 12h25m (Cambridge)",Moon 98% lit: waning gibbous,,Cambridge,computed
+2027-03-25,Thu,Almanac Day,"Sun up 05:50, down 18:20; day 12h29m (Cambridge)",Moon 94% lit: waning gibbous,,Cambridge,computed
+2027-03-25,Thu,Church,Maundy Thursday,Royal Maundy money; foot-washing ritual,,England,computed
+2027-03-25,Thu,Tradition,Lady Day (Annunciation) - English New Year to 1752,Quarter day; old tax and legal year began today,,England,fixed
+2027-03-25,Thu,History,"Cromwell's head buried at Sidney Sussex, Cambridge (1960) [67th anniv.]",Huntingdon-born Cromwell's skull interred secretly in the chapel,,Cambs/Hunts,fixed
+2027-03-26,Fri,Almanac Day,"Sun up 05:48, down 18:22; day 12h33m (Cambridge)",Moon 88% lit: waning gibbous,,Cambridge,computed
+2027-03-26,Fri,National Holiday,Bank holiday (England & Wales): Good Friday,Public holiday,,England,computed
+2027-03-26,Fri,Church,Good Friday,Hot cross buns; don't plant potatoes until today (folk),"One a penny, two a penny, hot cross buns",England,computed
+2027-03-27,Sat,Almanac Day,"Sun up 05:45, down 18:23; day 12h37m (Cambridge)",Moon 81% lit: waning gibbous,,Cambridge,computed
+2027-03-27,Sat,Church,Holy Saturday (Easter Eve),Vigil; Easter fires; dyeing eggs,,England,computed
+2027-03-28,Sun,Almanac Day,"Sun up 06:43, down 19:25; day 12h42m (Cambridge)",Moon 72% lit: waning gibbous,,Cambridge,computed
+2027-03-28,Sun,Calendar,British Summer Time begins - clocks FORWARD 1 hr at 01:00,01:00 GMT becomes 02:00 BST; lose an hour of sleep,"Spring forward, fall back",UK,computed
+2027-03-28,Sun,Church,Easter Sunday,Moveable feast: first Sunday after the Paschal full moon after the equinox,The Sun is said to dance on Easter morning,England,computed
+2027-03-29,Mon,Almanac Day,"Sun up 06:41, down 19:27; day 12h46m (Cambridge)",Moon 62% lit: waning gibbous,,Cambridge,computed
+2027-03-29,Mon,National Holiday,Bank holiday (England & Wales): Easter Monday,Public holiday,,England,computed
+2027-03-29,Mon,Tradition,"Easter Monday - egg rolling, pace-egging",Egg-rolling on hills; pace-egg plays in northern England,,England,computed
+2027-03-30,Tue,Almanac Day,"Sun up 06:38, down 19:29; day 12h50m (Cambridge)",Moon 51% lit: last quarter,,Cambridge,computed
+2027-03-30,Tue,Moon Phase,Last Quarter Moon at 01:53 UK time,Half-lit; rises near midnight; neap tides,,Cambridge,computed
+2027-03-31,Wed,Almanac Day,"Sun up 06:36, down 19:30; day 12h54m (Cambridge)",Moon 40% lit: waning crescent,,Cambridge,computed
+2027-03-31,Wed,History,Isaac Newton dies (1727 NS; 20 Mar OS) [300th anniv.],Newton was Trinity College fellow and Lucasian Professor,,Cambridgeshire,fixed
+2027-04-01,Thu,Almanac Day,"Sun up 06:34, down 19:32; day 12h58m (Cambridge)",Moon 30% lit: waning crescent,,Cambridge,computed
+2027-04-01,Thu,Month,April - Old English 'Eosturmonath' (month of the goddess Eostre),"Bede's Anglo-Saxon month names (De Temporum Ratione, 725 AD)",Whan that Aprille with his shoures soote... - Chaucer,England,fixed
+2027-04-01,Thu,Tradition,April Fools' Day,Pranks until noon; 'fool' or 'gowk' sent on errands,,England,fixed
+2027-04-01,Thu,History,Huntingdonshire joins Cambridgeshire (1974) [53rd anniv.],Huntingdon & Peterborough merged with Cambridgeshire & Isle of Ely,,Huntingdonshire,fixed
+2027-04-02,Fri,Almanac Day,"Sun up 06:31, down 19:34; day 13h02m (Cambridge)",Moon 21% lit: waning crescent,,Cambridge,computed
+2027-04-03,Sat,Almanac Day,"Sun up 06:29, down 19:35; day 13h06m (Cambridge)",Moon 13% lit: waning crescent,,Cambridge,computed
+2027-04-04,Sun,Almanac Day,"Sun up 06:27, down 19:37; day 13h10m (Cambridge)",Moon 7% lit: waning crescent,,Cambridge,computed
+2027-04-05,Mon,Almanac Day,"Sun up 06:25, down 19:39; day 13h14m (Cambridge)",Moon 2% lit: waning crescent,,Cambridge,computed
+2027-04-06,Tue,Almanac Day,"Sun up 06:22, down 19:41; day 13h18m (Cambridge)",Moon 0% lit: new moon,,Cambridge,computed
+2027-04-07,Wed,Almanac Day,"Sun up 06:20, down 19:42; day 13h22m (Cambridge)",Moon 0% lit: new moon,,Cambridge,computed
+2027-04-07,Wed,Moon Phase,New Moon at 00:51 UK time,Dark skies for stargazing; spring tides follow in 1-2 days,,Cambridge,computed
+2027-04-08,Thu,Almanac Day,"Sun up 06:18, down 19:44; day 13h26m (Cambridge)",Moon 3% lit: waxing crescent,,Cambridge,computed
+2027-04-09,Fri,Almanac Day,"Sun up 06:15, down 19:46; day 13h30m (Cambridge)",Moon 7% lit: waxing crescent,,Cambridge,computed
+2027-04-10,Sat,Almanac Day,"Sun up 06:13, down 19:48; day 13h34m (Cambridge)",Moon 13% lit: waxing crescent,,Cambridge,computed
+2027-04-11,Sun,Almanac Day,"Sun up 06:11, down 19:49; day 13h38m (Cambridge)",Moon 21% lit: waxing crescent,,Cambridge,computed
+2027-04-12,Mon,Almanac Day,"Sun up 06:09, down 19:51; day 13h42m (Cambridge)",Moon 31% lit: waxing crescent,,Cambridge,computed
+2027-04-13,Tue,Almanac Day,"Sun up 06:06, down 19:53; day 13h46m (Cambridge)",Moon 41% lit: first quarter,,Cambridge,computed
+2027-04-13,Tue,Moon Phase,First Quarter Moon at 23:56 UK time,Half-lit and rising; neap tides; best for crater viewing at the terminator,,Cambridge,computed
+2027-04-14,Wed,Almanac Day,"Sun up 06:04, down 19:54; day 13h50m (Cambridge)",Moon 51% lit: first quarter,,Cambridge,computed
+2027-04-14,Wed,Nature,Cuckoo Day - first cuckoo expected (approx),Fenland and Hunts meadows; cuckoo declining in the east,In April come he will; in May sing all day; in June change his tune,England,tradition
+2027-04-14,Wed,Festival,Vaisakhi (Sikh/Hindu harvest new year),Sikh Khalsa founding; parades in many English towns,,England,fixed
+2027-04-15,Thu,Almanac Day,"Sun up 06:02, down 19:56; day 13h54m (Cambridge)",Moon 62% lit: waxing gibbous,,Cambridge,computed
+2027-04-16,Fri,Almanac Day,"Sun up 06:00, down 19:58; day 13h58m (Cambridge)",Moon 72% lit: waxing gibbous,,Cambridge,computed
+2027-04-17,Sat,Almanac Day,"Sun up 05:58, down 20:00; day 14h02m (Cambridge)",Moon 81% lit: waxing gibbous,,Cambridge,computed
+2027-04-18,Sun,Almanac Day,"Sun up 05:55, down 20:01; day 14h05m (Cambridge)",Moon 89% lit: waxing gibbous,,Cambridge,computed
+2027-04-19,Mon,Almanac Day,"Sun up 05:53, down 20:03; day 14h09m (Cambridge)",Moon 94% lit: waxing gibbous,,Cambridge,computed
+2027-04-20,Tue,Almanac Day,"Sun up 05:51, down 20:05; day 14h13m (Cambridge)",Moon 98% lit: waxing gibbous,,Cambridge,computed
+2027-04-20,Tue,Moon Phase,Full Moon at 23:27 UK time,Spring tides follow; the Fen skies glow; rises near sunset,,Cambridge,computed
+2027-04-20,Tue,Moon Name,Pink Moon,"English: Seed Moon, Egg Moon, Paschal Moon","Also: Growing Moon, Sprouting Grass Moon. Spring blooms; the Paschal full moon fixes the date of Easter",England,computed
+2027-04-20,Tue,Astrological,Sun enters Taurus (the Bull),Tropical zodiac ingress; date of Sun's crossing of the sign boundary,,Global,computed
+2027-04-20,Tue,Nature,Pasqueflowers bloom on Cambridgeshire chalk (approx),"County flower of Cambridgeshire; Fleam Dyke, Devil's Dyke",,Cambridgeshire,approx
+2027-04-21,Wed,Almanac Day,"Sun up 05:49, down 20:07; day 14h17m (Cambridge)",Moon 100% lit: full moon,,Cambridge,computed
+2027-04-21,Wed,Festival,Passover begins at sunset (to 29 Apr),Jewish festival of liberation; Seder meal,,UK,published
+2027-04-22,Thu,Almanac Day,"Sun up 05:47, down 20:08; day 14h21m (Cambridge)",Moon 99% lit: full moon,,Cambridge,computed
+2027-04-22,Thu,Astronomical,Lyrid meteors peak,~18/hr; debris of comet Thatcher; fast with occasional trains,Moon that night: 98% lit (waning gibbous),England,approx
+2027-04-23,Fri,Almanac Day,"Sun up 05:45, down 20:10; day 14h25m (Cambridge)",Moon 96% lit: waning gibbous,,Cambridge,computed
+2027-04-23,Fri,National,St George's Day (England),England's patron saint; red cross flag,"Cry 'God for Harry, England and Saint George!' - Henry V",England,fixed
+2027-04-23,Fri,Literary,Shakespeare's traditional birthday and death [463rd anniv.],"Born 1564, died 1616 in Stratford",,England,fixed
+2027-04-24,Sat,Almanac Day,"Sun up 05:43, down 20:12; day 14h28m (Cambridge)",Moon 92% lit: waning gibbous,,Cambridge,computed
+2027-04-24,Sat,Folklore,St Mark's Eve - church porch watch,Watchers in the porch see spirits of those to die within the year,,England,tradition
+2027-04-25,Sun,Almanac Day,"Sun up 05:41, down 20:13; day 14h32m (Cambridge)",Moon 85% lit: waning gibbous,,Cambridge,computed
+2027-04-25,Sun,History,"Oliver Cromwell born, Huntingdon (1599) [428th anniv.]",Huntingdon Grammar School (now Cromwell Museum); MP for Huntingdon,,Huntingdonshire,fixed
+2027-04-25,Sun,Science,DNA double-helix paper published in Nature (1953) [74th anniv.],Cavendish Laboratory team at Cambridge,,Cambridgeshire,fixed
+2027-04-25,Sun,Nature,Bluebell woods at peak (approx),"Ancient woods e.g. Hayley Wood, Cambs, show a bluebell carpet",,Cambridgeshire,approx
+2027-04-26,Mon,Almanac Day,"Sun up 05:39, down 20:15; day 14h36m (Cambridge)",Moon 76% lit: waning gibbous,,Cambridge,computed
+2027-04-27,Tue,Almanac Day,"Sun up 05:37, down 20:17; day 14h40m (Cambridge)",Moon 67% lit: waning gibbous,,Cambridge,computed
+2027-04-28,Wed,Almanac Day,"Sun up 05:35, down 20:19; day 14h43m (Cambridge)",Moon 56% lit: last quarter,,Cambridge,computed
+2027-04-28,Wed,Moon Phase,Last Quarter Moon at 21:17 UK time,Half-lit; rises near midnight; neap tides,,Cambridge,computed
+2027-04-29,Thu,Almanac Day,"Sun up 05:33, down 20:20; day 14h47m (Cambridge)",Moon 46% lit: last quarter,,Cambridge,computed
+2027-04-30,Fri,Almanac Day,"Sun up 05:31, down 20:22; day 14h51m (Cambridge)",Moon 35% lit: waning crescent,,Cambridge,computed
+2027-04-30,Fri,Pagan,Walpurgis Night / Beltane Eve,Hill bonfires drive off witches; Beltane fires begin at dusk,,England,fixed
+2027-05-01,Sat,Almanac Day,"Sun up 05:29, down 20:24; day 14h54m (Cambridge)",Moon 25% lit: waning crescent,,Cambridge,computed
+2027-05-01,Sat,Month,May - Old English 'Thrimilcemonath' (month of three milkings),"Bede's Anglo-Saxon month names (De Temporum Ratione, 725 AD)",Ne'er cast a clout till May be out.,England,fixed
+2027-05-01,Sat,Pagan,Beltane / May Day,"Cross-quarter fire festival; maypoles, May Queens, morris at dawn",Washing the face in May dew makes beauty last,England,fixed
+2027-05-02,Sun,Almanac Day,"Sun up 05:27, down 20:25; day 14h58m (Cambridge)",Moon 17% lit: waning crescent,,Cambridge,computed
+2027-05-02,Sun,Church,Rogation Sunday - Beating the Bounds,"Parish bounds walked and beaten, crops blessed",Cursed be he that removeth his neighbour's landmark,England,computed
+2027-05-03,Mon,Almanac Day,"Sun up 05:25, down 20:27; day 15h02m (Cambridge)",Moon 10% lit: waning crescent,,Cambridge,computed
+2027-05-03,Mon,National Holiday,Bank holiday (England & Wales): Early May bank holiday,Public holiday,,England,computed
+2027-05-04,Tue,Almanac Day,"Sun up 05:23, down 20:29; day 15h05m (Cambridge)",Moon 4% lit: waning crescent,,Cambridge,computed
+2027-05-05,Wed,Almanac Day,"Sun up 05:21, down 20:30; day 15h09m (Cambridge)",Moon 1% lit: waning crescent,,Cambridge,computed
+2027-05-06,Thu,Almanac Day,"Sun up 05:19, down 20:32; day 15h12m (Cambridge)",Moon 0% lit: new moon,,Cambridge,computed
+2027-05-06,Thu,Astronomical,Eta Aquariid meteors peak,"Halley's Comet debris; best pre-dawn, low from the UK",Moon that night: 0% lit (new moon),England,approx
+2027-05-06,Thu,Moon Phase,New Moon at 11:58 UK time,Dark skies for stargazing; spring tides follow in 1-2 days,,Cambridge,computed
+2027-05-06,Thu,Church,Ascension Day (Holy Thursday),Well-dressing and bell-ringing; swallows should be back,,England,computed
+2027-05-06,Thu,Science,"EDSAC runs first program, Cambridge (1949) [78th anniv.]",Early stored-program computer at the Mathematical Laboratory,,Cambridgeshire,fixed
+2027-05-07,Fri,Almanac Day,"Sun up 05:18, down 20:34; day 15h16m (Cambridge)",Moon 1% lit: waxing crescent,,Cambridge,computed
+2027-05-08,Sat,Almanac Day,"Sun up 05:16, down 20:35; day 15h19m (Cambridge)",Moon 5% lit: waxing crescent,,Cambridge,computed
+2027-05-08,Sat,National,VE Day (1945) [82nd anniv.],Victory in Europe; street parties,,UK,fixed
+2027-05-09,Sun,Almanac Day,"Sun up 05:14, down 20:37; day 15h22m (Cambridge)",Moon 10% lit: waxing crescent,,Cambridge,computed
+2027-05-10,Mon,Almanac Day,"Sun up 05:12, down 20:39; day 15h26m (Cambridge)",Moon 18% lit: waxing crescent,,Cambridge,computed
+2027-05-11,Tue,Almanac Day,"Sun up 05:11, down 20:40; day 15h29m (Cambridge)",Moon 26% lit: waxing crescent,,Cambridge,computed
+2027-05-12,Wed,Almanac Day,"Sun up 05:09, down 20:42; day 15h32m (Cambridge)",Moon 36% lit: waxing crescent,,Cambridge,computed
+2027-05-13,Thu,Almanac Day,"Sun up 05:07, down 20:43; day 15h35m (Cambridge)",Moon 47% lit: first quarter,,Cambridge,computed
+2027-05-13,Thu,Moon Phase,First Quarter Moon at 05:43 UK time,Half-lit and rising; neap tides; best for crater viewing at the terminator,,Cambridge,computed
+2027-05-14,Fri,Almanac Day,"Sun up 05:06, down 20:45; day 15h39m (Cambridge)",Moon 57% lit: first quarter,,Cambridge,computed
+2027-05-15,Sat,Almanac Day,"Sun up 05:04, down 20:47; day 15h42m (Cambridge)",Moon 68% lit: waxing gibbous,,Cambridge,computed
+2027-05-16,Sun,Almanac Day,"Sun up 05:03, down 20:48; day 15h45m (Cambridge)",Moon 77% lit: waxing gibbous,,Cambridge,computed
+2027-05-16,Sun,Festival,Eid al-Adha (approx),Muslim festival of sacrifice; date depends on moon sighting,,UK,approx
+2027-05-16,Sun,Church,Whit Sunday (Pentecost),"Whitsun ales, club walks and morris",,England,computed
+2027-05-17,Mon,Almanac Day,"Sun up 05:01, down 20:50; day 15h48m (Cambridge)",Moon 86% lit: waxing gibbous,,Cambridge,computed
+2027-05-18,Tue,Almanac Day,"Sun up 05:00, down 20:51; day 15h51m (Cambridge)",Moon 92% lit: waxing gibbous,,Cambridge,computed
+2027-05-19,Wed,Almanac Day,"Sun up 04:58, down 20:53; day 15h54m (Cambridge)",Moon 97% lit: waxing gibbous,,Cambridge,computed
+2027-05-20,Thu,Almanac Day,"Sun up 04:57, down 20:54; day 15h57m (Cambridge)",Moon 100% lit: full moon,,Cambridge,computed
+2027-05-20,Thu,Moon Phase,Full Moon at 11:59 UK time,Spring tides follow; the Fen skies glow; rises near sunset,,Cambridge,computed
+2027-05-20,Thu,Moon Name,Flower Moon,"English: Hare Moon, Milk Moon, Bright Moon","Also: Planting Moon, Corn-planting Moon. Blossom and meadow flowers; cows give rich milk",England,computed
+2027-05-21,Fri,Almanac Day,"Sun up 04:56, down 20:56; day 15h59m (Cambridge)",Moon 100% lit: full moon,,Cambridge,computed
+2027-05-21,Fri,Astrological,Sun enters Gemini (the Twins),Tropical zodiac ingress; date of Sun's crossing of the sign boundary,,Global,computed
+2027-05-22,Sat,Almanac Day,"Sun up 04:54, down 20:57; day 16h02m (Cambridge)",Moon 98% lit: waning gibbous,,Cambridge,computed
+2027-05-23,Sun,Almanac Day,"Sun up 04:53, down 20:58; day 16h05m (Cambridge)",Moon 94% lit: waning gibbous,,Cambridge,computed
+2027-05-23,Sun,Church,Trinity Sunday,Sundays after Trinity count to Advent,,England,computed
+2027-05-24,Mon,Almanac Day,"Sun up 04:52, down 21:00; day 16h07m (Cambridge)",Moon 88% lit: waning gibbous,,Cambridge,computed
+2027-05-24,Mon,Tradition,"Cambridge Beer Festival, Jesus Green (late May, approx)",Real ale festival,,Cambridgeshire,approx
+2027-05-25,Tue,Almanac Day,"Sun up 04:51, down 21:01; day 16h10m (Cambridge)",Moon 80% lit: waning gibbous,,Cambridge,computed
+2027-05-26,Wed,Almanac Day,"Sun up 04:50, down 21:02; day 16h12m (Cambridge)",Moon 71% lit: waning gibbous,,Cambridge,computed
+2027-05-27,Thu,Almanac Day,"Sun up 04:49, down 21:04; day 16h15m (Cambridge)",Moon 60% lit: waning gibbous,,Cambridge,computed
+2027-05-27,Thu,Church,Corpus Christi,Thursday after Trinity; medieval processions and plays,,England,computed
+2027-05-28,Fri,Almanac Day,"Sun up 04:48, down 21:05; day 16h17m (Cambridge)",Moon 50% lit: last quarter,,Cambridge,computed
+2027-05-28,Fri,Moon Phase,Last Quarter Moon at 14:57 UK time,Half-lit; rises near midnight; neap tides,,Cambridge,computed
+2027-05-29,Sat,Almanac Day,"Sun up 04:47, down 21:06; day 16h19m (Cambridge)",Moon 39% lit: waning crescent,,Cambridge,computed
+2027-05-29,Sat,Tradition,"Oak Apple Day (Royal Oak Day, Restoration 1660) [367th anniv.]",Oak sprigs worn; Charles II's birthday; 'Shick-shack Day',,England,fixed
+2027-05-29,Sat,Science,Eddington's eclipse expedition tests relativity (1919) [108th anniv.],"Arthur Eddington (Trinity College, Cambridge Observatory)",,Cambridgeshire,fixed
+2027-05-30,Sun,Almanac Day,"Sun up 04:46, down 21:07; day 16h21m (Cambridge)",Moon 29% lit: waning crescent,,Cambridge,computed
+2027-05-31,Mon,Almanac Day,"Sun up 04:45, down 21:09; day 16h23m (Cambridge)",Moon 20% lit: waning crescent,,Cambridge,computed
+2027-05-31,Mon,National Holiday,Bank holiday (England & Wales): Spring bank holiday,Public holiday,,England,computed
+2027-06-01,Tue,Almanac Day,"Sun up 04:44, down 21:10; day 16h25m (Cambridge)",Moon 12% lit: waning crescent,,Cambridge,computed
+2027-06-01,Tue,Month,June - Old English 'Aerra Litha' ('Before Mild'/early summer),"Bede's Anglo-Saxon month names (De Temporum Ratione, 725 AD)",Calm weather in June sets corn in tune.,England,fixed
+2027-06-01,Tue,Season,Meteorological summer begins (Jun-Aug),Met Office convention: whole calendar months,,UK,fixed
+2027-06-02,Wed,Almanac Day,"Sun up 04:43, down 21:11; day 16h27m (Cambridge)",Moon 6% lit: waning crescent,,Cambridge,computed
+2027-06-03,Thu,Almanac Day,"Sun up 04:42, down 21:12; day 16h29m (Cambridge)",Moon 2% lit: waning crescent,,Cambridge,computed
+2027-06-04,Fri,Almanac Day,"Sun up 04:42, down 21:13; day 16h31m (Cambridge)",Moon 0% lit: new moon,,Cambridge,computed
+2027-06-04,Fri,Moon Phase,New Moon at 20:40 UK time,Dark skies for stargazing; spring tides follow in 1-2 days,,Cambridge,computed
+2027-06-05,Sat,Almanac Day,"Sun up 04:41, down 21:14; day 16h33m (Cambridge)",Moon 1% lit: new moon,,Cambridge,computed
+2027-06-05,Sat,Tradition,"Strawberry Fair, Midsummer Common, Cambridge (first Sat June)",Free community arts festival,,Cambridgeshire,approx
+2027-06-06,Sun,Almanac Day,"Sun up 04:40, down 21:15; day 16h34m (Cambridge)",Moon 3% lit: waxing crescent,,Cambridge,computed
+2027-06-06,Sun,Festival,Islamic New Year (approx),1 Muharram 1449 AH; date depends on moon sighting,,UK,approx
+2027-06-07,Mon,Almanac Day,"Sun up 04:40, down 21:16; day 16h36m (Cambridge)",Moon 8% lit: waxing crescent,,Cambridge,computed
+2027-06-08,Tue,Almanac Day,"Sun up 04:39, down 21:17; day 16h37m (Cambridge)",Moon 15% lit: waxing crescent,,Cambridge,computed
+2027-06-09,Wed,Almanac Day,"Sun up 04:39, down 21:18; day 16h38m (Cambridge)",Moon 23% lit: waxing crescent,,Cambridge,computed
+2027-06-10,Thu,Almanac Day,"Sun up 04:38, down 21:18; day 16h39m (Cambridge)",Moon 33% lit: waxing crescent,,Cambridge,computed
+2027-06-10,Thu,Astrological,Mercury retrograde starts (approx),Mercury appears to move backwards against the stars,,Global,approx
+2027-06-11,Fri,Almanac Day,"Sun up 04:38, down 21:19; day 16h41m (Cambridge)",Moon 43% lit: first quarter,,Cambridge,computed
+2027-06-11,Fri,Moon Phase,First Quarter Moon at 11:56 UK time,Half-lit and rising; neap tides; best for crater viewing at the terminator,,Cambridge,computed
+2027-06-11,Fri,Church,St Barnabas' Day ('Barnaby Bright'),"Old-style midsummer, longest day before 1752","Barnaby bright, the longest day and the shortest night",England,tradition
+2027-06-12,Sat,Almanac Day,"Sun up 04:38, down 21:20; day 16h42m (Cambridge)",Moon 54% lit: first quarter,,Cambridge,computed
+2027-06-12,Sat,Royal,"Trooping the Colour (King's Official Birthday, approx)",Horse Guards Parade parade,,UK,approx
+2027-06-12,Sat,History,Pepys sends his gold to Brampton during the Medway raid (1667) [360th anniv.],Dutch fleet burned ships at Chatham; Pepys feared invasion,,Huntingdonshire,approx
+2027-06-13,Sun,Almanac Day,"Sun up 04:38, down 21:21; day 16h42m (Cambridge)",Moon 64% lit: waxing gibbous,,Cambridge,computed
+2027-06-14,Mon,Almanac Day,"Sun up 04:37, down 21:21; day 16h43m (Cambridge)",Moon 74% lit: waxing gibbous,,Cambridge,computed
+2027-06-14,Mon,Astronomical,"Earliest sunrise of the year (04:37 UK, Cambridge)",Falls before the June solstice,,Cambridgeshire,computed
+2027-06-15,Tue,Almanac Day,"Sun up 04:37, down 21:22; day 16h44m (Cambridge)",Moon 83% lit: waxing gibbous,,Cambridge,computed
+2027-06-15,Tue,History,Magna Carta sealed at Runnymede (1215) [812th anniv.],Barons' charter; Fenland barons ranged against King John,,England,fixed
+2027-06-15,Tue,History,Peasants' Revolt reaches Cambridge (1381) [646th anniv.],Townsfolk attacked colleges and burned university charters,,Cambridgeshire,approx
+2027-06-16,Wed,Almanac Day,"Sun up 04:37, down 21:22; day 16h44m (Cambridge)",Moon 90% lit: waxing gibbous,,Cambridge,computed
+2027-06-16,Wed,Tradition,"May Bumps / May Week, Cambridge (mid-June, approx)","Despite the name, held in June; balls and rowing",,Cambridgeshire,approx
+2027-06-17,Thu,Almanac Day,"Sun up 04:37, down 21:23; day 16h45m (Cambridge)",Moon 96% lit: waxing gibbous,,Cambridge,computed
+2027-06-17,Thu,Church,St Botolph's Day (patron of travellers),Cambridge's St Botolph's church stands by the old gate,,Cambridgeshire,fixed
+2027-06-18,Fri,Almanac Day,"Sun up 04:37, down 21:23; day 16h45m (Cambridge)",Moon 99% lit: waxing gibbous,,Cambridge,computed
+2027-06-19,Sat,Almanac Day,"Sun up 04:37, down 21:23; day 16h46m (Cambridge)",Moon 100% lit: full moon,,Cambridge,computed
+2027-06-19,Sat,Moon Phase,Full Moon at 01:44 UK time,Spring tides follow; the Fen skies glow; rises near sunset,,Cambridge,computed
+2027-06-19,Sat,Moon Name,Strawberry Moon,"English: Dyad Moon, Mead Moon, Rose Moon","Also: Honey Moon, Hot Moon. Short strawberry-picking season; roses bloom",England,computed
+2027-06-20,Sun,Almanac Day,"Sun up 04:37, down 21:24; day 16h46m (Cambridge)",Moon 99% lit: waning gibbous,,Cambridge,computed
+2027-06-20,Sun,Astronomical,"Latest sunset of the year (21:24 UK, Cambridge)",Falls after the June solstice,,Cambridgeshire,computed
+2027-06-21,Mon,Almanac Day,"Sun up 04:38, down 21:24; day 16h46m (Cambridge)",Moon 95% lit: waning gibbous,,Cambridge,computed
+2027-06-21,Mon,Astronomical,June solstice (midsummer) at 15:10 UK time,Longest day in the northern hemisphere,,Global,computed
+2027-06-21,Mon,Pagan,Litha (pagan wheel of the year),Longest day in the northern hemisphere,"Midsummer: bonfires, fairs and flower-gathering",England,computed
+2027-06-21,Mon,Tradition,"Midsummer Fair, Midsummer Common, Cambridge (c. 21-25 Jun) [816th anniv.]","Charter fair dating from 1211, opened by the Mayor",,Cambridgeshire,approx
+2027-06-22,Tue,Almanac Day,"Sun up 04:38, down 21:24; day 16h46m (Cambridge)",Moon 90% lit: waning gibbous,,Cambridge,computed
+2027-06-22,Tue,Astrological,Sun enters Cancer (the Crab),Tropical zodiac ingress; date of Sun's crossing of the sign boundary,,Global,computed
+2027-06-23,Wed,Almanac Day,"Sun up 04:38, down 21:24; day 16h46m (Cambridge)",Moon 82% lit: waning gibbous,,Cambridge,computed
+2027-06-23,Wed,Folklore,Midsummer Eve (St John's Eve),"Bonfires, St John's wort, fern seed for invisibility",,England,fixed
+2027-06-23,Wed,Church,"St Etheldreda (St Audrey), Ely - foundress, d. 679 [1348th anniv.]",Queen turned abbess; shrine at Ely Cathedral,,Cambridgeshire,fixed
+2027-06-23,Wed,Science,"Alan Turing born (1912); King's College, Cambridge [115th anniv.]","Computing pioneer, Fellow of King's 1935",,Cambridgeshire,fixed
+2027-06-24,Thu,Almanac Day,"Sun up 04:39, down 21:24; day 16h45m (Cambridge)",Moon 74% lit: waning gibbous,,Cambridge,computed
+2027-06-24,Thu,Tradition,Midsummer Day (St John the Baptist),Quarter day; traditional 'half-year' rent day,,England,fixed
+2027-06-25,Fri,Almanac Day,"Sun up 04:39, down 21:24; day 16h45m (Cambridge)",Moon 64% lit: waning gibbous,,Cambridge,computed
+2027-06-26,Sat,Almanac Day,"Sun up 04:39, down 21:24; day 16h45m (Cambridge)",Moon 53% lit: last quarter,,Cambridge,computed
+2027-06-27,Sun,Almanac Day,"Sun up 04:40, down 21:24; day 16h44m (Cambridge)",Moon 43% lit: last quarter,,Cambridge,computed
+2027-06-27,Sun,Moon Phase,Last Quarter Moon at 05:54 UK time,Half-lit; rises near midnight; neap tides,,Cambridge,computed
+2027-06-28,Mon,Almanac Day,"Sun up 04:40, down 21:24; day 16h43m (Cambridge)",Moon 32% lit: waning crescent,,Cambridge,computed
+2027-06-29,Tue,Almanac Day,"Sun up 04:41, down 21:24; day 16h43m (Cambridge)",Moon 23% lit: waning crescent,,Cambridge,computed
+2027-06-30,Wed,Almanac Day,"Sun up 04:42, down 21:24; day 16h42m (Cambridge)",Moon 14% lit: waning crescent,,Cambridge,computed
+2027-07-01,Thu,Almanac Day,"Sun up 04:42, down 21:24; day 16h41m (Cambridge)",Moon 8% lit: waning crescent,,Cambridge,computed
+2027-07-01,Thu,Month,July - Old English 'Aefterra Litha' ('After Mild'/late summer),"Bede's Anglo-Saxon month names (De Temporum Ratione, 725 AD)","If July's first day be rainy weather, 'twill rain more or less for four weeks.",England,fixed
+2027-07-02,Fri,Almanac Day,"Sun up 04:43, down 21:23; day 16h40m (Cambridge)",Moon 3% lit: waning crescent,,Cambridge,computed
+2027-07-03,Sat,Almanac Day,"Sun up 04:44, down 21:23; day 16h39m (Cambridge)",Moon 0% lit: new moon,,Cambridge,computed
+2027-07-03,Sat,Folklore,Dog Days begin (to 11 Aug),Sirius rises with the Sun in classical lore; 'mad' hot days,,England,tradition
+2027-07-04,Sun,Almanac Day,"Sun up 04:45, down 21:22; day 16h37m (Cambridge)",Moon 0% lit: new moon,,Cambridge,computed
+2027-07-04,Sun,Moon Phase,New Moon at 04:02 UK time,Dark skies for stargazing; spring tides follow in 1-2 days,,Cambridge,computed
+2027-07-04,Sun,Astrological,Mercury retrograde ends (approx),Mercury appears to move backwards against the stars,,Global,approx
+2027-07-05,Mon,Almanac Day,"Sun up 04:45, down 21:22; day 16h36m (Cambridge)",Moon 2% lit: waxing crescent,,Cambridge,computed
+2027-07-05,Mon,Astronomical,Earth at aphelion,Farthest from the Sun (~152 m km) - during UK summer,,Global,approx
+2027-07-05,Mon,Science,Newton's Principia published (1687) [340th anniv.],"Written at Trinity College, Cambridge",,Cambridgeshire,fixed
+2027-07-06,Tue,Almanac Day,"Sun up 04:46, down 21:21; day 16h34m (Cambridge)",Moon 6% lit: waxing crescent,,Cambridge,computed
+2027-07-07,Wed,Almanac Day,"Sun up 04:47, down 21:21; day 16h33m (Cambridge)",Moon 13% lit: waxing crescent,,Cambridge,computed
+2027-07-08,Thu,Almanac Day,"Sun up 04:48, down 21:20; day 16h31m (Cambridge)",Moon 20% lit: waxing crescent,,Cambridge,computed
+2027-07-09,Fri,Almanac Day,"Sun up 04:49, down 21:19; day 16h30m (Cambridge)",Moon 30% lit: waxing crescent,,Cambridge,computed
+2027-07-10,Sat,Almanac Day,"Sun up 04:50, down 21:19; day 16h28m (Cambridge)",Moon 40% lit: waxing crescent,,Cambridge,computed
+2027-07-10,Sat,Moon Phase,First Quarter Moon at 19:38 UK time,Half-lit and rising; neap tides; best for crater viewing at the terminator,,Cambridge,computed
+2027-07-11,Sun,Almanac Day,"Sun up 04:51, down 21:18; day 16h26m (Cambridge)",Moon 51% lit: first quarter,,Cambridge,computed
+2027-07-12,Mon,Almanac Day,"Sun up 04:52, down 21:17; day 16h24m (Cambridge)",Moon 61% lit: waxing gibbous,,Cambridge,computed
+2027-07-12,Mon,National,Battle of the Boyne / Orangemen's Day (N. Ireland) [337th anniv.],Bank holiday in Northern Ireland,,N. Ireland,fixed
+2027-07-13,Tue,Almanac Day,"Sun up 04:54, down 21:16; day 16h22m (Cambridge)",Moon 71% lit: waxing gibbous,,Cambridge,computed
+2027-07-14,Wed,Almanac Day,"Sun up 04:55, down 21:15; day 16h20m (Cambridge)",Moon 80% lit: waxing gibbous,,Cambridge,computed
+2027-07-15,Thu,Almanac Day,"Sun up 04:56, down 21:14; day 16h18m (Cambridge)",Moon 88% lit: waxing gibbous,,Cambridge,computed
+2027-07-15,Thu,Weather lore,St Swithin's Day,Rain today is said to bring forty days of rain,"St Swithin's day if thou dost rain, for forty days it will remain",England,tradition
+2027-07-16,Fri,Almanac Day,"Sun up 04:57, down 21:13; day 16h15m (Cambridge)",Moon 94% lit: waxing gibbous,,Cambridge,computed
+2027-07-17,Sat,Almanac Day,"Sun up 04:59, down 21:12; day 16h13m (Cambridge)",Moon 98% lit: waxing gibbous,,Cambridge,computed
+2027-07-18,Sun,Almanac Day,"Sun up 05:00, down 21:11; day 16h10m (Cambridge)",Moon 100% lit: full moon,,Cambridge,computed
+2027-07-18,Sun,Astronomical,Eclipse: Penumbral lunar eclipse,Subtle dimming; mostly visible from Asia/Australia,,Global,published
+2027-07-18,Sun,Moon Phase,Full Moon at 16:44 UK time,Spring tides follow; the Fen skies glow; rises near sunset,,Cambridge,computed
+2027-07-18,Sun,Moon Name,Buck Moon,"English: Hay Moon, Mead Moon, Wort Moon","Also: Thunder Moon, Raspberry Moon. Deer antlers grow; hay is made; summer thunderstorms",England,computed
+2027-07-19,Mon,Almanac Day,"Sun up 05:01, down 21:10; day 16h08m (Cambridge)",Moon 99% lit: full moon,,Cambridge,computed
+2027-07-19,Mon,Meteorological,"UK record 40.3C at Coningsby, Lincs (2022) [5th anniv.]",Beat Cambridge Botanic Garden's 2019 record by 1.6C,,Lincolnshire,fixed
+2027-07-20,Tue,Almanac Day,"Sun up 05:02, down 21:08; day 16h05m (Cambridge)",Moon 97% lit: waning gibbous,,Cambridge,computed
+2027-07-21,Wed,Almanac Day,"Sun up 05:04, down 21:07; day 16h03m (Cambridge)",Moon 92% lit: waning gibbous,,Cambridge,computed
+2027-07-22,Thu,Almanac Day,"Sun up 05:05, down 21:06; day 16h00m (Cambridge)",Moon 85% lit: waning gibbous,,Cambridge,computed
+2027-07-23,Fri,Almanac Day,"Sun up 05:07, down 21:04; day 15h57m (Cambridge)",Moon 76% lit: waning gibbous,,Cambridge,computed
+2027-07-23,Fri,Astrological,Sun enters Leo (the Lion),Tropical zodiac ingress; date of Sun's crossing of the sign boundary,,Global,computed
+2027-07-24,Sat,Almanac Day,"Sun up 05:08, down 21:03; day 15h55m (Cambridge)",Moon 67% lit: waning gibbous,,Cambridge,computed
+2027-07-25,Sun,Almanac Day,"Sun up 05:09, down 21:02; day 15h52m (Cambridge)",Moon 56% lit: last quarter,,Cambridge,computed
+2027-07-25,Sun,Meteorological,Cambridge Botanic Garden: UK record 38.7C (2019) [8th anniv.],Then a national record; beaten at Coningsby in 2022,,Cambridgeshire,fixed
+2027-07-25,Sun,Tradition,"Cambridge Folk Festival, Cherry Hinton Hall (approx) [63rd anniv.]",Held late July/early Aug since 1964,,Cambridgeshire,approx
+2027-07-26,Mon,Almanac Day,"Sun up 05:11, down 21:00; day 15h49m (Cambridge)",Moon 46% lit: last quarter,,Cambridge,computed
+2027-07-26,Mon,Moon Phase,Last Quarter Moon at 17:54 UK time,Half-lit; rises near midnight; neap tides,,Cambridge,computed
+2027-07-27,Tue,Almanac Day,"Sun up 05:12, down 20:59; day 15h46m (Cambridge)",Moon 35% lit: waning crescent,,Cambridge,computed
+2027-07-28,Wed,Almanac Day,"Sun up 05:14, down 20:57; day 15h43m (Cambridge)",Moon 25% lit: waning crescent,,Cambridge,computed
+2027-07-29,Thu,Almanac Day,"Sun up 05:15, down 20:56; day 15h40m (Cambridge)",Moon 17% lit: waning crescent,,Cambridge,computed
+2027-07-30,Fri,Almanac Day,"Sun up 05:17, down 20:54; day 15h37m (Cambridge)",Moon 9% lit: waning crescent,,Cambridge,computed
+2027-07-31,Sat,Almanac Day,"Sun up 05:18, down 20:52; day 15h33m (Cambridge)",Moon 4% lit: waning crescent,,Cambridge,computed
+2027-07-31,Sat,Church,"St Neot's Day (St Neots, Huntingdonshire)",The saint's relics came to Eynesbury; the town took his name,,Huntingdonshire,fixed
+2027-08-01,Sun,Almanac Day,"Sun up 05:20, down 20:51; day 15h30m (Cambridge)",Moon 1% lit: waning crescent,,Cambridge,computed
+2027-08-01,Sun,Month,August - Old English 'Weodmonath' (weed month),"Bede's Anglo-Saxon month names (De Temporum Ratione, 725 AD)",Dry August and warm doth harvest no harm.,England,fixed
+2027-08-01,Sun,Pagan,Lughnasadh / Lammas (loaf-mass),Cross-quarter first-fruits festival; bread from the first wheat,,England,fixed
+2027-08-02,Mon,Almanac Day,"Sun up 05:22, down 20:49; day 15h27m (Cambridge)",Moon 0% lit: new moon,,Cambridge,computed
+2027-08-02,Mon,Astronomical,Eclipse: Total solar eclipse,Totality over Spain/N Africa; partial eclipse from the UK,,Global,published
+2027-08-02,Mon,Moon Phase,New Moon at 11:05 UK time,Dark skies for stargazing; spring tides follow in 1-2 days,,Cambridge,computed
+2027-08-02,Mon,National Holiday,Summer bank holiday (Scotland),First Monday of August,,Scotland,computed
+2027-08-03,Tue,Almanac Day,"Sun up 05:23, down 20:47; day 15h24m (Cambridge)",Moon 1% lit: waxing crescent,,Cambridge,computed
+2027-08-03,Tue,Literary,Rupert Brooke born (1887); Grantchester poet [140th anniv.],"Wrote of the Old Vicarage, Grantchester, from Berlin",Stands the Church clock at ten to three? And is there honey still for tea?,Cambridgeshire,fixed
+2027-08-04,Wed,Almanac Day,"Sun up 05:25, down 20:46; day 15h20m (Cambridge)",Moon 5% lit: waxing crescent,,Cambridge,computed
+2027-08-04,Wed,Folklore,Black Shuck appears at Bungay and Blythburgh (1577) [450th anniv.],The spectral black dog haunts East Anglia and the Fens,,Fens,fixed
+2027-08-05,Thu,Almanac Day,"Sun up 05:26, down 20:44; day 15h17m (Cambridge)",Moon 11% lit: waxing crescent,,Cambridge,computed
+2027-08-05,Thu,Tradition,Oyster Day (Old St James's Day),Oyster season opens; shell grottoes made by children,,England,tradition
+2027-08-06,Fri,Almanac Day,"Sun up 05:28, down 20:42; day 15h14m (Cambridge)",Moon 18% lit: waxing crescent,,Cambridge,computed
+2027-08-06,Fri,Literary,"Alfred Tennyson born (1809); Trinity College, Cambridge [218th anniv.]",Wrote In Memoriam for his Trinity friend Arthur Hallam,,Cambridgeshire,fixed
+2027-08-07,Sat,Almanac Day,"Sun up 05:29, down 20:40; day 15h10m (Cambridge)",Moon 27% lit: waxing crescent,,Cambridge,computed
+2027-08-08,Sun,Almanac Day,"Sun up 05:31, down 20:38; day 15h07m (Cambridge)",Moon 37% lit: waxing crescent,,Cambridge,computed
+2027-08-09,Mon,Almanac Day,"Sun up 05:33, down 20:36; day 15h03m (Cambridge)",Moon 47% lit: first quarter,,Cambridge,computed
+2027-08-09,Mon,Moon Phase,First Quarter Moon at 05:54 UK time,Half-lit and rising; neap tides; best for crater viewing at the terminator,,Cambridge,computed
+2027-08-10,Tue,Almanac Day,"Sun up 05:34, down 20:35; day 15h00m (Cambridge)",Moon 58% lit: first quarter,,Cambridge,computed
+2027-08-10,Tue,Nature,Swifts depart for Africa (approx),Cambridge and Ely skies empty after the first week of August,,East Anglia,approx
+2027-08-11,Wed,Almanac Day,"Sun up 05:36, down 20:33; day 14h56m (Cambridge)",Moon 68% lit: waxing gibbous,,Cambridge,computed
+2027-08-12,Thu,Almanac Day,"Sun up 05:38, down 20:31; day 14h53m (Cambridge)",Moon 78% lit: waxing gibbous,,Cambridge,computed
+2027-08-12,Thu,Astronomical,Perseid meteors peak,Up to ~100/hr; comet Swift-Tuttle; warm-night favourite ('Tears of St Lawrence'),Moon that night: 82% lit (waxing gibbous),England,approx
+2027-08-12,Thu,Tradition,Glorious Twelfth,Start of the red grouse season,,England,fixed
+2027-08-13,Fri,Almanac Day,"Sun up 05:39, down 20:29; day 14h49m (Cambridge)",Moon 86% lit: waxing gibbous,,Cambridge,computed
+2027-08-14,Sat,Almanac Day,"Sun up 05:41, down 20:27; day 14h45m (Cambridge)",Moon 93% lit: waxing gibbous,,Cambridge,computed
+2027-08-15,Sun,Almanac Day,"Sun up 05:42, down 20:25; day 14h42m (Cambridge)",Moon 97% lit: waxing gibbous,,Cambridge,computed
+2027-08-16,Mon,Almanac Day,"Sun up 05:44, down 20:23; day 14h38m (Cambridge)",Moon 100% lit: full moon,,Cambridge,computed
+2027-08-17,Tue,Almanac Day,"Sun up 05:46, down 20:21; day 14h34m (Cambridge)",Moon 100% lit: full moon,,Cambridge,computed
+2027-08-17,Tue,Astronomical,Eclipse: Penumbral lunar eclipse,"Subtle shading, Americas/Atlantic favoured",,Global,published
+2027-08-17,Tue,Moon Phase,Full Moon at 08:28 UK time,Spring tides follow; the Fen skies glow; rises near sunset,,Cambridge,computed
+2027-08-17,Tue,Moon Name,Sturgeon Moon,"English: Wort Moon, Barley Moon, Corn Moon","Also: Grain Moon, Fruit Moon. Fish plentiful in lakes and rivers; first grain cut",England,computed
+2027-08-18,Wed,Almanac Day,"Sun up 05:47, down 20:19; day 14h31m (Cambridge)",Moon 98% lit: waning gibbous,,Cambridge,computed
+2027-08-19,Thu,Almanac Day,"Sun up 05:49, down 20:16; day 14h27m (Cambridge)",Moon 93% lit: waning gibbous,,Cambridge,computed
+2027-08-20,Fri,Almanac Day,"Sun up 05:51, down 20:14; day 14h23m (Cambridge)",Moon 87% lit: waning gibbous,,Cambridge,computed
+2027-08-21,Sat,Almanac Day,"Sun up 05:52, down 20:12; day 14h19m (Cambridge)",Moon 79% lit: waning gibbous,,Cambridge,computed
+2027-08-22,Sun,Almanac Day,"Sun up 05:54, down 20:10; day 14h16m (Cambridge)",Moon 70% lit: waning gibbous,,Cambridge,computed
+2027-08-23,Mon,Almanac Day,"Sun up 05:56, down 20:08; day 14h12m (Cambridge)",Moon 60% lit: waning gibbous,,Cambridge,computed
+2027-08-23,Mon,Astrological,Sun enters Virgo (the Maiden),Tropical zodiac ingress; date of Sun's crossing of the sign boundary,,Global,computed
+2027-08-24,Tue,Almanac Day,"Sun up 05:57, down 20:06; day 14h08m (Cambridge)",Moon 49% lit: last quarter,,Cambridge,computed
+2027-08-24,Tue,Church,St Bartholomew's Day,Traditional fair day; Bartholomew Fair; harvest hand-hiring,,England,fixed
+2027-08-25,Wed,Almanac Day,"Sun up 05:59, down 20:04; day 14h04m (Cambridge)",Moon 38% lit: waning crescent,,Cambridge,computed
+2027-08-25,Wed,Moon Phase,Last Quarter Moon at 03:27 UK time,Half-lit; rises near midnight; neap tides,,Cambridge,computed
+2027-08-26,Thu,Almanac Day,"Sun up 06:01, down 20:01; day 14h00m (Cambridge)",Moon 28% lit: waning crescent,,Cambridge,computed
+2027-08-27,Fri,Almanac Day,"Sun up 06:02, down 19:59; day 13h56m (Cambridge)",Moon 19% lit: waning crescent,,Cambridge,computed
+2027-08-28,Sat,Almanac Day,"Sun up 06:04, down 19:57; day 13h53m (Cambridge)",Moon 12% lit: waning crescent,,Cambridge,computed
+2027-08-29,Sun,Almanac Day,"Sun up 06:05, down 19:55; day 13h49m (Cambridge)",Moon 6% lit: waning crescent,,Cambridge,computed
+2027-08-30,Mon,Almanac Day,"Sun up 06:07, down 19:52; day 13h45m (Cambridge)",Moon 2% lit: waning crescent,,Cambridge,computed
+2027-08-30,Mon,National Holiday,Bank holiday (England & Wales): Summer bank holiday,Public holiday,,England,computed
+2027-08-31,Tue,Almanac Day,"Sun up 06:09, down 19:50; day 13h41m (Cambridge)",Moon 0% lit: new moon,,Cambridge,computed
+2027-08-31,Tue,Moon Phase,New Moon at 18:41 UK time,Dark skies for stargazing; spring tides follow in 1-2 days,,Cambridge,computed
+2027-09-01,Wed,Almanac Day,"Sun up 06:10, down 19:48; day 13h37m (Cambridge)",Moon 1% lit: new moon,,Cambridge,computed
+2027-09-01,Wed,Month,September - Old English 'Halegmonath' (holy month),"Bede's Anglo-Saxon month names (De Temporum Ratione, 725 AD)",September blow soft till the fruit's in the loft.,England,fixed
+2027-09-01,Wed,Season,Meteorological autumn begins (Sep-Nov),Met Office convention: whole calendar months,,UK,fixed
+2027-09-02,Thu,Almanac Day,"Sun up 06:12, down 19:46; day 13h33m (Cambridge)",Moon 4% lit: waxing crescent,,Cambridge,computed
+2027-09-03,Fri,Almanac Day,"Sun up 06:14, down 19:43; day 13h29m (Cambridge)",Moon 8% lit: waxing crescent,,Cambridge,computed
+2027-09-03,Fri,History,Oliver Cromwell dies (1658) [369th anniv.],"Huntingdon-born Lord Protector died on his lucky day (Dunbar, Worcester)",,Huntingdonshire,fixed
+2027-09-04,Sat,Almanac Day,"Sun up 06:15, down 19:41; day 13h25m (Cambridge)",Moon 15% lit: waxing crescent,,Cambridge,computed
+2027-09-05,Sun,Almanac Day,"Sun up 06:17, down 19:39; day 13h21m (Cambridge)",Moon 24% lit: waxing crescent,,Cambridge,computed
+2027-09-06,Mon,Almanac Day,"Sun up 06:19, down 19:36; day 13h17m (Cambridge)",Moon 33% lit: waxing crescent,,Cambridge,computed
+2027-09-07,Tue,Almanac Day,"Sun up 06:20, down 19:34; day 13h13m (Cambridge)",Moon 44% lit: first quarter,,Cambridge,computed
+2027-09-07,Tue,Moon Phase,First Quarter Moon at 19:31 UK time,Half-lit and rising; neap tides; best for crater viewing at the terminator,,Cambridge,computed
+2027-09-08,Wed,Almanac Day,"Sun up 06:22, down 19:32; day 13h09m (Cambridge)",Moon 54% lit: first quarter,,Cambridge,computed
+2027-09-09,Thu,Almanac Day,"Sun up 06:24, down 19:29; day 13h05m (Cambridge)",Moon 65% lit: waxing gibbous,,Cambridge,computed
+2027-09-10,Fri,Almanac Day,"Sun up 06:25, down 19:27; day 13h01m (Cambridge)",Moon 75% lit: waxing gibbous,,Cambridge,computed
+2027-09-11,Sat,Almanac Day,"Sun up 06:27, down 19:25; day 12h57m (Cambridge)",Moon 83% lit: waxing gibbous,,Cambridge,computed
+2027-09-12,Sun,Almanac Day,"Sun up 06:28, down 19:22; day 12h53m (Cambridge)",Moon 91% lit: waxing gibbous,,Cambridge,computed
+2027-09-13,Mon,Almanac Day,"Sun up 06:30, down 19:20; day 12h49m (Cambridge)",Moon 96% lit: waxing gibbous,,Cambridge,computed
+2027-09-14,Tue,Almanac Day,"Sun up 06:32, down 19:18; day 12h45m (Cambridge)",Moon 99% lit: waxing gibbous,,Cambridge,computed
+2027-09-14,Tue,Folklore,Holy Cross Day / Nutting Day,Hazel nuts gathered; unlucky to pick later,,England,tradition
+2027-09-15,Wed,Almanac Day,"Sun up 06:33, down 19:15; day 12h41m (Cambridge)",Moon 100% lit: full moon,,Cambridge,computed
+2027-09-15,Wed,National,Battle of Britain Day (1940) [87th anniv.],"RAF airfields from Duxford, Cambs flew in the battle",,UK,fixed
+2027-09-16,Thu,Almanac Day,"Sun up 06:35, down 19:13; day 12h37m (Cambridge)",Moon 99% lit: waning gibbous,,Cambridge,computed
+2027-09-16,Thu,Moon Phase,Full Moon at 00:03 UK time,Spring tides follow; the Fen skies glow; rises near sunset,,Cambridge,computed
+2027-09-16,Thu,Moon Name,Harvest Moon,"English: Barley Moon, Fruit Moon, Wine Moon","Also: Corn Moon, Full Corn Moon. Rises near sunset for several nights so farmers could harvest by moonlight",England,computed
+2027-09-17,Fri,Almanac Day,"Sun up 06:37, down 19:11; day 12h33m (Cambridge)",Moon 95% lit: waning gibbous,,Cambridge,computed
+2027-09-18,Sat,Almanac Day,"Sun up 06:38, down 19:08; day 12h29m (Cambridge)",Moon 90% lit: waning gibbous,,Cambridge,computed
+2027-09-18,Sat,Tradition,"Stourbridge Fair proclaimed, Cambridge (c. 18 Sept) [816th anniv.]",Medieval fair beside the Cam; once Europe's largest,,Cambridgeshire,approx
+2027-09-19,Sun,Almanac Day,"Sun up 06:40, down 19:06; day 12h25m (Cambridge)",Moon 82% lit: waning gibbous,,Cambridge,computed
+2027-09-19,Sun,Tradition,"Corpus Clock (Time Eater) unveiled, Cambridge (2008) [19th anniv.]","Chronophage grasshopper on Corpus Christi, unveiled by Hawking",,Cambridgeshire,fixed
+2027-09-20,Mon,Almanac Day,"Sun up 06:42, down 19:04; day 12h21m (Cambridge)",Moon 73% lit: waning gibbous,,Cambridge,computed
+2027-09-21,Tue,Almanac Day,"Sun up 06:43, down 19:01; day 12h17m (Cambridge)",Moon 63% lit: waning gibbous,,Cambridge,computed
+2027-09-22,Wed,Almanac Day,"Sun up 06:45, down 18:59; day 12h13m (Cambridge)",Moon 53% lit: last quarter,,Cambridge,computed
+2027-09-23,Thu,Almanac Day,"Sun up 06:47, down 18:56; day 12h09m (Cambridge)",Moon 42% lit: last quarter,,Cambridge,computed
+2027-09-23,Thu,Astronomical,September (autumnal) equinox at 07:01 UK time,Autumn begins; day and night nearly equal,,Global,computed
+2027-09-23,Thu,Astronomical,Neptune discovered (1846); predicted by J. C. Adams of Cambridge [181st anniv.],Cambridge Observatory missed it twice that August,,Cambridgeshire,fixed
+2027-09-23,Thu,Moon Phase,Last Quarter Moon at 11:20 UK time,Half-lit; rises near midnight; neap tides,,Cambridge,computed
+2027-09-23,Thu,Astrological,Sun enters Libra (the Scales),Tropical zodiac ingress; date of Sun's crossing of the sign boundary,,Global,computed
+2027-09-23,Thu,Pagan,Mabon (pagan wheel of the year),Autumn begins; day and night nearly equal,Second harvest; thanksgiving for apples and grain,England,computed
+2027-09-24,Fri,Almanac Day,"Sun up 06:48, down 18:54; day 12h05m (Cambridge)",Moon 32% lit: waning crescent,,Cambridge,computed
+2027-09-25,Sat,Almanac Day,"Sun up 06:50, down 18:52; day 12h01m (Cambridge)",Moon 22% lit: waning crescent,,Cambridge,computed
+2027-09-26,Sun,Almanac Day,"Sun up 06:52, down 18:49; day 11h57m (Cambridge)",Moon 14% lit: waning crescent,,Cambridge,computed
+2027-09-27,Mon,Almanac Day,"Sun up 06:53, down 18:47; day 11h53m (Cambridge)",Moon 8% lit: waning crescent,,Cambridge,computed
+2027-09-28,Tue,Almanac Day,"Sun up 06:55, down 18:45; day 11h49m (Cambridge)",Moon 3% lit: waning crescent,,Cambridge,computed
+2027-09-29,Wed,Almanac Day,"Sun up 06:57, down 18:42; day 11h45m (Cambridge)",Moon 0% lit: new moon,,Cambridge,computed
+2027-09-29,Wed,Tradition,Michaelmas (St Michael & All Angels),Quarter day; roast goose; Devil falls into the bramble,"Eat a goose on Michaelmas Day, want not for money all the year",England,fixed
+2027-09-30,Thu,Almanac Day,"Sun up 06:58, down 18:40; day 11h41m (Cambridge)",Moon 0% lit: new moon,,Cambridge,computed
+2027-09-30,Thu,Moon Phase,New Moon at 03:36 UK time,Dark skies for stargazing; spring tides follow in 1-2 days,,Cambridge,computed
+2027-10-01,Fri,Almanac Day,"Sun up 07:00, down 18:38; day 11h37m (Cambridge)",Moon 2% lit: waxing crescent,,Cambridge,computed
+2027-10-01,Fri,Month,October - Old English 'Winterfylleth' ('winter full moon'),"Bede's Anglo-Saxon month names (De Temporum Ratione, 725 AD)","Good October, a good blast, to blow the hog acorn and mast.",England,fixed
+2027-10-01,Fri,Festival,Rosh Hashanah begins at sunset (to 4 Oct),"Jewish New Year; apples and honey, shofar blown",,UK,published
+2027-10-02,Sat,Almanac Day,"Sun up 07:02, down 18:35; day 11h33m (Cambridge)",Moon 6% lit: waxing crescent,,Cambridge,computed
+2027-10-03,Sun,Almanac Day,"Sun up 07:03, down 18:33; day 11h29m (Cambridge)",Moon 13% lit: waxing crescent,,Cambridge,computed
+2027-10-04,Mon,Almanac Day,"Sun up 07:05, down 18:31; day 11h25m (Cambridge)",Moon 20% lit: waxing crescent,,Cambridge,computed
+2027-10-05,Tue,Almanac Day,"Sun up 07:07, down 18:28; day 11h21m (Cambridge)",Moon 30% lit: waxing crescent,,Cambridge,computed
+2027-10-05,Tue,Tradition,"Cambridge University Michaelmas Term begins (full term, approx)","Gowns, matriculation dinners; freshers arrive",,Cambridgeshire,approx
+2027-10-06,Wed,Almanac Day,"Sun up 07:08, down 18:26; day 11h17m (Cambridge)",Moon 40% lit: waxing crescent,,Cambridge,computed
+2027-10-07,Thu,Almanac Day,"Sun up 07:10, down 18:24; day 11h13m (Cambridge)",Moon 50% lit: first quarter,,Cambridge,computed
+2027-10-07,Thu,Moon Phase,First Quarter Moon at 12:47 UK time,Half-lit and rising; neap tides; best for crater viewing at the terminator,,Cambridge,computed
+2027-10-07,Thu,Astrological,Mercury retrograde starts (approx),Mercury appears to move backwards against the stars,,Global,approx
+2027-10-08,Fri,Almanac Day,"Sun up 07:12, down 18:21; day 11h09m (Cambridge)",Moon 61% lit: waxing gibbous,,Cambridge,computed
+2027-10-08,Fri,Astronomical,Draconid meteors peak,Weak most years (~10/hr); best at dusk; comet Giacobini-Zinner,Moon that night: 66% lit (waxing gibbous),England,approx
+2027-10-09,Sat,Almanac Day,"Sun up 07:13, down 18:19; day 11h05m (Cambridge)",Moon 71% lit: waxing gibbous,,Cambridge,computed
+2027-10-10,Sun,Almanac Day,"Sun up 07:15, down 18:17; day 11h01m (Cambridge)",Moon 80% lit: waxing gibbous,,Cambridge,computed
+2027-10-10,Sun,Festival,Yom Kippur begins at sunset (to 11 Oct),Jewish Day of Atonement; fasting and prayer,,UK,published
+2027-10-10,Sun,Folklore,Pepys searches for buried gold at Brampton (1667) [360th anniv.],Pepys's father buried coin in the Hunts garden during the Dutch scare,"'And so to bed' - Pepys, Diary",Huntingdonshire,approx
+2027-10-11,Mon,Almanac Day,"Sun up 07:17, down 18:15; day 10h57m (Cambridge)",Moon 88% lit: waxing gibbous,,Cambridge,computed
+2027-10-11,Mon,Tradition,"St Ives Michaelmas Fair (second Monday Oct, approx)",Huntingdonshire pleasure fair; former livestock fair,,Huntingdonshire,approx
+2027-10-11,Mon,Folklore,Old Michaelmas Day,Blackberries unlucky to pick: the Devil spat or stamped on them,Old Michaelmas: Devil's Day for brambles,England,tradition
+2027-10-12,Tue,Almanac Day,"Sun up 07:19, down 18:12; day 10h53m (Cambridge)",Moon 94% lit: waxing gibbous,,Cambridge,computed
+2027-10-12,Tue,History,King John loses his baggage train in the Wash (1216) [811th anniv.],Fenland/Wash crossing; the treasure legend is still hunted,,Fens,fixed
+2027-10-13,Wed,Almanac Day,"Sun up 07:20, down 18:10; day 10h49m (Cambridge)",Moon 98% lit: waxing gibbous,,Cambridge,computed
+2027-10-14,Thu,Almanac Day,"Sun up 07:22, down 18:08; day 10h45m (Cambridge)",Moon 100% lit: full moon,,Cambridge,computed
+2027-10-14,Thu,History,Battle of Hastings [961st anniv.],Norman conquest; Fenland rebels under Hereward held out at Ely to 1071,,England,fixed
+2027-10-15,Fri,Almanac Day,"Sun up 07:24, down 18:06; day 10h41m (Cambridge)",Moon 100% lit: full moon,,Cambridge,computed
+2027-10-15,Fri,Moon Phase,Full Moon at 14:47 UK time,Spring tides follow; the Fen skies glow; rises near sunset,,Cambridge,computed
+2027-10-15,Fri,Moon Name,Hunter's Moon,"English: Blood Moon, Wine Moon","Also: Travel Moon, Dying Grass Moon. First full moon after the Harvest Moon; fields cleared, game fattened",England,computed
+2027-10-15,Fri,Nature,Redwings and fieldfares arrive from Scandinavia (approx),Thrushes strip hawthorn berries across Fen hedges,,East Anglia,approx
+2027-10-16,Sat,Almanac Day,"Sun up 07:26, down 18:04; day 10h37m (Cambridge)",Moon 97% lit: waning gibbous,,Cambridge,computed
+2027-10-16,Sat,Meteorological,Great Storm of 1987 (night of 15-16 Oct) [40th anniv.],Hurricane-force gusts felled ~15 million trees in SE England/East Anglia,,UK,fixed
+2027-10-17,Sun,Almanac Day,"Sun up 07:27, down 18:01; day 10h34m (Cambridge)",Moon 92% lit: waning gibbous,,Cambridge,computed
+2027-10-17,Sun,Church,"Translation of St Etheldreda, Ely [921st anniv.]",Ely Cathedral marks her relics' move (1106); Ely = 'eel district',St Audrey's fair lace gave us 'tawdry',Cambridgeshire,fixed
+2027-10-18,Mon,Almanac Day,"Sun up 07:29, down 17:59; day 10h30m (Cambridge)",Moon 86% lit: waning gibbous,,Cambridge,computed
+2027-10-18,Mon,Astronomical,Saturn at opposition,Saturn in Pisces/Aquarius; best for ring viewing,,Global,published
+2027-10-18,Mon,Weather lore,St Luke's Little Summer,A spell of fine mild weather around St Luke's Day,,England,tradition
+2027-10-19,Tue,Almanac Day,"Sun up 07:31, down 17:57; day 10h26m (Cambridge)",Moon 77% lit: waning gibbous,,Cambridge,computed
+2027-10-20,Wed,Almanac Day,"Sun up 07:33, down 17:55; day 10h22m (Cambridge)",Moon 68% lit: waning gibbous,,Cambridge,computed
+2027-10-21,Thu,Almanac Day,"Sun up 07:34, down 17:53; day 10h18m (Cambridge)",Moon 57% lit: last quarter,,Cambridge,computed
+2027-10-21,Thu,Astronomical,Orionid meteors peak,"~20/hr; Halley's Comet debris; fast, radiant near Betelgeuse",Moon that night: 53% lit (last quarter),England,approx
+2027-10-21,Thu,National,Trafalgar Day [222nd anniv.],Nelson's victory 1805; Nelson was an East Anglian (born Norfolk),England expects that every man will do his duty,UK,fixed
+2027-10-21,Thu,Tradition,"Apple Day (Common Ground, since 1990)","Celebrates English orchards, local varieties, cider and juice",An apple a day keeps the doctor away,England,fixed
+2027-10-22,Fri,Almanac Day,"Sun up 07:36, down 17:51; day 10h14m (Cambridge)",Moon 47% lit: last quarter,,Cambridge,computed
+2027-10-22,Fri,Moon Phase,Last Quarter Moon at 18:29 UK time,Half-lit; rises near midnight; neap tides,,Cambridge,computed
+2027-10-23,Sat,Almanac Day,"Sun up 07:38, down 17:49; day 10h10m (Cambridge)",Moon 36% lit: waning crescent,,Cambridge,computed
+2027-10-24,Sun,Almanac Day,"Sun up 07:40, down 17:47; day 10h06m (Cambridge)",Moon 26% lit: waning crescent,,Cambridge,computed
+2027-10-24,Sun,Astrological,Sun enters Scorpio (the Scorpion),Tropical zodiac ingress; date of Sun's crossing of the sign boundary,,Global,computed
+2027-10-25,Mon,Almanac Day,"Sun up 07:42, down 17:45; day 10h02m (Cambridge)",Moon 18% lit: waning crescent,,Cambridge,computed
+2027-10-25,Mon,Tradition,"St Crispin's Day (Agincourt, 1415) [612th anniv.]",Patron saint of cobblers and shoemakers,This day is called the feast of Crispian - Henry V,England,fixed
+2027-10-25,Mon,Nature,Bewick's & whooper swans gather on the Ouse Washes (approx),Winter swans from Siberia/Iceland at Welney and Ouse Washes,,Fens,approx
+2027-10-26,Tue,Almanac Day,"Sun up 07:43, down 17:43; day 9h59m (Cambridge)",Moon 10% lit: waning crescent,,Cambridge,computed
+2027-10-27,Wed,Almanac Day,"Sun up 07:45, down 17:41; day 9h55m (Cambridge)",Moon 5% lit: waning crescent,,Cambridge,computed
+2027-10-28,Thu,Almanac Day,"Sun up 07:47, down 17:39; day 9h51m (Cambridge)",Moon 1% lit: waning crescent,,Cambridge,computed
+2027-10-28,Thu,Church,Saints Simon & Jude,Folk belief: stormy weather likely around this day,,England,tradition
+2027-10-29,Fri,Almanac Day,"Sun up 07:49, down 17:37; day 9h47m (Cambridge)",Moon 0% lit: new moon,,Cambridge,computed
+2027-10-29,Fri,Moon Phase,New Moon at 14:36 UK time,Dark skies for stargazing; spring tides follow in 1-2 days,,Cambridge,computed
+2027-10-29,Fri,Astrological,Mercury retrograde ends (approx),Mercury appears to move backwards against the stars,,Global,approx
+2027-10-29,Fri,Festival,Diwali (Hindu/Sikh/Jain festival of lights),"Lamps, rangoli, sweets, fireworks",,UK,published
+2027-10-30,Sat,Almanac Day,"Sun up 07:51, down 17:35; day 9h44m (Cambridge)",Moon 1% lit: waxing crescent,,Cambridge,computed
+2027-10-31,Sun,Almanac Day,"Sun up 06:52, down 16:33; day 9h40m (Cambridge)",Moon 4% lit: waxing crescent,,Cambridge,computed
+2027-10-31,Sun,Calendar,British Summer Time ends - clocks BACK 1 hr at 02:00,02:00 BST becomes 01:00 GMT; an extra hour in bed,"Spring forward, fall back",UK,computed
+2027-10-31,Sun,Pagan,Samhain / All Hallows' Eve (Halloween),"Celtic/Pagan year-end; veil between worlds thin; turnip lanterns, guising","A soul, a soul, a soul-cake; please good missus, a soul-cake",England,fixed
+2027-10-31,Sun,Folklore,"Wandlebury Ring spectral-knight legend, Gog Magog Hills",Told on moonlit nights: a ghostly knight challenges riders to joust,,Cambridgeshire,legend
+2027-11-01,Mon,Almanac Day,"Sun up 06:54, down 16:31; day 9h36m (Cambridge)",Moon 9% lit: waxing crescent,,Cambridge,computed
+2027-11-01,Mon,Month,November - Old English 'Blotmonath' (month of sacrifice),"Bede's Anglo-Saxon month names (De Temporum Ratione, 725 AD)","November take flail, let ships no more sail.",England,fixed
+2027-11-01,Mon,Church,All Saints' Day (Hallowmas),Day of all the saints; the start of Allhallowtide,,England,fixed
+2027-11-02,Tue,Almanac Day,"Sun up 06:56, down 16:29; day 9h33m (Cambridge)",Moon 16% lit: waxing crescent,,Cambridge,computed
+2027-11-02,Tue,Church,All Souls' Day - Souling,Soul-cakes given to soulers who sing for the dead,"Soul, soul, for an apple or two",England,fixed
+2027-11-03,Wed,Almanac Day,"Sun up 06:58, down 16:27; day 9h29m (Cambridge)",Moon 25% lit: waxing crescent,,Cambridge,computed
+2027-11-04,Thu,Almanac Day,"Sun up 07:00, down 16:25; day 9h25m (Cambridge)",Moon 35% lit: waxing crescent,,Cambridge,computed
+2027-11-04,Thu,Folklore,Mischief Night (eastern & northern England),Night-before-Bonfire pranks; in some places held on 30 Oct,,East Anglia,tradition
+2027-11-05,Fri,Almanac Day,"Sun up 07:01, down 16:24; day 9h22m (Cambridge)",Moon 45% lit: first quarter,,Cambridge,computed
+2027-11-05,Fri,Astronomical,South Taurid meteors peak,Slow bright fireballs; comet Encke debris; broad peak into mid-Nov,Moon that night: 50% lit (first quarter),England,approx
+2027-11-05,Fri,National,Guy Fawkes Night (Bonfire Night) [422nd anniv.],"Gunpowder Plot 1605; bonfires, fireworks, parkin and treacle toffee","Remember, remember, the fifth of November",England,fixed
+2027-11-06,Sat,Almanac Day,"Sun up 07:03, down 16:22; day 9h18m (Cambridge)",Moon 56% lit: first quarter,,Cambridge,computed
+2027-11-06,Sat,Moon Phase,First Quarter Moon at 08:00 UK time,Half-lit and rising; neap tides; best for crater viewing at the terminator,,Cambridge,computed
+2027-11-07,Sun,Almanac Day,"Sun up 07:05, down 16:20; day 9h15m (Cambridge)",Moon 66% lit: waxing gibbous,,Cambridge,computed
+2027-11-08,Mon,Almanac Day,"Sun up 07:07, down 16:18; day 9h11m (Cambridge)",Moon 76% lit: waxing gibbous,,Cambridge,computed
+2027-11-09,Tue,Almanac Day,"Sun up 07:09, down 16:17; day 9h08m (Cambridge)",Moon 84% lit: waxing gibbous,,Cambridge,computed
+2027-11-10,Wed,Almanac Day,"Sun up 07:11, down 16:15; day 9h04m (Cambridge)",Moon 91% lit: waxing gibbous,,Cambridge,computed
+2027-11-11,Thu,Almanac Day,"Sun up 07:12, down 16:14; day 9h01m (Cambridge)",Moon 96% lit: waxing gibbous,,Cambridge,computed
+2027-11-11,Thu,National,Armistice Day - 11 am silence [109th anniv.],End of WWI 1918; poppies worn,"At the going down of the sun and in the morning, we will remember them",UK,fixed
+2027-11-11,Thu,Tradition,Martinmas (St Martin's Day),Old hiring/term day; animals slaughtered for winter; St Martin's summer,,England,tradition
+2027-11-12,Fri,Almanac Day,"Sun up 07:14, down 16:12; day 8h57m (Cambridge)",Moon 99% lit: full moon,,Cambridge,computed
+2027-11-12,Fri,Astronomical,North Taurid meteors peak,Few but brilliant fireballs; slow-moving,Moon that night: 100% lit (full moon),England,approx
+2027-11-13,Sat,Almanac Day,"Sun up 07:16, down 16:11; day 8h54m (Cambridge)",Moon 100% lit: full moon,,Cambridge,computed
+2027-11-14,Sun,Almanac Day,"Sun up 07:18, down 16:09; day 8h51m (Cambridge)",Moon 99% lit: waning gibbous,,Cambridge,computed
+2027-11-14,Sun,Moon Phase,Full Moon at 03:25 UK time,Spring tides follow; the Fen skies glow; rises near sunset,,Cambridge,computed
+2027-11-14,Sun,Moon Name,Beaver Moon,"English: Snow Moon, Fog Moon, Mourning Moon","Also: Frost Moon, Frosty Moon. Traps set before the freeze; first hard frosts",England,computed
+2027-11-14,Sun,National,Remembrance Sunday,Cenotaph service; poppies; two-minute silence at 11 am,,UK,computed
+2027-11-14,Sun,Royal,Birthday of King Charles III [79th anniv.],Born 14 Nov 1948 at Buckingham Palace,,UK,fixed
+2027-11-15,Mon,Almanac Day,"Sun up 07:19, down 16:08; day 8h48m (Cambridge)",Moon 95% lit: waning gibbous,,Cambridge,computed
+2027-11-16,Tue,Almanac Day,"Sun up 07:21, down 16:06; day 8h45m (Cambridge)",Moon 89% lit: waning gibbous,,Cambridge,computed
+2027-11-17,Wed,Almanac Day,"Sun up 07:23, down 16:05; day 8h41m (Cambridge)",Moon 82% lit: waning gibbous,,Cambridge,computed
+2027-11-17,Wed,Astronomical,Leonid meteors peak,~15/hr; comet Tempel-Tuttle; fast with persistent trains,Moon that night: 78% lit (waning gibbous),England,approx
+2027-11-18,Thu,Almanac Day,"Sun up 07:25, down 16:04; day 8h38m (Cambridge)",Moon 73% lit: waning gibbous,,Cambridge,computed
+2027-11-19,Fri,Almanac Day,"Sun up 07:26, down 16:02; day 8h35m (Cambridge)",Moon 63% lit: waning gibbous,,Cambridge,computed
+2027-11-20,Sat,Almanac Day,"Sun up 07:28, down 16:01; day 8h32m (Cambridge)",Moon 53% lit: last quarter,,Cambridge,computed
+2027-11-20,Sat,Church,"St Edmund's Day (martyr-king of East Anglia, d. 869) [1158th anniv.]","Patron of East Anglia, once England's patron saint; killed by Danes",,East Anglia,fixed
+2027-11-21,Sun,Almanac Day,"Sun up 07:30, down 16:00; day 8h30m (Cambridge)",Moon 42% lit: last quarter,,Cambridge,computed
+2027-11-21,Sun,Moon Phase,Last Quarter Moon at 00:48 UK time,Half-lit; rises near midnight; neap tides,,Cambridge,computed
+2027-11-21,Sun,Folklore,Stir-up Sunday,"Christmas puddings stirred, each family member wishing","Stir up, we beseech thee, O Lord, the wills of thy faithful people",England,computed
+2027-11-22,Mon,Almanac Day,"Sun up 07:31, down 15:59; day 8h27m (Cambridge)",Moon 32% lit: waning crescent,,Cambridge,computed
+2027-11-22,Mon,Church,St Cecilia's Day,Patron saint of music; concerts and carols in many colleges,,England,fixed
+2027-11-23,Tue,Almanac Day,"Sun up 07:33, down 15:58; day 8h24m (Cambridge)",Moon 22% lit: waning crescent,,Cambridge,computed
+2027-11-23,Tue,Astrological,Sun enters Sagittarius (the Archer),Tropical zodiac ingress; date of Sun's crossing of the sign boundary,,Global,computed
+2027-11-23,Tue,Tradition,St Clement's Day (Clementing),Blacksmiths' patron; children went house to house for apples,,England,tradition
+2027-11-24,Wed,Almanac Day,"Sun up 07:35, down 15:57; day 8h21m (Cambridge)",Moon 14% lit: waning crescent,,Cambridge,computed
+2027-11-25,Thu,Almanac Day,"Sun up 07:36, down 15:56; day 8h19m (Cambridge)",Moon 8% lit: waning crescent,,Cambridge,computed
+2027-11-25,Thu,Tradition,St Catherine's Day (Cattern Day),"Lacemakers' holiday in lace-making counties; cattern cakes, Catherine wheels",,Beds/Hunts border,tradition
+2027-11-26,Fri,Almanac Day,"Sun up 07:38, down 15:55; day 8h16m (Cambridge)",Moon 3% lit: waning crescent,,Cambridge,computed
+2027-11-26,Fri,Meteorological,Great Storm of 1703 (26-27 Nov) [324th anniv.],Worst storm in recorded English history; Eddystone Lighthouse lost,,England,fixed
+2027-11-27,Sat,Almanac Day,"Sun up 07:39, down 15:54; day 8h14m (Cambridge)",Moon 0% lit: new moon,,Cambridge,computed
+2027-11-28,Sun,Almanac Day,"Sun up 07:41, down 15:53; day 8h11m (Cambridge)",Moon 0% lit: new moon,,Cambridge,computed
+2027-11-28,Sun,Moon Phase,New Moon at 03:24 UK time,Dark skies for stargazing; spring tides follow in 1-2 days,,Cambridge,computed
+2027-11-28,Sun,Church,Advent Sunday,Start of the Christian year; Advent wreath and calendar,,England,computed
+2027-11-29,Mon,Almanac Day,"Sun up 07:42, down 15:52; day 8h09m (Cambridge)",Moon 2% lit: waxing crescent,,Cambridge,computed
+2027-11-30,Tue,Almanac Day,"Sun up 07:44, down 15:51; day 8h07m (Cambridge)",Moon 6% lit: waxing crescent,,Cambridge,computed
+2027-11-30,Tue,National,St Andrew's Day (Scotland),Scotland's patron saint; bank holiday in Scotland,,Scotland,fixed
+2027-12-01,Wed,Almanac Day,"Sun up 07:45, down 15:51; day 8h05m (Cambridge)",Moon 12% lit: waxing crescent,,Cambridge,computed
+2027-12-01,Wed,Month,December - Old English 'Aerra Geola' ('Before Yule'),"Bede's Anglo-Saxon month names (De Temporum Ratione, 725 AD)",A green Christmas makes a fat churchyard.,England,fixed
+2027-12-01,Wed,Season,Meteorological winter begins (Dec-Feb),Met Office convention: whole calendar months,,UK,fixed
+2027-12-02,Thu,Almanac Day,"Sun up 07:47, down 15:50; day 8h03m (Cambridge)",Moon 20% lit: waxing crescent,,Cambridge,computed
+2027-12-03,Fri,Almanac Day,"Sun up 07:48, down 15:49; day 8h01m (Cambridge)",Moon 29% lit: waxing crescent,,Cambridge,computed
+2027-12-04,Sat,Almanac Day,"Sun up 07:50, down 15:49; day 7h59m (Cambridge)",Moon 39% lit: waxing crescent,,Cambridge,computed
+2027-12-04,Sat,Astronomical,Horrocks observes transit of Venus (1639; 24 Nov OS) [388th anniv.],"Jeremiah Horrocks, Emmanuel College alumnus, first saw a Venus transit",,Cambridgeshire,fixed
+2027-12-05,Sun,Almanac Day,"Sun up 07:51, down 15:48; day 7h57m (Cambridge)",Moon 49% lit: first quarter,,Cambridge,computed
+2027-12-06,Mon,Almanac Day,"Sun up 07:52, down 15:48; day 7h55m (Cambridge)",Moon 60% lit: waxing gibbous,,Cambridge,computed
+2027-12-06,Mon,Moon Phase,First Quarter Moon at 05:22 UK time,Half-lit and rising; neap tides; best for crater viewing at the terminator,,Cambridge,computed
+2027-12-06,Mon,Church,St Nicholas's Day,Boy bishop customs; gifts left in shoes,,England,fixed
+2027-12-07,Tue,Almanac Day,"Sun up 07:53, down 15:47; day 7h54m (Cambridge)",Moon 70% lit: waxing gibbous,,Cambridge,computed
+2027-12-08,Wed,Almanac Day,"Sun up 07:55, down 15:47; day 7h52m (Cambridge)",Moon 79% lit: waxing gibbous,,Cambridge,computed
+2027-12-09,Thu,Almanac Day,"Sun up 07:56, down 15:47; day 7h51m (Cambridge)",Moon 87% lit: waxing gibbous,,Cambridge,computed
+2027-12-09,Thu,Literary,John Milton born (Christ's College student 1625-32) [419th anniv.],Poet of Paradise Lost; legend of his mulberry tree at Christ's,,Cambridgeshire,fixed
+2027-12-10,Fri,Almanac Day,"Sun up 07:57, down 15:47; day 7h49m (Cambridge)",Moon 93% lit: waxing gibbous,,Cambridge,computed
+2027-12-11,Sat,Almanac Day,"Sun up 07:58, down 15:46; day 7h48m (Cambridge)",Moon 98% lit: waxing gibbous,,Cambridge,computed
+2027-12-11,Sat,Astronomical,"Earliest sunset of the year (15:46 UK, Cambridge)",Falls before the December solstice,,Cambridgeshire,computed
+2027-12-12,Sun,Almanac Day,"Sun up 07:59, down 15:46; day 7h47m (Cambridge)",Moon 100% lit: full moon,,Cambridge,computed
+2027-12-13,Mon,Almanac Day,"Sun up 08:00, down 15:46; day 7h46m (Cambridge)",Moon 100% lit: full moon,,Cambridge,computed
+2027-12-13,Mon,Moon Phase,Full Moon at 16:08 UK time,Spring tides follow; the Fen skies glow; rises near sunset,,Cambridge,computed
+2027-12-13,Mon,Moon Name,Cold Moon,"English: Oak Moon, Long Night Moon, Moon Before Yule",Also: Big Winter Moon. Longest nights near midwinter; the moon rides high,England,computed
+2027-12-13,Mon,Church,St Lucy's Day (old-style shortest day),Pre-1752 midwinter; Donne wrote a Nocturnal upon it,"Lucy light, the shortest day and the longest night",England,tradition
+2027-12-14,Tue,Almanac Day,"Sun up 08:01, down 15:46; day 7h45m (Cambridge)",Moon 97% lit: waning gibbous,,Cambridge,computed
+2027-12-14,Tue,Astronomical,Geminid meteors peak,"Best shower of the year, 100+/hr; asteroid Phaethon debris",Moon that night: 96% lit (waning gibbous),England,approx
+2027-12-15,Wed,Almanac Day,"Sun up 08:02, down 15:46; day 7h44m (Cambridge)",Moon 93% lit: waning gibbous,,Cambridge,computed
+2027-12-16,Thu,Almanac Day,"Sun up 08:03, down 15:47; day 7h44m (Cambridge)",Moon 87% lit: waning gibbous,,Cambridge,computed
+2027-12-17,Fri,Almanac Day,"Sun up 08:03, down 15:47; day 7h43m (Cambridge)",Moon 79% lit: waning gibbous,,Cambridge,computed
+2027-12-17,Fri,Pagan,"Saturnalia begins (Roman, to 23 Dec)","Roman midwinter revels; gifts, role reversal, feasting",Io Saturnalia!,England,fixed
+2027-12-18,Sat,Almanac Day,"Sun up 08:04, down 15:47; day 7h43m (Cambridge)",Moon 70% lit: waning gibbous,,Cambridge,computed
+2027-12-19,Sun,Almanac Day,"Sun up 08:05, down 15:47; day 7h42m (Cambridge)",Moon 60% lit: waning gibbous,,Cambridge,computed
+2027-12-20,Mon,Almanac Day,"Sun up 08:05, down 15:48; day 7h42m (Cambridge)",Moon 49% lit: last quarter,,Cambridge,computed
+2027-12-20,Mon,Moon Phase,Last Quarter Moon at 09:10 UK time,Half-lit; rises near midnight; neap tides,,Cambridge,computed
+2027-12-21,Tue,Almanac Day,"Sun up 08:06, down 15:48; day 7h42m (Cambridge)",Moon 39% lit: waning crescent,,Cambridge,computed
+2027-12-21,Tue,Church,St Thomas's Day (Doleing / Mumping Day),Poor folk visited for alms and gifts of corn or wheat,,England,tradition
+2027-12-22,Wed,Almanac Day,"Sun up 08:06, down 15:49; day 7h42m (Cambridge)",Moon 29% lit: waning crescent,,Cambridge,computed
+2027-12-22,Wed,Astronomical,December solstice (midwinter) at 02:42 UK time,Shortest day; the Sun's turning point,,Global,computed
+2027-12-22,Wed,Astronomical,Ursid meteors peak,~10/hr; comet Tuttle; a solstice treat from the north sky,Moon that night: 24% lit (waning crescent),England,approx
+2027-12-22,Wed,Astrological,Sun enters Capricorn (the Sea-goat),Tropical zodiac ingress; date of Sun's crossing of the sign boundary,,Global,computed
+2027-12-22,Wed,Pagan,Yule (pagan wheel of the year),Shortest day; the Sun's turning point,"Yule log, evergreen, boar's head and wassail",England,computed
+2027-12-23,Thu,Almanac Day,"Sun up 08:07, down 15:49; day 7h42m (Cambridge)",Moon 20% lit: waning crescent,,Cambridge,computed
+2027-12-24,Fri,Almanac Day,"Sun up 08:07, down 15:50; day 7h42m (Cambridge)",Moon 12% lit: waning crescent,,Cambridge,computed
+2027-12-24,Fri,Festival,Hanukkah begins at sunset (to 1 Jan),Jewish festival of lights; menorah lit nightly,,UK,published
+2027-12-24,Fri,Church,"Nine Lessons & Carols, King's College, Cambridge (3 pm) [109th anniv.]",First held 1918; broadcast by the BBC since 1928,,Cambridgeshire,fixed
+2027-12-24,Fri,Pagan,Modranicht - 'Mothers' Night' (Anglo-Saxon),Recorded by Bede as the pagan English start of Yule,,England,fixed
+2027-12-25,Sat,Almanac Day,"Sun up 08:08, down 15:50; day 7h42m (Cambridge)",Moon 6% lit: waning crescent,,Cambridge,computed
+2027-12-25,Sat,National,Christmas Day,Bank holiday; also a quarter day,At Christmas play and make good cheer - Thomas Tusser,UK,fixed
+2027-12-25,Sat,History,"Isaac Newton born, Old Style (4 Jan 1643 NS) [385th anniv.]","Lincolnshire-born; Trinity College, Cambridge 1661 onwards",,Cambridgeshire,fixed
+2027-12-25,Sat,Literary,Milton's Nativity Ode written at Christ's College (1629) [398th anniv.],Composed as a Cambridge undergraduate on Christmas morning,"It was the winter wild, while the heav'n-born child...",Cambridgeshire,fixed
+2027-12-26,Sun,Almanac Day,"Sun up 08:08, down 15:51; day 7h43m (Cambridge)",Moon 2% lit: waning crescent,,Cambridge,computed
+2027-12-26,Sun,National,Boxing Day / St Stephen's Day,"Bank holiday; hunt meets, Wren Day customs, alms boxes",Good King Wenceslas looked out on the Feast of Stephen,UK,fixed
+2027-12-27,Mon,Almanac Day,"Sun up 08:08, down 15:52; day 7h43m (Cambridge)",Moon 0% lit: new moon,,Cambridge,computed
+2027-12-27,Mon,Moon Phase,New Moon at 20:12 UK time,Dark skies for stargazing; spring tides follow in 1-2 days,,Cambridge,computed
+2027-12-27,Mon,National Holiday,Bank holiday (England & Wales): Christmas Day (substitute day),Public holiday,,England,computed
+2027-12-28,Tue,Almanac Day,"Sun up 08:08, down 15:53; day 7h44m (Cambridge)",Moon 0% lit: new moon,,Cambridge,computed
+2027-12-28,Tue,National Holiday,Bank holiday (England & Wales): Boxing Day (substitute day),Public holiday,,England,computed
+2027-12-28,Tue,Church,Holy Innocents (Childermas),Folk belief: unlucky to begin any new work today,,England,tradition
+2027-12-29,Wed,Almanac Day,"Sun up 08:08, down 15:54; day 7h45m (Cambridge)",Moon 3% lit: waxing crescent,,Cambridge,computed
+2027-12-29,Wed,History,"Thomas Becket murdered, Canterbury (1170) [857th anniv.]",Medieval pilgrim saint of England,,England,fixed
+2027-12-30,Thu,Almanac Day,"Sun up 08:08, down 15:55; day 7h46m (Cambridge)",Moon 8% lit: waxing crescent,,Cambridge,computed
+2027-12-31,Fri,Almanac Day,"Sun up 08:08, down 15:55; day 7h47m (Cambridge)",Moon 14% lit: waxing crescent,,Cambridge,computed
+2027-12-31,Fri,National,New Year's Eve / Hogmanay,"Watchnight, bell ringing, first-footing in Scotland and the North","Ring out the old, ring in the new - Tennyson (Trinity College)",UK,fixed

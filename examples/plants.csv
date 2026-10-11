@@ -1,0 +1,5 @@
+_id,name,water_days,height_cm,indoor
+fern,Boston fern,3,40,true
+cact,Barrel cactus,21,15,true
+rose,Climbing rose,2,250,false
+mint,Mint,2,30,false

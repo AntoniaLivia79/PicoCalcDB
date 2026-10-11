@@ -1,0 +1,111 @@
+{"_id":"0100.1","title":"Getting started","kw":"start run begin intro overview quit exit","text":"This program stores collections of records on the SD card and lets you browse, search and edit them."}
+{"_id":"0100.2","text":"You start in the Collections list. Press Enter to open a collection, N to make a new one."}
+{"_id":"0100.3","text":"Inside a collection you see its records. Enter shows one record's fields, which you can edit."}
+{"_id":"0100.4","text":"Press F1 at any time to search this help. Press Esc to go back a step. Esc in the Collections list asks whether to quit."}
+{"_id":"0110.1","title":"The screen","kw":"screen layout title bar status hints line","text":"Top line: where you are, for example 'people  3/46' (record 3 of 46)."}
+{"_id":"0110.2","text":"Middle: the list. The highlighted line is the current selection."}
+{"_id":"0110.3","text":"Second line from the bottom: messages, and the input line when you type something."}
+{"_id":"0110.4","text":"Bottom line: the keys you can use right now."}
+{"_id":"0120.1","title":"Keys that work everywhere","kw":"keys keyboard arrows page home end escape f1 f2 slash","text":"Up/Down: move one line. Left/Right or PgUp/PgDn: move a page (in the record detail Left/Right change record)."}
+{"_id":"0120.2","text":"Home/End: jump to the first/last line."}
+{"_id":"0120.3","text":"F1: help search. F2 or /: the SQL command line. Esc: back, cancel, or clear a filter."}
+{"_id":"0130.1","title":"Typing on the input line","kw":"input edit line typing backspace cursor history cancel","text":"Left/Right move the cursor, Home/End jump to the start/end, Backspace deletes to the left, Del deletes under the cursor."}
+{"_id":"0130.2","text":"Enter accepts what you typed. Esc cancels."}
+{"_id":"0130.3","text":"In the SQL command line Up/Down bring back your last 8 commands."}
+{"_id":"0200.1","title":"Collections","kw":"collection table create new open drop delete name list","text":"A collection is a set of records, like a table. Each one is a file on the SD card (see 'Where your data is')."}
+{"_id":"0200.2","text":"N: new collection. Names use letters, digits and _ only, up to 16 characters, and cannot be SQL words such as order or select."}
+{"_id":"0200.3","text":"Enter: open the highlighted collection. Del: drop it, which deletes all its records after you answer y."}
+{"_id":"0200.4","text":"The open collection is marked (open)."}
+{"_id":"0300.1","title":"The record list","kw":"records list browse preview scroll position","text":"Each line shows a record: its _id first, then its fields as name:value, as far as the screen allows."}
+{"_id":"0300.2","text":"The title shows the collection, your position and the record count. Records are listed in _id order."}
+{"_id":"0300.3","text":"Enter shows the highlighted record. D describes the collection (fields, types, indexes)."}
+{"_id":"0310.1","title":"Adding a record","kw":"new add create record insert id auto","text":"In the record list press N and type an _id, or just press Enter to get the next automatic number (000001, 000002 ...)."}
+{"_id":"0310.2","text":"An _id is text of up to 16 characters and must be unique in the collection."}
+{"_id":"0310.3","text":"The new record opens straight away: press A to add fields."}
+{"_id":"0320.1","title":"Deleting a record","kw":"delete remove record del","text":"Highlight the record in the list, press Del, then y. This cannot be undone from the program."}
+{"_id":"0330.1","title":"Filtering records","kw":"filter search find where query condition","text":"In the record list press F and type a condition, for example: age > 30 AND name LIKE 'A%'"}
+{"_id":"0330.2","text":"Only matching records are listed and the title shows the condition in [ ]."}
+{"_id":"0330.3","text":"Press F again to change the condition, or Esc to show all records again."}
+{"_id":"0330.4","text":"See 'Conditions (WHERE)' for what you can write. Error messages give the column where the problem is."}
+{"_id":"0400.1","title":"The record detail","kw":"detail record fields view next previous","text":"One line per field: name, then value. The first line is the _id."}
+{"_id":"0400.2","text":"Left/Right show the previous/next record of the list, so you can step through records."}
+{"_id":"0400.3","text":"Esc goes back to the list."}
+{"_id":"0410.1","title":"Editing a value","kw":"edit change value field text number type quote","text":"Highlight a field and press Enter. Change the value and press Enter to save, or Esc to cancel."}
+{"_id":"0410.2","text":"Text stays text. Any other value is saved as a number, true, false or null when it looks like one, otherwise as text."}
+{"_id":"0410.3","text":"To store something that looks like a number as text, type it in single quotes, for example '0123'."}
+{"_id":"0410.4","text":"Text that looks like a number is shown in quotes so you can tell it apart."}
+{"_id":"0420.1","title":"Adding and removing fields","kw":"add field remove delete unset new field","text":"A: add a field. Type its name, then its value. If the field exists you edit it instead."}
+{"_id":"0420.2","text":"Del: remove the highlighted field (answer y)."}
+{"_id":"0420.3","text":"Field names starting with _ are reserved. _id cannot be changed or removed."}
+{"_id":"0500.1","title":"Kinds of values","kw":"types value text number boolean true false null nested","text":"Text: any characters. Numbers: like 42, -1.5 or 2e3. Also true, false and null."}
+{"_id":"0500.2","text":"Records made by other programs may hold lists or nested objects. They are shown as {..} or [..] and cannot be edited here."}
+{"_id":"0500.3","text":"Different records may hold different fields; no field is required except _id."}
+{"_id":"0600.1","title":"The SQL command line","kw":"sql command console query f2 slash statement","text":"Press F2 or / and type a command. Keywords can be upper or lower case; a ; at the end is optional."}
+{"_id":"0600.2","text":"SELECT results open in the record list, marked [query]; Esc returns to all records."}
+{"_id":"0600.3","text":"COUNT shows its answer on the message line. SHOW, DESCRIBE and EXPLAIN open a text page."}
+{"_id":"0600.4","text":"Commands work on any collection by name, not only the open one."}
+{"_id":"0610.1","title":"SELECT","kw":"select query fields columns from","text":"SELECT * FROM people shows all records."}
+{"_id":"0610.2","text":"SELECT name, age FROM people WHERE age > 30 shows only those fields in the list."}
+{"_id":"0610.3","text":"Add ORDER BY and LIMIT as needed (see 'Sorting and limits')."}
+{"_id":"0620.1","title":"Conditions (WHERE)","kw":"where condition compare operator and or not equal less greater","text":"Compare a field with a value: =, <> (or !=), <, <=, >, >=. Example: age >= 18"}
+{"_id":"0620.2","text":"Text values go in single quotes: name = 'Ann'. Write two quotes for an apostrophe: 'O''Brien'."}
+{"_id":"0620.3","text":"Combine with AND, OR and NOT. AND goes before OR: a = 1 OR b = 2 AND c = 3 means a = 1 OR (b = 2 AND c = 3)."}
+{"_id":"0620.4","text":"Use ( ) to group differently: (a = 1 OR b = 2) AND c > 0"}
+{"_id":"0620.5","text":"A field name with spaces, or that is an SQL word, goes in double quotes: \"first name\" = 'Al'."}
+{"_id":"0630.1","title":"Matching text with LIKE","kw":"like pattern wildcard percent underscore match starts contains","text":"% stands for any number of characters, _ for exactly one."}
+{"_id":"0630.2","text":"name LIKE 'A%' starts with A. name LIKE '%son' ends with son. code LIKE 'A_1' is A, any one character, then 1."}
+{"_id":"0630.3","text":"LIKE is case-sensitive: 'a%' does not match Ann. Use NOT LIKE for the opposite. LIKE only matches text, never numbers."}
+{"_id":"0640.1","title":"Missing fields and NULL","kw":"null missing empty is null absent field not set","text":"A record without a field never matches a comparison on it, not even <>."}
+{"_id":"0640.2","text":"Use IS NULL to find records where a field is missing or null, and IS NOT NULL for the others."}
+{"_id":"0640.3","text":"Example: SELECT * FROM people WHERE phone IS NULL"}
+{"_id":"0650.1","title":"How values compare","kw":"compare numbers text case order alphabetical types mixed","text":"Numbers compare by value, so 1e3 = 1000. Text compares character by character, so capitals come before small letters."}
+{"_id":"0650.2","text":"A number and text are never equal, never smaller or larger; only <> is true between them. '5' in quotes is text, 5 is a number."}
+{"_id":"0660.1","title":"Sorting and limits","kw":"order by sort desc ascending descending limit offset first page","text":"ORDER BY age sorts by one field; add DESC for largest first."}
+{"_id":"0660.2","text":"Numbers come before text. Records without the field come last (first with DESC)."}
+{"_id":"0660.3","text":"LIMIT 10 keeps the first 10 results; LIMIT 10 OFFSET 20 skips 20 first."}
+{"_id":"0660.4","text":"Without ORDER BY results come in _id order, or in the order of an index the query used."}
+{"_id":"0670.1","title":"Counting","kw":"count how many number of records total","text":"SELECT COUNT(*) FROM people counts all records; add WHERE to count only matches."}
+{"_id":"0680.1","title":"INSERT: add records","kw":"insert add new record values","text":"INSERT INTO people (_id, name, age) VALUES ('p1', 'Ann', 34)"}
+{"_id":"0680.2","text":"Leave out _id to get an automatic number; the message line shows the _id given."}
+{"_id":"0680.3","text":"The _id must be text and must not exist yet."}
+{"_id":"0690.1","title":"UPDATE: change records","kw":"update change set unset modify many","text":"UPDATE people SET age = 35, city = 'Leeds' WHERE _id = 'p1'"}
+{"_id":"0690.2","text":"UNSET removes fields: UPDATE people UNSET phone WHERE age > 90"}
+{"_id":"0690.3","text":"Without WHERE every record is changed, and there is no 'are you sure' question."}
+{"_id":"0700.1","title":"DELETE: remove records","kw":"delete remove records many","text":"DELETE FROM people WHERE age < 18 removes the matching records."}
+{"_id":"0700.2","text":"DELETE FROM people without WHERE removes every record, without asking. The collection itself stays."}
+{"_id":"0710.1","title":"Indexes: faster searches","kw":"index speed fast slow performance create index drop index","text":"CREATE INDEX ON people (age) makes conditions on age much faster. DROP INDEX ON people (age) removes it."}
+{"_id":"0710.2","text":"Up to 4 fields per collection can be indexed. _id is always indexed."}
+{"_id":"0710.3","text":"An index helps with =, <, <=, >, >= and LIKE 'abc%' when the condition is not inside OR or NOT."}
+{"_id":"0710.4","text":"Indexes use memory: one entry per record that has the field."}
+{"_id":"0720.1","title":"EXPLAIN: is it using an index?","kw":"explain plan index full scan slow","text":"Put EXPLAIN in front of a SELECT, UPDATE or DELETE to see how it would run, without running it."}
+{"_id":"0720.2","text":"'full scan' reads every record; 'index on age' or '_id range' reads only candidates."}
+{"_id":"0720.3","text":"Conditions marked ^ are ones an index could serve."}
+{"_id":"0730.1","title":"DESCRIBE and SHOW","kw":"describe show collections fields types info","text":"DESCRIBE people (or D in the record list) lists record count, dead lines, indexes and every field seen with its kind:"}
+{"_id":"0730.2","text":"S text, N number, L true/false/null, O list or nested object, X mixed (different kinds in different records)."}
+{"_id":"0730.3","text":"SHOW COLLECTIONS lists all collections. CREATE COLLECTION and DROP COLLECTION do the same as N and Del in the list."}
+{"_id":"0800.1","title":"VACUUM: reclaim space","kw":"vacuum compact space dead lines file size tidy shrink","text":"Changing or deleting a record adds a line to the file and leaves the old one as a dead line. DESCRIBE shows how many."}
+{"_id":"0800.2","text":"VACUUM people rewrites the file with live records only. Run it now and then, and before copying files to a PC."}
+{"_id":"0800.3","text":"It is safe if the power fails while it runs."}
+{"_id":"0810.1","title":"Power loss and crashes","kw":"power crash battery safe recovery repair torn ctrl-c break","text":"Records are only ever added to the end of a file, so a power cut can damage at most the last line."}
+{"_id":"0810.2","text":"On the next open the program repairs this and tells you (repaired torn last line, or n bad line(s) skipped)."}
+{"_id":"0810.3","text":"Stopping the program with Ctrl-C is safe; the index is rebuilt or caught up next time."}
+{"_id":"0820.1","title":"Where your data is","kw":"files sd card folder location backup copy jsonl idx meta","text":"Everything is in the folder db on the SD card (B:/db/). For a collection called people:"}
+{"_id":"0820.2","text":"people.jsonl holds the records, people.idx a saved index, people.meta field and index settings."}
+{"_id":"0820.3","text":"To back up, copy the db folder. The .idx files can be deleted at any time; they are rebuilt."}
+{"_id":"0830.1","title":"Using your data on a PC","kw":"pc computer export json lines python spreadsheet interop","text":"Each .jsonl file has one record per line in JSON format, readable by most programming languages and many tools."}
+{"_id":"0830.2","text":"Run VACUUM first: then every line is one current record. Otherwise an _id can appear more than once (the last line wins) and lines with \"_del\" mark deleted records."}
+{"_id":"0840.1","title":"Editing files on a PC","kw":"pc edit external file editor import change outside","text":"You may edit a .jsonl file with a text editor or your own programs."}
+{"_id":"0840.2","text":"Keep one record per line, at most 255 characters, each with a unique text \"_id\" of up to 16 characters."}
+{"_id":"0840.3","text":"Afterwards delete the matching .idx file so the index is rebuilt. Lines the program cannot read are skipped and reported when the collection is opened."}
+{"_id":"0840.4","text":"Use plain ASCII characters; others may not display correctly on the PicoCalc."}
+{"_id":"0900.1","title":"Limits","kw":"limits maximum size how many records fields length","text":"A record is at most 255 characters as stored. An _id is up to 16 characters."}
+{"_id":"0900.2","text":"Up to 1000 records per collection, 4 indexed fields, and 1000 index entries in total per collection."}
+{"_id":"0900.3","text":"A command is at most 255 characters. Field names in commands are up to 24 characters; text values in conditions up to 64."}
+{"_id":"0900.4","text":"DESCRIBE lists up to 24 different field names per collection."}
+{"_id":"0910.1","title":"Common messages","kw":"error message duplicate not found full too long expected col reserved","text":"duplicate _id: that _id is already used. not found: no record with that _id."}
+{"_id":"0910.2","text":"too long: the record would exceed 255 characters. collection full / index space full: a limit was reached (see Limits)."}
+{"_id":"0910.3","text":"expected ... at col 12: a typing mistake in a command; col counts characters from the start."}
+{"_id":"0910.4","text":"reserved word 'order' (quote it): write \"order\" in double quotes."}
+{"_id":"0950.1","title":"Searching this help","kw":"help search f1 find topic words","text":"F1 asks for words. Topics that contain all of them, in any case, are listed. Press Enter with nothing typed for the full list."}
+{"_id":"0950.2","text":"Enter reads a topic, Esc goes back. If only one topic matches it opens directly. Try short words: index, like, null, delete."}
+{"_id":"0950.3","text":"The help is the file db/help/dbhelp.jsonl; you can add your own topics to it with any text editor."}

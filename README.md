@@ -1,10 +1,11 @@
 # PicoCalc DB
 
-A small document database for the [PicoCalc](https://www.clockworkpi.com/picocalc), written in PicoMite MMBasic, with three ways to use it:
+A small document database for the [PicoCalc](https://www.clockworkpi.com/picocalc), written in PicoMite MMBasic, with four ways to use it:
 
 - **Explorer (dbapp):** browse, search and edit collections of records with the keyboard, or with a small SQL dialect.
 - **Library (dblib):** use the same collections from your own PicoMite programs through a `Db…` API.
 - **Almanac:** an application built on the library that loads an almanac from a CSV file and lets you browse it by day and search it.
+- **Text adventure framework:** a model–view–controller framework for text adventures, with a collection as the game world and saved state, and a sample game.
 
 Data is stored as plain [JSON Lines](https://jsonlines.org/) files on the SD card, one record per line, so it can also be read and edited on a PC.
 
@@ -21,6 +22,11 @@ All three need a PicoCalc running PicoMite MMBasic, and an SD card.
 
 1. Copy `dist/almanac_app.bas` and `sdcard/almanac.csv` to the root of the SD card.
 2. Run `almanac_app.bas`, choose **1 Maintain database**, then **C** to load the CSV.
+
+**Text adventure**
+
+1. Copy `dist/adventure_app.bas` to the SD card, and `sdcard/adv/world.jsonl` to `B:/adv/world.jsonl`.
+2. Run `adventure_app.bas` and type `help`. The game saves itself after every move.
 
 **Library**
 
@@ -39,14 +45,20 @@ src/                  BASIC modules: the files to edit
   dbgui.bas             explorer screens
   dbmain.bas            explorer entry point
   almanac.bas           almanac application
+  adv_model.bas         text adventure: model (all database access)
+  adv_view.bas          text adventure: view (all input and output)
+  adv_ctrl.bas          text adventure: controller (parser, rules, game loop)
+  adv_main.bas          text adventure: entry point
 dist/                 generated, ready-to-run files
   dbapp.bas, dbapp_min.bas        explorer (with / without comments)
   dblib.bas, dblib_min.bas        library
   almanac_app.bas                 almanac
+  adventure_app.bas               text adventure
 sdcard/               files to copy to the SD card, in the card's layout
   db/help/dbhelp.jsonl            explorer help topics
   db/plants.csv                   sample data for examples/ex2_import_csv.bas
   almanac.csv                     almanac data (Oct 2026 to Dec 2027)
+  adv/world.jsonl                 sample adventure world, The Lighthouse
 examples/             three example programs using the library
 docs/user/            user guides
 docs/dev/             developer guides (wikis)
@@ -63,6 +75,7 @@ tools/                build.py, run_tests.py, make_help.py
 | Using the almanac | [Almanac user guide](docs/user/almanac-user-guide.md) |
 | How the database and explorer code works | [Developer guide: dbapp](docs/dev/dbapp/Home.md) |
 | How the almanac code works | [Developer guide: almanac](docs/dev/almanac/Home.md) |
+| Writing a text adventure | [Text adventure framework guide](docs/dev/adventure/Home.md) |
 
 ## Working on the code
 

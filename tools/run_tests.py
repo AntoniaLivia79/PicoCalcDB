@@ -48,6 +48,12 @@ def prep_almanac():
     shutil.rmtree('/tmp/alm/db', ignore_errors=True)
 
 
+def prep_adventure():
+    shutil.rmtree('/tmp/advt', ignore_errors=True)
+    os.makedirs('/tmp/advt')
+    shutil.copy(os.path.join(ROOT, 'sdcard', 'adv', 'world.jsonl'), '/tmp/advt/world.jsonl')
+
+
 # name: (options, [parts: file name or callable], prepare, timeout seconds)
 SUITES = {
     'core':    (EXPLICIT, ['dbcore.bas', 'test_core.bas'], None, 420),
@@ -60,6 +66,8 @@ SUITES = {
     'api':     (STRICT, ['dblib_min.bas', 'test_api.bas'],
                 lambda: shutil.rmtree('/tmp/dbl', ignore_errors=True), 300),
     'almanac': (STRICT, ['dblib_min.bas', almanac_for_test, 'test_almanac.bas'], prep_almanac, 400),
+    'adventure': (STRICT, ['dblib_min.bas', 'adv_model.bas', 'adv_view.bas', 'adv_ctrl.bas',
+                           'test_adventure.bas'], prep_adventure, 400),
 }
 
 
@@ -105,7 +113,7 @@ def run_suite(name):
     m = re.search(r'TOTAL FAILS:\s*(\d+)', out)
     errors = [l for l in out.split('\n') if l.startswith('Error') or l == 'TIMEOUT']
     ok = bool(m) and m.group(1) == '0' and not errors
-    print(f"{name:8} {'PASS' if ok else 'FAIL'}  {time.time() - t0:5.0f}s")
+    print(f"{name:9} {'PASS' if ok else 'FAIL'}  {time.time() - t0:5.0f}s")
     if not ok:
         for l in out.split('\n'):
             if l.startswith(('FAIL', 'Error', 'TOTAL', 'TIMEOUT')):

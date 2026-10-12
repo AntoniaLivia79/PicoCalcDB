@@ -1,0 +1,45 @@
+# The Lighthouse - sample world for the PicoCalc DB adventure framework.
+# One JSON record per line. Lines starting with # are ignored.
+# --- game state: where the player starts, title and introduction ---
+{"_id":"s.game","at":"r.beach","moves":0,"score":0,"title":"The Lighthouse","intro":"A storm is coming, and the old lighthouse has been dark for weeks. A ship is due to pass the rocks tonight."}
+# --- rooms: exits n s e w u d name another room ---
+{"_id":"r.beach","name":"Beach","desc":"Waves break on a narrow strip of shingle. A path climbs north to a cottage, and the lighthouse tower stands to the east.","n":"r.cottage","e":"r.tower"}
+{"_id":"r.cottage","name":"Keeper's cottage","desc":"A bare room smelling of salt and old pipe smoke. A heavy desk stands under the window. The door leads south.","s":"r.beach"}
+{"_id":"r.tower","name":"Lighthouse tower","desc":"The ground floor of the tower. An iron staircase spirals up into darkness, and a stout wooden door is set in the floor. The beach is west.","w":"r.beach","u":"r.lantern"}
+{"_id":"r.lantern","name":"Lantern room","desc":"Glass walls on every side, and the sea far below. In the middle stands the great lamp.","d":"r.tower"}
+{"_id":"r.cellar","name":"Cellar","desc":"A damp stone room under the tower. Steps lead up.","u":"r.tower"}
+# --- items: loc is a room, player or nowhere; fixed items cannot be taken ---
+{"_id":"i.note","name":"a soggy note","words":"note paper soggy","loc":"r.beach","desc":"Something is written on it. Perhaps you could read it."}
+{"_id":"i.desk","name":"a heavy desk","words":"desk drawer","loc":"r.cottage","fixed":true,"desc":"An old oak desk with a single drawer."}
+{"_id":"i.matches","name":"a box of matches","words":"matches box match","loc":"r.cottage","desc":"A few dry matches rattle inside."}
+{"_id":"i.key","name":"an iron key","words":"key iron","loc":"nowhere","desc":"A small, heavy iron key."}
+{"_id":"i.door","name":"a wooden door","words":"door trapdoor","loc":"r.tower","fixed":true,"desc":"A stout door in the floor, fitted with a lock."}
+{"_id":"i.lamp","name":"the great lamp","words":"lamp great wick","loc":"r.lantern","fixed":true,"desc":"A huge oil lamp behind thick glass lenses, with a wide reservoir for oil."}
+{"_id":"i.oil","name":"a can of oil","words":"oil can","loc":"r.cellar","desc":"A heavy can, full of lamp oil."}
+# --- vocabulary: synonyms for verbs ---
+{"_id":"w.get","is":"take"}
+{"_id":"w.grab","is":"take"}
+{"_id":"w.pick","is":"take"}
+{"_id":"w.l","is":"look"}
+{"_id":"w.x","is":"examine"}
+{"_id":"w.i","is":"inventory"}
+{"_id":"w.inv","is":"inventory"}
+{"_id":"w.q","is":"quit"}
+{"_id":"w.ignite","is":"light"}
+{"_id":"w.refill","is":"fill"}
+# --- rules: tried in _id order; the first whose "if" holds runs ---
+{"_id":"a.01","verb":"open","noun":"desk","if":"!flag:desk_open","do":"set:desk_open;move:key>here","say":"You pull open the drawer. Inside is a small iron key."}
+{"_id":"a.02","verb":"open","noun":"desk","say":"The drawer is already open."}
+{"_id":"a.03","verb":"read","noun":"note","if":"here:note","say":"The note reads: 'The lamp must burn tonight. Oil is kept below the tower.'"}
+{"_id":"a.04","verb":"take","noun":"key","if":"here:key;!have:key;!flag:got_key","do":"set:got_key;score:5;move:key>player","say":"Taken."}
+{"_id":"a.05","verb":"unlock","noun":"door","if":"have:key;!flag:door_open","do":"set:door_open;exit:tower.d>cellar","say":"The key turns stiffly, and the door swings open onto steps leading down.","no":"The door is locked. You need a key."}
+{"_id":"a.06","verb":"unlock","noun":"door","if":"flag:door_open","say":"It is already unlocked."}
+{"_id":"a.07","verb":"open","noun":"door","if":"!flag:door_open","say":"The door is locked."}
+{"_id":"a.08","verb":"open","noun":"door","say":"It is already open."}
+{"_id":"a.09","verb":"go","noun":"d","if":"at:tower;!flag:door_open","say":"The door in the floor is locked."}
+{"_id":"a.10","verb":"fill","noun":"lamp","if":"have:oil;!flag:lamp_filled","do":"set:lamp_filled;move:oil>nowhere;score:10","say":"You pour the oil into the great lamp's reservoir.","no":"You have nothing to fill it with."}
+{"_id":"a.11","verb":"fill","noun":"lamp","if":"flag:lamp_filled","say":"The lamp is already full."}
+{"_id":"a.12","verb":"light","noun":"lamp","if":"flag:lamp_filled;have:matches","do":"score:35;end:win","say":"The wick catches and the great lamp blazes out across the sea, just as a ship's lights appear. Slowly, the ship turns away from the rocks."}
+{"_id":"a.13","verb":"light","noun":"lamp","if":"!flag:lamp_filled","say":"The lamp is dry. It needs oil first."}
+{"_id":"a.14","verb":"light","noun":"lamp","say":"You have nothing to light it with."}
+{"_id":"a.15","verb":"xyzzy","say":"A hollow voice says 'Fool.'"}

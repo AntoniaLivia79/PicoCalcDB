@@ -33,8 +33,41 @@ PicoMite MMBasic behaves differently from other BASICs in ways that shaped this 
 
 ## Loops and recursion
 
-- **A running `DO` loop is identified by its position in the program.** If a routine containing a `DO` loop is re-entered by recursion while its loop is running, the inner loop's exit breaks the outer one ("LOOP without a matching DO"). The recursive parser functions therefore contain no loops; they use tail recursion (`QOrRest%`, `QAndRest%`).
+- **A running `DO` loop is identified by its position in the program.** If a routine containing a `DO` loop is re-entered by recursion while its loop is running, the inner loop's exit breaks the outer one ("LOOP without a matching DO"). This is one more reason the code contains no recursion at all (see the next section for the main one).
 - **Leaving a loop with `EXIT FUNCTION` or `EXIT SUB` is safe.** When a routine returns, the firmware removes that routine's FOR and DO entries (`ClearVars` in `MMBasic.c`). `CONTINUE DO` continues the innermost running loop.
+
+## The call stack is small
+
+This is the limit that matters most for code structure.
+
+PicoMite runs a BASIC program on the processor's own stack, and every SUB or FUNCTION call that is still active uses part of it, roughly a kilobyte. The firmware checks the stack on each call (`TestStackOverflow` in `Memory.c`) and stops the program when it would run into the heap:
+
+```
+Error: Stack overflow, expression too complex at depth 16
+```
+
+*Depth* is the number of routines active at that moment: the main program calls `A`, which calls `B`, and so on. On a PicoCalc with a Pico 2, the explorer's earlier code stopped at depth 16, during a query. An RP2040 Pico has less RAM for the stack, so its limit is likely lower. MMB4L on a PC has a large stack and never reports this, so passing tests on a PC prove nothing about depth.
+
+The code is written to keep the deepest possible chain of calls short:
+
+- **No recursion.** A recursive routine's depth depends on its input. The query parser is iterative ([Query parser](Query-Parser.md#parsing-a-condition-without-recursion)), so a long WHERE clause costs no more depth than a short one.
+- **Routines at the bottom of most chains call nothing.** `RcNext%` (reading a field) decodes strings and skips nested values itself. `IxReadAt$` reads its line itself.
+- **Thin wrappers are inlined on busy paths.** Examples: `DbGet$` goes straight to the index and the reader; the record match is inside `ExCollect`; tombstone checks are inline.
+- **Applications defer work to the top.** A key handler in the explorer records what to do (`UiPend%`, `UiReloadNow%`) and `UiStep` does it after the handler returns. The adventure's rules leave their effects to `GcDo`. Main loops are in the main program rather than in a SUB.
+- **Simple lookups avoid SQL.** `DbFind%` runs one condition straight through the planner, without the parser: 5 levels instead of 8.
+
+`tools/check_depth.py` computes the deepest possible chain from each entry point by reading the source, and fails if any exceeds its budget:
+
+| Entry point | Deepest chain |
+|---|---|
+| Explorer: `UiStep` (called from the main loop) | 9 |
+| Almanac: `AmMenu` (called from the main code) | 9 |
+| Adventure: `GcRun` (called from the main code) | 10 |
+| Library: `DbQuery%` | 8 |
+| Library: `DbFind%`, writes, `DbOpen%` | 5–7 |
+| Library: `DbGet$` | 3 |
+
+For programs using the library, this means: **call `Db…` routines from shallow places.** If your program is already 6 or 7 routines deep when it calls `DbQuery%`, the total can approach the limit. Prefer `DbFind%` for single conditions. Run `check_depth.py` after changing the code; add new entry points to its table.
 
 ## Files
 

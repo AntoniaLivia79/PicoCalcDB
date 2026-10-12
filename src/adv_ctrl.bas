@@ -25,6 +25,10 @@
 ' =====================================================================
 
 DIM GcVerb$, GcNoun$, GcWith$, GcOver%, GcQuit%, GcRestart%
+' Work left for GcDo to do once the command has been handled: running
+' it there, rather than from deep inside a rule or a verb, keeps the
+' call chains short (the PicoMite has a small stack).
+DIM GcDoEff$, GcLookNow%, GcInvNow%
 
 ' n, s, e, w, u or d for a direction word, else ""
 FUNCTION GcDirOf$(w$)
@@ -133,14 +137,14 @@ FUNCTION GcBuiltIn%(id$)
   GcBuiltIn% = 1
   SELECT CASE GcVerb$
     CASE "look"
-      IF GcNoun$ = "" THEN GcLook : EXIT FUNCTION
+      IF GcNoun$ = "" THEN GcLookNow% = 1 : EXIT FUNCTION
       GcVerb$ = "examine"
-    CASE "inventory" : GcInventory : EXIT FUNCTION
+    CASE "inventory" : GcInvNow% = 1 : EXIT FUNCTION
     CASE "go"
       IF GcNoun$ = "" THEN GvSay "Go where?" : EXIT FUNCTION
       IF GcDirOf$(GcNoun$) <> "" THEN dest$ = GmExit$(GmAt$(), GcNoun$)
       IF dest$ = "" THEN GvSay "You can't go that way." : EXIT FUNCTION
-      GmSetAt dest$ : GcLook : EXIT FUNCTION
+      GmSetAt dest$ : GcLookNow% = 1 : EXIT FUNCTION
     CASE "take", "drop", "examine"
     CASE ELSE
       GcBuiltIn% = 0 : EXIT FUNCTION
@@ -206,7 +210,7 @@ END FUNCTION
 
 ' Apply the effects in e$
 SUB GcEffects e$
-  LOCAL i%, p$, k$, a$, b$, look% = 0
+  LOCAL i%, p$, k$, a$, b$
   FOR i% = 1 TO 12
     p$ = FIELD$(e$, i%, ";")
     IF p$ = "" THEN EXIT FOR
@@ -220,24 +224,24 @@ SUB GcEffects e$
         b$ = FIELD$(a$, 2, ">")
         IF b$ <> "" THEN b$ = "r." + b$
         GmSetExit "r." + FIELD$(FIELD$(a$, 1, ">"), 1, "."), FIELD$(FIELD$(a$, 1, ">"), 2, "."), b$
-      CASE "go" : GmSetAt "r." + a$ : look% = 1
-      CASE "look" : look% = 1
+      CASE "go" : GmSetAt "r." + a$ : GcLookNow% = 1
+      CASE "look" : GcLookNow% = 1
       CASE "end" : GmSetFlag "end_" + a$, 1 : GcOver% = 1
     END SELECT
   NEXT
-  IF look% THEN GcLook
 END SUB
 
 ' Try the rules for the current verb and noun key$. Returns 1 if a
-' rule (or a rule's "no" message) handled the command.
+' rule (or a rule's "no" message) handled the command. The chosen
+' rule's effects are left in GcDoEff$ for GcDo to apply.
 FUNCTION GcRules%(key$)
   LOCAL i%, n%, r$, no$
   n% = GmRules%(GcVerb$, key$)
   FOR i% = 0 TO n% - 1
-    r$ = DbRow$(i%)
+    r$ = GmGet$(GmList$(i%))
     IF GcTest%(DbStr$(r$, "if")) THEN
       IF DbStr$(r$, "say") <> "" THEN GvSay DbStr$(r$, "say")
-      GcEffects DbStr$(r$, "do")
+      GcDoEff$ = DbStr$(r$, "do")
       GcRules% = 1 : EXIT FUNCTION
     ENDIF
     IF no$ = "" THEN no$ = DbStr$(r$, "no")
@@ -268,6 +272,7 @@ SUB GcDo cmd$
   GcParse cmd$
   IF GcVerb$ = "" THEN GvSay "Pardon?" : EXIT SUB
   IF GcMeta%() THEN EXIT SUB
+  GcDoEff$ = "" : GcLookNow% = 0 : GcInvNow% = 0
   key$ = GcNoun$
   IF GcNoun$ <> "" AND GcVerb$ <> "go" THEN id$ = GcFind$(GcNoun$)
   IF id$ <> "" THEN key$ = MID$(id$, 3)
@@ -282,6 +287,9 @@ SUB GcDo cmd$
       ENDIF
     ENDIF
   ENDIF
+  IF GcDoEff$ <> "" THEN GcEffects GcDoEff$
+  IF GcLookNow% THEN GcLook
+  IF GcInvNow% THEN GcInventory
   GmAddNum "moves", 1
   GmTidy
 END SUB

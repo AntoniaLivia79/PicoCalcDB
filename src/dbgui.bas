@@ -34,6 +34,12 @@ DIM UiPV%, UiPSel%, UiPTop%, UiFull% = 1
 DIM UiMsg$, UiMsgSt%, UiQuit%, UiOk%
 DIM UiRes%, UiQuery$, UiWhere$, UiCols$, UiTxtT$
 DIM DtRec$, DtN%
+' Work a key handler leaves for UiStep, which does it after the handler
+' returns. Running queries from there rather than from deep inside the
+' handlers keeps call chains short: the PicoMite has a small stack.
+'   UiPend%: 1 run console statement UiPendQ$, 2 filter (WHERE UiPendQ$),
+'            3 describe the open collection
+DIM UiPend%, UiPendQ$, UiReloadNow%, UiReselect$
 DIM UiHist$(7) LENGTH 128, UiHistN%
 
 ' ---------------- drawing --------------------------------------------
@@ -484,15 +490,13 @@ SUB UiKeyRecs k%
     CASE UK_ENT : UiOpenDet UiSel%(UV_RECS)
     CASE 70
       id$ = UiInput$("WHERE ", UiWhere$, 1)
-      IF UiOk% THEN UiFilter id$
+      IF UiOk% THEN UiPend% = 2 : UiPendQ$ = id$
     CASE 78
       id$ = UiInput$("New _id (blank = auto): ", "", 0)
       IF UiOk% = 0 THEN EXIT SUB
       IF id$ = "" THEN id$ = StNewId$()
       IF StWrite%(RcNew$(id$), 1) = 0 THEN UiSay StErr$, US_ERR : EXIT SUB
-      UiReload
-      x% = UiFind%(id$)
-      IF x% >= 0 THEN UiSel%(UV_RECS) = x%
+      UiReloadNow% = 1 : UiReselect$ = id$
       DtLoad StFetch$(id$) : UiGo UV_DET
       UiSay "created " + id$ + " - A adds fields", US_MSG
     CASE UK_DEL
@@ -500,16 +504,15 @@ SUB UiKeyRecs k%
       id$ = RcGet$(StRead$(UiOff%(UiSel%(UV_RECS))), "_id")
       IF UiAsk%("Delete " + id$ + "?") THEN
         IF StDelete%(id$) THEN
-          UiReload : UiSay "deleted " + id$, US_MSG
+          UiReloadNow% = 1 : UiSay "deleted " + id$, US_MSG
         ELSE
           UiSay StErr$, US_ERR
         ENDIF
       ENDIF
-    CASE 68
-      IF ExRun%("DESCRIBE " + StCol$) THEN UiText "Describe " + StCol$ ELSE UiSay ExErr$, US_ERR
+    CASE 68 : UiPend% = 3
     CASE UK_ESC
       IF UiRes% THEN
-        UiFilter ""
+        UiRes% = 0 : UiWhere$ = "" : UiCols$ = "" : UiFull% = 1
       ELSE
         UiListColl StCol$ : UiGo UV_COLL
       ENDIF
@@ -521,9 +524,7 @@ SUB UiSave k$, v$, t%
   LOCAL id$ = RcGet$(DtRec$, "_id"), x%
   IF StSetField%(id$, k$, v$, t%) = 0 THEN UiSay StErr$, US_ERR : EXIT SUB
   DtLoad StFetch$(id$)
-  UiReload
-  x% = UiFind%(id$)
-  IF x% >= 0 THEN UiSel%(UV_RECS) = x%
+  UiReloadNow% = 1 : UiReselect$ = id$
   UiFull% = 1 : UiSay "saved", US_MSG
 END SUB
 
@@ -550,14 +551,19 @@ SUB UiKeyDet kc%
       IF UiAsk%("Remove " + LEFT$(k$, 20) + "?") THEN UiSave k$, "", 0
     CASE UK_LT : UiOpenDet UiSel%(UV_RECS) - 1
     CASE UK_RT : UiOpenDet UiSel%(UV_RECS) + 1
-    CASE UK_ESC : UiReload : UiGo UV_RECS
+    CASE UK_ESC : UiReloadNow% = 1 : UiGo UV_RECS
   END SELECT
 END SUB
 
+' Read a statement; UiStep runs it (UiConsoleRun)
 SUB UiConsole
-  LOCAL q$, i%, id$
+  LOCAL q$
   q$ = UiInput$("sql> ", "", 1)
-  IF UiOk% = 0 OR q$ = "" THEN EXIT SUB
+  IF UiOk% AND q$ <> "" THEN UiPend% = 1 : UiPendQ$ = q$
+END SUB
+
+SUB UiConsoleRun q$
+  LOCAL i%, id$
   IF ExRun%(q$) = 0 THEN UiSay ExErr$, US_ERR : EXIT SUB
   SELECT CASE ExKind$
     CASE "ROWS"
@@ -576,7 +582,7 @@ SUB UiConsole
       IF StCol$ = "" AND UiV% <> UV_COLL THEN
         UiRes% = 0 : UiGo UV_COLL
       ELSEIF UiV% = UV_RECS OR UiV% = UV_DET THEN
-        UiReload
+        UiReloadNow% = 1
         IF UiV% = UV_DET THEN
           IF IxGet%(id$) < 0 THEN UiGo UV_RECS ELSE DtLoad StFetch$(id$)
         ENDIF
@@ -624,21 +630,26 @@ FUNCTION UiNav%(k%)
   UiNav% = 1
 END FUNCTION
 
-' Process one key press
+' Process one key press, then any work the handler left (see UiPend%)
 SUB UiStep
-  LOCAL k% = HalKey%()
+  LOCAL k% = HalKey%(), x%
   IF UiMsg$ <> "" THEN UiSay "", US_N
   UiKey k%
+  SELECT CASE UiPend%
+    CASE 1 : UiConsoleRun UiPendQ$
+    CASE 2 : UiFilter UiPendQ$
+    CASE 3
+      IF ExRun%("DESCRIBE " + StCol$) THEN UiText "Describe " + StCol$ ELSE UiSay ExErr$, US_ERR
+  END SELECT
+  UiPend% = 0
+  IF UiReloadNow% THEN
+    UiReloadNow% = 0 : UiReload
+    IF UiReselect$ <> "" THEN
+      x% = UiFind%(UiReselect$)
+      IF x% >= 0 THEN UiSel%(UV_RECS) = x%
+    ENDIF
+  ENDIF
+  UiReselect$ = ""
   UiPaint
 END SUB
 
-SUB UiMain
-  HalInit
-  HalCls
-  UiListColl ""
-  UiGo UV_COLL
-  UiPaint
-  DO WHILE UiQuit% = 0 : UiStep : LOOP
-  StClose
-  HalCls
-END SUB

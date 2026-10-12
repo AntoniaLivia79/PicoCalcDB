@@ -49,7 +49,7 @@ The view is *passive*: it never reads the model. The controller fetches what is 
 
 - **The world is data.** Rooms, items, words and puzzle rules are records in one JSON Lines file that any text editor can change.
 - **Saving is automatic and crash-safe.** Every change (moving, taking, setting a flag) is written to the collection as it happens. The append-only file survives power loss, so there is no save/load code at all.
-- **Queries do the searching.** "What is in this room?" is `SELECT * FROM adv WHERE loc = 'r.cottage'`, answered from an index. Rules are found with an indexed query on their verb.
+- **The library does the searching.** "What is in this room?" is `DbFind%("loc", "=", "r.cottage")`, answered from an index without going through SQL. Rules are found with an indexed lookup on their verb.
 - **The explorer can open it.** Collection `adv` is an ordinary collection: browse or edit a game in progress with the PicoCalc DB explorer, which is handy when writing a world.
 
 ## Limits

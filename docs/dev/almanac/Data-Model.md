@@ -36,7 +36,7 @@ The library limits a record to 255 characters, and the supplied CSV was measured
 ```
 
 - **Ids sort by date**, because `YYYY-MM-DD` sorts correctly as text, and the two-digit sequence keeps a day's entries in file order (`.10` would sort before `.2` without the leading zero).
-- **A day is one index range.** `_id LIKE '2026-10-01.%'` is answered from the primary index, reading only that day's records.
+- **A day is one index range.** `DbFind%("_id", "STARTS", "2026-10-01.")` is answered from the primary index, reading only that day's records.
 - **The first and last records give the date range** (`AmOpen%`).
 - The sequence number is the lowest free one for that date, so rows sharing a date need not be next to each other in the CSV.
 

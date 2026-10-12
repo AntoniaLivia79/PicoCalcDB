@@ -12,6 +12,7 @@ SUB GcDo cmd$
   GcParse cmd$
   IF GcVerb$ = "" THEN GvSay "Pardon?" : EXIT SUB
   IF GcMeta%() THEN EXIT SUB
+  GcDoEff$ = "" : GcLookNow% = 0 : GcInvNow% = 0
   key$ = GcNoun$
   IF GcNoun$ <> "" AND GcVerb$ <> "go" THEN id$ = GcFind$(GcNoun$)
   IF id$ <> "" THEN key$ = MID$(id$, 3)
@@ -26,6 +27,9 @@ SUB GcDo cmd$
       ENDIF
     ENDIF
   ENDIF
+  IF GcDoEff$ <> "" THEN GcEffects GcDoEff$
+  IF GcLookNow% THEN GcLook
+  IF GcInvNow% THEN GcInventory
   GmAddNum "moves", 1
   GmTidy
 END SUB
@@ -35,7 +39,10 @@ END SUB
 2. **Meta commands** (`help`, `score`, `save`, `quit`, `restart`) are handled by `GcMeta%` and do not count as moves.
 3. **Resolve the noun** to a visible item (`GcFind$`). The rules are looked up with the item's short name, so "open drawer" finds the rules for `desk` when `drawer` is one of the desk's words.
 4. **Rules first** (`GcRules%`), then **built-in verbs** (`GcBuiltIn%`), then a "can't" message.
-5. **Count the move** in the model, and let the model tidy its file.
+5. **Do the work they left:** the chosen rule's effects (`GcDoEff$`, applied by `GcEffects`), describing the room (`GcLookNow%`) and listing the inventory (`GcInvNow%`).
+6. **Count the move** in the model, and let the model tidy its file.
+
+Step 5 is done here, rather than inside the rule or verb that asked for it, to keep call chains short. Every nested SUB or FUNCTION call uses part of the PicoMite's small stack, and a rule effect that moved the player and then described the room from inside the rule engine used to be the deepest chain in the game ([MMBasic notes](../dbapp/MMBasic-Notes.md#the-call-stack-is-small)).
 
 ## The controller (`adv_ctrl.bas`)
 
@@ -76,10 +83,10 @@ FUNCTION GcRules%(key$)
   LOCAL i%, n%, r$, no$
   n% = GmRules%(GcVerb$, key$)
   FOR i% = 0 TO n% - 1
-    r$ = DbRow$(i%)
+    r$ = GmGet$(GmList$(i%))
     IF GcTest%(DbStr$(r$, "if")) THEN
       IF DbStr$(r$, "say") <> "" THEN GvSay DbStr$(r$, "say")
-      GcEffects DbStr$(r$, "do")
+      GcDoEff$ = DbStr$(r$, "do")
       GcRules% = 1 : EXIT FUNCTION
     ENDIF
     IF no$ = "" THEN no$ = DbStr$(r$, "no")
@@ -88,9 +95,7 @@ FUNCTION GcRules%(key$)
 END FUNCTION
 ```
 
-`GmRules%` runs the query for this verb and noun (both indexed fields). The rows come back in `_id` order. The loop takes the first rule whose conditions hold, remembering the first `no` message in case none does. When no rule matches and there is no `no` message, `GcRules%` returns 0 and the built-in verbs get the command.
-
-The rule is read into `r$` before its effects run. That matters because effects can start new queries, for example `look` lists the room's items, and a new query replaces `DbRow$`'s results.
+`GmRules%` finds the rules for this verb (an indexed lookup), keeps those for this noun, and returns their `_id`s in `GmList$()`, sorted. The loop reads each rule with `GmGet$` and takes the first whose conditions hold, remembering the first `no` message in case none does. The chosen rule's `say` is shown at once, but its effects are only recorded in `GcDoEff$`; `GcDo` applies them when the rule engine has returned. When no rule matches and there is no `no` message, `GcRules%` returns 0 and the built-in verbs get the command.
 
 ```basic
 FUNCTION GcTest%(c$)
@@ -117,7 +122,7 @@ FUNCTION GcTest%(c$)
 END FUNCTION
 ```
 
-Conditions and effects are split with `FIELD$` (by `;`, then `:`), and an effect's target with `>` and `.`. Each condition is one model call (`GmLoc$`, `GmAt$`, `GmFlag%`), none of them a query, so testing a rule never disturbs the rule list being looped over.
+Conditions and effects are split with `FIELD$` (by `;`, then `:`), and an effect's target with `>` and `.`. Each condition is one model call (`GmLoc$`, `GmAt$`, `GmFlag%`), each a single record read, so testing a rule never disturbs the list of rules being looped over.
 
 ### Built-in verbs
 
@@ -145,20 +150,19 @@ The model wraps the `Db…` API in game terms, so the controller never builds a 
 | `GmFlag%`, `GmSetFlag` | Flags: fields of `s.flags` |
 | `GmLoc$`, `GmMove` | Where an item is; move it |
 | `GmExit$`, `GmSetExit` | Read and change a room's exits |
-| `GmItemsAt%(loc$, add%)` | Item ids at a place, into `GmList$()` |
+| `GmItemsAt%(loc$, add%)` | Item ids at a place, into `GmList$()` (a `DbFind%` on `loc`) |
 | `GmWord$(w$)` | Vocabulary lookup |
-| `GmRules%(verb$, noun$)` | The rules for a command |
+| `GmRules%(verb$, noun$)` | The `_id`s of the rules for a command, sorted, into `GmList$()` |
 | `GmTidy`, `GmClose` | Compact the file when needed; close |
 
 ```basic
 FUNCTION GmItemsAt%(loc$, add%)
-  LOCAL i%
+  LOCAL i%, n%
   IF add% = 0 THEN GmListN% = 0
-  IF DbQuery%("SELECT * FROM " + GM_COL$ + " WHERE loc = '" + loc$ + "'") THEN
-    FOR i% = 0 TO DbRows%() - 1
-      IF GmListN% < GM_MAXL THEN GmList$(GmListN%) = DbStr$(DbRow$(i%), "_id") : INC GmListN%
-    NEXT
-  ENDIF
+  n% = DbFind%("loc", "=", loc$)
+  FOR i% = 0 TO n% - 1
+    IF GmListN% < GM_MAXL THEN GmList$(GmListN%) = DbStr$(DbRow$(i%), "_id") : INC GmListN%
+  NEXT
   GmItemsAt% = GmListN%
 END FUNCTION
 ```

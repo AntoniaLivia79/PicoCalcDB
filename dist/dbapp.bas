@@ -49,62 +49,17 @@ FUNCTION RcSkip%(r$, i%)
   RcSkip% = j%
 END FUNCTION
 
-' Decode the JSON string whose opening quote is at i% into s$.
-' Returns position after the closing quote, or -1 if malformed.
-FUNCTION RcStr%(r$, i%, s$)
-  LOCAL j% = i% + 1, q%, b%, c$, a%
-  s$ = ""
-  DO
-    q% = INSTR(j%, r$, CHR$(34))
-    IF q% = 0 THEN RcStr% = -1 : EXIT FUNCTION
-    b% = INSTR(j%, r$, "\")
-    IF b% = 0 OR b% > q% THEN
-      s$ = s$ + MID$(r$, j%, q% - j%)
-      RcStr% = q% + 1
-      EXIT FUNCTION
-    ENDIF
-    s$ = s$ + MID$(r$, j%, b% - j%)
-    c$ = MID$(r$, b% + 1, 1)
-    j% = b% + 2
-    SELECT CASE c$
-      CASE "n" : s$ = s$ + CHR$(10)
-      CASE "t" : s$ = s$ + CHR$(9)
-      CASE "r" : s$ = s$ + CHR$(13)
-      CASE "b" : s$ = s$ + CHR$(8)
-      CASE "f" : s$ = s$ + CHR$(12)
-      CASE "u"
-        a% = VAL("&H" + MID$(r$, b% + 2, 4))
-        IF a% > 255 THEN s$ = s$ + "?" ELSE s$ = s$ + CHR$(a%)
-        j% = b% + 6
-      CASE ELSE : s$ = s$ + c$   ' \" \\ \/
-    END SELECT
-  LOOP
-END FUNCTION
-
-' Skip a nested {...} or [...] starting at i%; returns pos after it
-FUNCTION RcNest%(r$, i%)
-  LOCAL j% = i%, d% = 0, c$, s$
-  DO WHILE j% <= LEN(r$)
-    c$ = MID$(r$, j%, 1)
-    IF c$ = CHR$(34) THEN
-      j% = RcStr%(r$, j%, s$)
-      IF j% < 0 THEN EXIT DO
-    ELSE
-      IF c$ = "{" OR c$ = "[" THEN INC d%
-      IF c$ = "}" OR c$ = "]" THEN INC d%, -1
-      INC j%
-      IF d% = 0 THEN RcNest% = j% : EXIT FUNCTION
-    ENDIF
-  LOOP
-  RcNest% = -1
-END FUNCTION
-
 ' Field iterator. Start with ip% = 1; pass back the returned value.
 ' Returns next position (>0) with k$, v$, t% filled in,
 ' 0 at end of record, -1 if the record is malformed or truncated.
+' It calls no other routine: it is at the bottom of almost every call
+' chain, and each nested call uses part of the PicoMite's small stack.
 FUNCTION RcNext%(r$, ip%, k$, v$, t%)
-  LOCAL i%, e%, c$
-  i% = RcSkip%(r$, ip%)
+  LOCAL i% = ip%, n% = LEN(r$), e%, c$, s$, q%, b%, a%, d%, part%
+  DO WHILE i% <= n%
+    IF ASC(MID$(r$, i%, 1)) > 32 THEN EXIT DO
+    INC i%
+  LOOP
   c$ = MID$(r$, i%, 1)
   IF ip% = 1 THEN
     IF c$ <> "{" THEN RcNext% = -1 : EXIT FUNCTION
@@ -113,33 +68,97 @@ FUNCTION RcNext%(r$, ip%, k$, v$, t%)
   ELSEIF c$ <> "," THEN
     RcNext% = -1 : EXIT FUNCTION
   ENDIF
-  i% = RcSkip%(r$, i% + 1)
+  INC i%
+  DO WHILE i% <= n%
+    IF ASC(MID$(r$, i%, 1)) > 32 THEN EXIT DO
+    INC i%
+  LOOP
   c$ = MID$(r$, i%, 1)
   IF c$ = "}" AND ip% = 1 THEN RcNext% = 0 : EXIT FUNCTION
   IF c$ <> CHR$(34) THEN RcNext% = -1 : EXIT FUNCTION
   RcKS% = i%
-  i% = RcStr%(r$, i%, k$)
-  IF i% < 0 THEN RcNext% = -1 : EXIT FUNCTION
-  i% = RcSkip%(r$, i%)
-  IF MID$(r$, i%, 1) <> ":" THEN RcNext% = -1 : EXIT FUNCTION
-  i% = RcSkip%(r$, i% + 1)
-  RcVS% = i%
-  c$ = MID$(r$, i%, 1)
-  IF c$ = CHR$(34) THEN
-    i% = RcStr%(r$, i%, v$) : t% = 1
-  ELSEIF c$ = "{" OR c$ = "[" THEN
-    i% = RcNest%(r$, i%) : t% = 3
-    IF i% > 0 THEN v$ = MID$(r$, RcVS%, i% - RcVS%)
-  ELSE
-    e% = i%
-    DO WHILE e% <= LEN(r$)
-      c$ = MID$(r$, e%, 1)
-      IF c$ = "," OR c$ = "}" OR ASC(c$) <= 32 THEN EXIT DO
-      INC e%
+  part% = 1                             ' 1 = the key, 2 = a "text" value
+  DO
+    ' decode the string whose opening quote is at i% into s$
+    s$ = "" : e% = i% + 1
+    DO
+      q% = INSTR(e%, r$, CHR$(34))
+      IF q% = 0 THEN RcNext% = -1 : EXIT FUNCTION
+      b% = INSTR(e%, r$, "\")
+      IF b% = 0 OR b% > q% THEN s$ = s$ + MID$(r$, e%, q% - e%) : i% = q% + 1 : EXIT DO
+      s$ = s$ + MID$(r$, e%, b% - e%)
+      c$ = MID$(r$, b% + 1, 1)
+      e% = b% + 2
+      SELECT CASE c$
+        CASE "n" : s$ = s$ + CHR$(10)
+        CASE "t" : s$ = s$ + CHR$(9)
+        CASE "r" : s$ = s$ + CHR$(13)
+        CASE "b" : s$ = s$ + CHR$(8)
+        CASE "f" : s$ = s$ + CHR$(12)
+        CASE "u"
+          a% = VAL("&H" + MID$(r$, b% + 2, 4))
+          IF a% > 255 THEN s$ = s$ + "?" ELSE s$ = s$ + CHR$(a%)
+          e% = b% + 6
+        CASE ELSE : s$ = s$ + c$   ' \" \\ \/
+      END SELECT
     LOOP
-    IF e% = i% THEN RcNext% = -1 : EXIT FUNCTION
-    v$ = MID$(r$, i%, e% - i%) : t% = 2 : i% = e%
-  ENDIF
+    IF part% = 2 THEN v$ = s$ : t% = 1 : EXIT DO
+    k$ = s$
+    DO WHILE i% <= n%
+      IF ASC(MID$(r$, i%, 1)) > 32 THEN EXIT DO
+      INC i%
+    LOOP
+    IF MID$(r$, i%, 1) <> ":" THEN RcNext% = -1 : EXIT FUNCTION
+    INC i%
+    DO WHILE i% <= n%
+      IF ASC(MID$(r$, i%, 1)) > 32 THEN EXIT DO
+      INC i%
+    LOOP
+    RcVS% = i%
+    c$ = MID$(r$, i%, 1)
+    IF c$ = CHR$(34) THEN
+      part% = 2
+    ELSEIF c$ = "{" OR c$ = "[" THEN
+      ' nested list or object: skip to its matching bracket
+      d% = 0
+      DO WHILE i% <= n%
+        c$ = MID$(r$, i%, 1)
+        IF c$ = CHR$(34) THEN
+          INC i%
+          DO WHILE i% <= n%
+            c$ = MID$(r$, i%, 1)
+            IF c$ = "\" THEN
+              INC i%, 2
+            ELSEIF c$ = CHR$(34) THEN
+              EXIT DO
+            ELSE
+              INC i%
+            ENDIF
+          LOOP
+          IF i% > n% THEN RcNext% = -1 : EXIT FUNCTION
+          INC i%
+        ELSE
+          IF c$ = "{" OR c$ = "[" THEN INC d%
+          IF c$ = "}" OR c$ = "]" THEN INC d%, -1
+          INC i%
+          IF d% = 0 THEN EXIT DO
+        ENDIF
+      LOOP
+      IF d% <> 0 THEN RcNext% = -1 : EXIT FUNCTION
+      v$ = MID$(r$, RcVS%, i% - RcVS%) : t% = 3
+      EXIT DO
+    ELSE
+      e% = i%
+      DO WHILE e% <= n%
+        c$ = MID$(r$, e%, 1)
+        IF c$ = "," OR c$ = "}" OR ASC(c$) <= 32 THEN EXIT DO
+        INC e%
+      LOOP
+      IF e% = i% THEN RcNext% = -1 : EXIT FUNCTION
+      v$ = MID$(r$, i%, e% - i%) : t% = 2 : i% = e%
+      EXIT DO
+    ENDIF
+  LOOP
   RcVE% = i%
   RcNext% = i%
 END FUNCTION
@@ -384,7 +403,9 @@ END FUNCTION
 ' Numbers map to floor(n) + 5e10, zero padded, clamped to +-4.9e10.
 FUNCTION SxEnc$(s%, v$, t%)
   LOCAL n!, e%
-  IF t% = 2 AND RcIsNum%(v$) THEN
+  ' values reaching here are validated, so a literal that is not true,
+  ' false or null is a number (no RcIsNum% call: one level less)
+  IF t% = 2 AND v$ <> "true" AND v$ <> "false" AND v$ <> "null" THEN
     n! = VAL(v$)
     IF n! > 4.9E10 THEN n! = 4.9E10
     IF n! < -4.9E10 THEN n! = -4.9E10
@@ -396,18 +417,28 @@ FUNCTION SxEnc$(s%, v$, t%)
 END FUNCTION
 
 FUNCTION SxAdd%(s%, v$, t%, off%)
-  LOCAL k$ = SxEnc$(s%, v$, t%), i%, j%
+  SxAdd% = SxAddK%(SxEnc$(s%, v$, t%), off%)
+END FUNCTION
+
+' Add encoded key k$ (from SxEnc$) for offset off%
+FUNCTION SxAddK%(k$, off%)
+  LOCAL i%, j%
   IF SxN% >= SX_MAX THEN IxErr$ = "sec index full" : EXIT FUNCTION
   i% = IxBound%(SxV$(), SxN%, k$, 1)
   FOR j% = SxN% TO i% + 1 STEP -1
     SxV$(j%) = SxV$(j% - 1) : SxO%(j%) = SxO%(j% - 1)
   NEXT
   SxV$(i%) = k$ : SxO%(i%) = off% : INC SxN%
-  SxAdd% = 1
+  SxAddK% = 1
 END FUNCTION
 
 FUNCTION SxRemove%(s%, v$, t%, off%)
-  LOCAL k$ = SxEnc$(s%, v$, t%), i%, j%
+  SxRemove% = SxRemoveK%(SxEnc$(s%, v$, t%), off%)
+END FUNCTION
+
+' Remove the entry with encoded key k$ and offset off%
+FUNCTION SxRemoveK%(k$, off%)
+  LOCAL i%, j%
   i% = IxBound%(SxV$(), SxN%, k$, 0)
   DO WHILE i% < SxN%
     IF SxV$(i%) <> k$ THEN EXIT DO
@@ -415,7 +446,7 @@ FUNCTION SxRemove%(s%, v$, t%, off%)
       FOR j% = i% TO SxN% - 2
         SxV$(j%) = SxV$(j% + 1) : SxO%(j%) = SxO%(j% + 1)
       NEXT
-      INC SxN%, -1 : SxRemove% = 1 : EXIT FUNCTION
+      INC SxN%, -1 : SxRemoveK% = 1 : EXIT FUNCTION
     ENDIF
     INC i%
   LOOP
@@ -457,17 +488,21 @@ FUNCTION IxApply%(rec$, off%, old$)
     FOR s% = 0 TO SX_SLOTS - 1
       IF SxF$(s%) <> "" THEN
         v$ = RcGet$(old$, SxF$(s%)) : ft% = RcT%
-        IF RcFound% THEN v$ = STR$(SxRemove%(s%, v$, ft%, oo%))
+        IF RcFound% THEN v$ = STR$(SxRemoveK%(SxEnc$(s%, v$, ft%), oo%))
       ENDIF
     NEXT
   ENDIF
-  IF RcIsDel%(rec$) THEN v$ = STR$(IxRemove%(id$)) : IxApply% = 1 : EXIT FUNCTION
+  ' tombstone? (RcIsDel% inlined: one call level less)
+  IF INSTR(rec$, CHR$(34) + "_del" + CHR$(34)) THEN
+    v$ = RcGet$(rec$, "_del")
+    IF RcFound% AND v$ <> "0" AND v$ <> "false" THEN v$ = STR$(IxRemove%(id$)) : IxApply% = 1 : EXIT FUNCTION
+  ENDIF
   IF IxPut%(id$, off%) = 0 THEN EXIT FUNCTION
   FOR s% = 0 TO SX_SLOTS - 1
     IF SxF$(s%) <> "" THEN
       v$ = RcGet$(rec$, SxF$(s%)) : ft% = RcT%
       IF RcFound% THEN
-        IF SxAdd%(s%, v$, ft%, off%) = 0 THEN EXIT FUNCTION
+        IF SxAddK%(SxEnc$(s%, v$, ft%), off%) = 0 THEN EXIT FUNCTION
       ENDIF
     ENDIF
   NEXT
@@ -488,10 +523,11 @@ END FUNCTION
 
 ' Read the line at offset off% ("" if it is unreadable)
 FUNCTION IxReadAt$(fnum%, off%)
-  LOCAL r$
+  LOCAL r$ = CHR$(1)
   SEEK #fnum%, off%
-  r$ = IxLine$(fnum%)
-  IF IxLong% THEN r$ = ""
+  ON ERROR SKIP 1
+  LINE INPUT #fnum%, r$
+  IF r$ = CHR$(1) THEN r$ = ""
   IxReadAt$ = r$
 END FUNCTION
 
@@ -539,7 +575,11 @@ FUNCTION IxScan%(fnum%, from%)
         IF IxN% >= IX_MAX THEN IxCompact
         IF IxN% >= IX_MAX THEN IxErr$ = "index full" : EXIT FUNCTION
         IxK$(IxN%) = id$
-        IF RcIsDel%(r$) THEN IxO%(IxN%) = -off% ELSE IxO%(IxN%) = off%
+        IxO%(IxN%) = off%
+        IF INSTR(r$, CHR$(34) + "_del" + CHR$(34)) THEN
+          id$ = RcGet$(r$, "_del")
+          IF RcFound% AND id$ <> "0" AND id$ <> "false" THEN IxO%(IxN%) = -off%
+        ENDIF
         INC IxN%
       ELSE
         INC IxBad%
@@ -697,16 +737,18 @@ FUNCTION StList%()
   StList% = StCatN%
 END FUNCTION
 
+' Writes the empty data file and the initial metadata line directly,
+' so the open collection (if any) is left alone.
 FUNCTION StCreate%(n$)
-  LOCAL sv$ = StCol$
+  LOCAL q$ = CHR$(34)
   StErr$ = ""
   IF StNameOk%(n$) = 0 THEN EXIT FUNCTION
   IF StExists%(StDir$ + n$ + ".jsonl") THEN StErr$ = "exists" : EXIT FUNCTION
-  IF sv$ <> "" THEN StClose
   OPEN StDir$ + n$ + ".jsonl" FOR OUTPUT AS #ST_TMP : CLOSE #ST_TMP
-  StCol$ = n$ : MtClear : MtSave : StCol$ = ""
+  OPEN StDir$ + n$ + ".meta" FOR OUTPUT AS #ST_TMP
+  PRINT #ST_TMP, "{" + q$ + "_id" + q$ + ":" + q$ + "@" + q$ + "," + q$ + "seq" + q$ + ":0," + q$ + "dead" + q$ + ":0}"
+  CLOSE #ST_TMP
   StCreate% = 1
-  IF sv$ <> "" THEN StCreate% = StOpen%(sv$)
 END FUNCTION
 
 FUNCTION StDrop%(n$)
@@ -753,19 +795,21 @@ SUB MtLoad
   CLOSE #ST_TMP
 END SUB
 
+' The lines are built directly as JSON text (not with RcSet$), which
+' keeps the call depth low when a collection is closed from deep inside
+' another operation.
 SUB MtSave
-  LOCAL r$, i%
-  r$ = RcNew$("@")
-  r$ = RcSet$(r$, "seq", STR$(MtSeq%), 2)
-  r$ = RcSet$(r$, "dead", STR$(MtDead%), 2)
+  LOCAL r$, i%, q$ = CHR$(34)
+  r$ = "{" + q$ + "_id" + q$ + ":" + q$ + "@" + q$ + "," + q$ + "seq" + q$ + ":" + STR$(MtSeq%)
+  r$ = r$ + "," + q$ + "dead" + q$ + ":" + STR$(MtDead%)
   FOR i% = 0 TO SX_SLOTS - 1
-    IF SxF$(i%) <> "" THEN r$ = RcSet$(r$, "i" + STR$(i%), SxF$(i%), 1)
+    IF SxF$(i%) <> "" THEN r$ = r$ + "," + q$ + "i" + STR$(i%) + q$ + ":" + RcEnc$(SxF$(i%))
   NEXT
   OPEN StPath$(".meta") FOR OUTPUT AS #ST_TMP
-  PRINT #ST_TMP, r$
-  IF RcCheck%(MtUser$) > 1 THEN PRINT #ST_TMP, MtUser$
+  PRINT #ST_TMP, r$ + "}"
+  IF MtUser$ <> "{" + q$ + "_id" + q$ + ":" + q$ + "@user" + q$ + "}" THEN PRINT #ST_TMP, MtUser$
   FOR i% = 0 TO MtN% - 1
-    PRINT #ST_TMP, RcSet$(RcNew$(MtF$(i%)), "t", MtT$(i%), 1)
+    PRINT #ST_TMP, "{" + q$ + "_id" + q$ + ":" + RcEnc$(MtF$(i%)) + "," + q$ + "t" + q$ + ":" + q$ + MtT$(i%) + q$ + "}"
   NEXT
   CLOSE #ST_TMP
   MtDirty% = 0
@@ -838,7 +882,7 @@ FUNCTION StVerify%()
     IF IxN% = 0 THEN EXIT FUNCTION
     i% = (IxN% - 1) * j% \ 7
     r$ = StRead$(IxO%(i%))
-    IF RcGet$(r$, "_id") <> IxK$(i%) OR RcIsDel%(r$) THEN StVerify% = 0 : EXIT FUNCTION
+    IF RcGet$(r$, "_id") <> IxK$(i%) OR INSTR(r$, CHR$(34) + "_del" + CHR$(34)) > 0 THEN StVerify% = 0 : EXIT FUNCTION
   NEXT
 END FUNCTION
 
@@ -918,20 +962,10 @@ FUNCTION StAppend%(r$)
   CLOSE #ST_WR
 END FUNCTION
 
-' Count secondary-index entries rec$ needs
-FUNCTION StSxNeed%(rec$)
-  LOCAL s%, v$
-  FOR s% = 0 TO SX_SLOTS - 1
-    IF SxF$(s%) <> "" THEN
-      v$ = RcGet$(rec$, SxF$(s%))
-      IF RcFound% THEN INC StSxNeed%
-    ENDIF
-  NEXT
-END FUNCTION
 
 ' Write a whole record. md%: 0 upsert, 1 insert only, 2 update only
 FUNCTION StWrite%(rec$, md%)
-  LOCAL id$, oo%, old$, off%
+  LOCAL id$, oo%, old$, off%, n%, s%, x$
   StErr$ = ""
   IF StCol$ = "" THEN StErr$ = "no collection open" : EXIT FUNCTION
   IF RcCheck%(rec$) < 0 OR INSTR(rec$, CHR$(10)) OR INSTR(rec$, CHR$(13)) THEN
@@ -940,13 +974,22 @@ FUNCTION StWrite%(rec$, md%)
   id$ = RcGet$(rec$, "_id")
   IF RcFound% = 0 OR RcT% <> 1 THEN StErr$ = "_id must be a string" : EXIT FUNCTION
   IF IxKeyOk%(id$) = 0 THEN StErr$ = IxErr$ : EXIT FUNCTION
-  IF RcIsDel%(rec$) THEN StErr$ = "_del is reserved" : EXIT FUNCTION
+  IF INSTR(rec$, CHR$(34) + "_del" + CHR$(34)) THEN StErr$ = "_del is reserved" : EXIT FUNCTION
   oo% = IxGet%(id$)
   IF md% = 1 AND oo% > 0 THEN StErr$ = "duplicate _id" : EXIT FUNCTION
   IF md% = 2 AND oo% < 0 THEN StErr$ = "not found" : EXIT FUNCTION
   IF oo% < 0 AND IxN% >= IX_MAX THEN StErr$ = "collection full" : EXIT FUNCTION
   IF oo% > 0 THEN old$ = StRead$(oo%)
-  IF SxN% + StSxNeed%(rec$) - StSxNeed%(old$) > SX_MAX THEN
+  ' index entries needed by the new version minus those of the old one
+  ' (counted here rather than in a function: one call level less)
+  n% = 0
+  FOR s% = 0 TO SX_SLOTS - 1
+    IF SxF$(s%) <> "" THEN
+      x$ = RcGet$(rec$, SxF$(s%)) : n% = n% + RcFound%
+      IF old$ <> "" THEN x$ = RcGet$(old$, SxF$(s%)) : n% = n% - RcFound%
+    ENDIF
+  NEXT
+  IF SxN% + n% > SX_MAX THEN
     StErr$ = "index space full" : EXIT FUNCTION
   ENDIF
   off% = StAppend%(rec$)
@@ -1091,7 +1134,7 @@ CONST QO_LIKE = 7, QO_NULL = 8, QO_NNULL = 9
 CONST QO_AND = 20, QO_OR = 21, QO_NOT = 22
 
 DIM TkT%(TK_MAX - 1), TkP%(TK_MAX - 1), TkL%(TK_MAX - 1), TkN%
-DIM QText$, QErr$, QPos%, QDepth%
+DIM QText$, QErr$, QPos%
 DIM QCmd$, QCol$, QExplain%, QAgg%, QFN%, QOrd$, QDesc%, QLim%, QOff%
 DIM QFld$(QF_MAX - 1) LENGTH 24
 DIM QVal$(QF_MAX - 1) LENGTH QV_LEN, QVT%(QF_MAX - 1)
@@ -1179,7 +1222,7 @@ END SUB
 FUNCTION QKw%(kwd$)
   IF QErr$ <> "" THEN EXIT FUNCTION
   IF TkT%(QPos%) = TK_ID THEN
-    IF UCASE$(TkRaw$(QPos%)) = kwd$ THEN INC QPos% : QKw% = 1
+    IF UCASE$(MID$(QText$, TkP%(QPos%), TkL%(QPos%))) = kwd$ THEN INC QPos% : QKw% = 1
   ENDIF
 END FUNCTION
 
@@ -1193,7 +1236,7 @@ FUNCTION QSym%(s$)
   LOCAL r$
   IF QErr$ <> "" THEN EXIT FUNCTION
   IF TkT%(QPos%) = TK_SYM THEN
-    r$ = TkRaw$(QPos%)
+    r$ = MID$(QText$, TkP%(QPos%), TkL%(QPos%))
     IF r$ = "!=" THEN r$ = "<>"
     IF r$ = s$ THEN INC QPos% : QSym% = 1
   ENDIF
@@ -1208,7 +1251,7 @@ END FUNCTION
 FUNCTION QName$()
   LOCAL r$
   IF QErr$ <> "" THEN EXIT FUNCTION
-  r$ = TkRaw$(QPos%)
+  r$ = MID$(QText$, TkP%(QPos%), TkL%(QPos%))
   IF TkT%(QPos%) = TK_QID THEN
     r$ = MID$(r$, 2, LEN(r$) - 2)
   ELSEIF TkT%(QPos%) = TK_ID THEN
@@ -1225,7 +1268,7 @@ END FUNCTION
 FUNCTION QColName$()
   LOCAL r$
   IF QErr$ <> "" THEN EXIT FUNCTION
-  r$ = TkRaw$(QPos%)
+  r$ = MID$(QText$, TkP%(QPos%), TkL%(QPos%))
   IF TkT%(QPos%) <> TK_ID OR INSTR(QRES$, " " + UCASE$(r$) + " ") > 0 THEN
     QFail "expected a collection name" : EXIT FUNCTION
   ENDIF
@@ -1238,7 +1281,7 @@ END FUNCTION
 FUNCTION QValue%(v$, t%)
   LOCAL r$, i%
   IF QErr$ <> "" THEN EXIT FUNCTION
-  r$ = TkRaw$(QPos%) : v$ = ""
+  r$ = MID$(QText$, TkP%(QPos%), TkL%(QPos%)) : v$ = ""
   SELECT CASE TkT%(QPos%)
     CASE TK_STR
       r$ = MID$(r$, 2, LEN(r$) - 2) : t% = 1
@@ -1262,7 +1305,7 @@ END FUNCTION
 
 ' A whole number for LIMIT / OFFSET
 FUNCTION QInt%()
-  LOCAL r$ = TkRaw$(QPos%), i%
+  LOCAL r$ = MID$(QText$, TkP%(QPos%), TkL%(QPos%)), i%
   IF QErr$ <> "" THEN EXIT FUNCTION
   IF TkT%(QPos%) = TK_NUM AND LEN(r$) <= 6 THEN
     FOR i% = 1 TO LEN(r$)
@@ -1301,79 +1344,24 @@ FUNCTION QSetVal%(i%, v$, t%)
 END FUNCTION
 
 ' ---------------- WHERE expression -> RPN ----------------------------
+' The condition is parsed iteratively (shunting-yard) with an explicit
+' operator stack: no recursion, so the call depth does not grow with
+' the length or nesting of the condition. MMBasic programs run on a
+' small fixed stack, and every nested SUB/FUNCTION call uses part of it.
 
 FUNCTION QNode%(op%, f$, v$, t%)
   IF QErr$ <> "" THEN EXIT FUNCTION
   IF QNN% >= QN_MAX THEN QFail "condition too complex" : EXIT FUNCTION
   IF LEN(v$) > QNV_LEN THEN QFail "value too long" : EXIT FUNCTION
   QnOp%(QNN%) = op% : QnF$(QNN%) = f$ : QnV$(QNN%) = v$ : QnT%(QNN%) = t%
-  QnTop%(QNN%) = (op% < QO_AND)
+  QnTop%(QNN%) = 0
   INC QNN%
   QNode% = 1
 END FUNCTION
 
-' Leaves from node st% on are not top-level AND terms
-SUB QNotTop st%
-  LOCAL i%
-  FOR i% = st% TO QNN% - 1 : QnTop%(i%) = 0 : NEXT
-END SUB
-
-' NOTE: these recursive functions must not use DO/FOR loops: MMBasic
-' tracks loops by program position, so a loop re-entered through
-' recursion ("a AND (b AND c)") breaks the outer one.
-FUNCTION QOr%()
-  LOCAL st% = QNN%
-  IF QAnd%() = 0 THEN EXIT FUNCTION
-  IF QKw%("OR") THEN
-    QOr% = QOrRest%()
-    QNotTop st%
-  ELSE
-    QOr% = (QErr$ = "")
-  ENDIF
-END FUNCTION
-
-' After an OR: operand, emit OR, repeat (keeps left associativity)
-FUNCTION QOrRest%()
-  IF QAnd%() = 0 THEN EXIT FUNCTION
-  IF QNode%(QO_OR, "", "", 0) = 0 THEN EXIT FUNCTION
-  IF QKw%("OR") THEN QOrRest% = QOrRest%() ELSE QOrRest% = (QErr$ = "")
-END FUNCTION
-
-FUNCTION QAnd%()
-  IF QNot%() = 0 THEN EXIT FUNCTION
-  IF QKw%("AND") THEN QAnd% = QAndRest%() ELSE QAnd% = (QErr$ = "")
-END FUNCTION
-
-FUNCTION QAndRest%()
-  IF QNot%() = 0 THEN EXIT FUNCTION
-  IF QNode%(QO_AND, "", "", 0) = 0 THEN EXIT FUNCTION
-  IF QKw%("AND") THEN QAndRest% = QAndRest%() ELSE QAndRest% = (QErr$ = "")
-END FUNCTION
-
-FUNCTION QNot%()
-  LOCAL st% = QNN%
-  IF QKw%("NOT") THEN
-    INC QDepth%
-    IF QDepth% > 12 THEN QFail "too deeply nested" : EXIT FUNCTION
-    IF QNot%() = 0 THEN EXIT FUNCTION
-    INC QDepth%, -1
-    QNot% = QNode%(QO_NOT, "", "", 0)
-    QNotTop st%
-  ELSE
-    QNot% = QPrim%()
-  ENDIF
-END FUNCTION
-
-FUNCTION QPrim%()
-  LOCAL f$, v$, t%, op%, neg%, st% = QNN%
-  IF QErr$ <> "" THEN EXIT FUNCTION
-  INC QDepth%
-  IF QDepth% > 12 THEN QFail "too deeply nested" : EXIT FUNCTION
-  IF QSym%("(") THEN
-    IF QOr%() = 0 THEN EXIT FUNCTION
-    IF QNeedSym%(")") = 0 THEN EXIT FUNCTION
-    INC QDepth%, -1 : QPrim% = 1 : EXIT FUNCTION
-  ENDIF
+' One comparison: f op value | f [NOT] LIKE 'p' | f IS [NOT] NULL
+FUNCTION QLeaf%()
+  LOCAL f$, v$, t%, op%, neg%, r$
   f$ = QName$()
   IF QErr$ <> "" THEN EXIT FUNCTION
   IF QKw%("IS") THEN
@@ -1389,7 +1377,8 @@ FUNCTION QPrim%()
       op% = QO_LIKE
     ELSE
       IF TkT%(QPos%) = TK_SYM THEN
-        SELECT CASE TkRaw$(QPos%)
+        r$ = MID$(QText$, TkP%(QPos%), TkL%(QPos%))
+        SELECT CASE r$
           CASE "="       : op% = QO_EQ
           CASE "<>", "!=" : op% = QO_NE
           CASE "<"       : op% = QO_LT
@@ -1407,16 +1396,91 @@ FUNCTION QPrim%()
   IF QNode%(op%, f$, v$, t%) = 0 THEN EXIT FUNCTION
   IF neg% AND op% = QO_LIKE THEN
     IF QNode%(QO_NOT, "", "", 0) = 0 THEN EXIT FUNCTION
-    QNotTop st%
   ENDIF
-  INC QDepth%, -1
-  QPrim% = 1
+  QLeaf% = 1
 END FUNCTION
+
+' A whole condition. Operators wait on os%() until an operator of
+' lower precedence (or the end, or a closing bracket) releases them:
+' NOT 3, AND 2, OR 1; 0 on the stack marks an open bracket.
+FUNCTION QCond%()
+  LOCAL os%(TK_MAX \ 2), on% = 0, opnd% = 1, op%, k%, par% = 0
+  DO
+    IF QErr$ <> "" THEN EXIT FUNCTION
+    IF opnd% THEN
+      IF QKw%("NOT") THEN
+        os%(on%) = QO_NOT : INC on%
+      ELSEIF QSym%("(") THEN
+        INC par%
+        IF par% > 12 THEN QFail "too deeply nested" : EXIT FUNCTION
+        os%(on%) = 0 : INC on%
+      ELSE
+        IF QLeaf%() = 0 THEN EXIT FUNCTION
+        opnd% = 0
+      ENDIF
+    ELSE
+      op% = 0
+      IF QKw%("AND") THEN
+        op% = QO_AND
+      ELSEIF QKw%("OR") THEN
+        op% = QO_OR
+      ELSEIF par% > 0 THEN
+        IF QSym%(")") THEN op% = -1
+      ENDIF
+      IF op% = 0 THEN EXIT DO
+      ' release waiting operators: all of them back to the bracket for
+      ' ")", otherwise those of equal or higher precedence
+      DO WHILE on% > 0
+        k% = os%(on% - 1)
+        IF k% = 0 THEN EXIT DO
+        IF op% > 0 THEN
+          IF (k% = QO_NOT) * 3 + (k% = QO_AND) * 2 + (k% = QO_OR) < (op% = QO_AND) * 2 + (op% = QO_OR) THEN EXIT DO
+        ENDIF
+        IF QNode%(k%, "", "", 0) = 0 THEN EXIT FUNCTION
+        INC on%, -1
+      LOOP
+      IF op% = -1 THEN
+        INC on%, -1 : INC par%, -1
+      ELSE
+        os%(on%) = op% : INC on% : opnd% = 1
+      ENDIF
+    ENDIF
+  LOOP
+  DO WHILE on% > 0
+    k% = os%(on% - 1)
+    IF k% = 0 THEN QFail "expected )" : EXIT FUNCTION
+    IF QNode%(k%, "", "", 0) = 0 THEN EXIT FUNCTION
+    INC on%, -1
+  LOOP
+  QTopFlags
+  QCond% = (QErr$ = "")
+END FUNCTION
+
+' Mark the leaves that are top-level AND terms (QnTop% = 1): those
+' whose ancestors in the expression tree are all ANDs. Parents are
+' found from the RPN with a stack; a parent always follows its
+' children, so one backward pass sets every flag.
+SUB QTopFlags
+  LOCAL pa%(QN_MAX - 1), sk%(QN_MAX - 1), stp% = 0, i%
+  IF QNN% = 0 THEN EXIT SUB
+  FOR i% = 0 TO QNN% - 1
+    IF QnOp%(i%) = QO_AND OR QnOp%(i%) = QO_OR THEN
+      pa%(sk%(stp% - 1)) = i% : pa%(sk%(stp% - 2)) = i% : INC stp%, -2
+    ELSEIF QnOp%(i%) = QO_NOT THEN
+      pa%(sk%(stp% - 1)) = i% : INC stp%, -1
+    ENDIF
+    sk%(stp%) = i% : INC stp%
+  NEXT
+  QnTop%(QNN% - 1) = (QnOp%(QNN% - 1) <> QO_OR AND QnOp%(QNN% - 1) <> QO_NOT)
+  FOR i% = QNN% - 2 TO 0 STEP -1
+    QnTop%(i%) = QnTop%(pa%(i%)) AND (QnOp%(pa%(i%)) = QO_AND)
+  NEXT
+END SUB
 
 ' ---------------- statements -----------------------------------------
 
 SUB QReset
-  QErr$ = "" : QPos% = 0 : QDepth% = 0 : QCmd$ = "" : QCol$ = ""
+  QErr$ = "" : QPos% = 0 : QCmd$ = "" : QCol$ = ""
   QExplain% = 0 : QAgg% = 0 : QFN% = 0 : QNN% = 0
   QOrd$ = "" : QDesc% = 0 : QLim% = -1 : QOff% = 0
 END SUB
@@ -1431,7 +1495,7 @@ SUB QSelect
   ENDIF
   x% = QNeedKw%("FROM")
   QCol$ = QColName$()
-  IF QKw%("WHERE") THEN x% = QOr%()
+  IF QKw%("WHERE") THEN x% = QCond%()
   IF QKw%("ORDER") THEN
     x% = QNeedKw%("BY")
     QOrd$ = QName$()
@@ -1483,7 +1547,7 @@ SUB QUpdate
     NEXT
   ENDIF
   IF QFN% = 0 THEN QFail "expected SET or UNSET"
-  IF QKw%("WHERE") THEN x% = QOr%()
+  IF QKw%("WHERE") THEN x% = QCond%()
 END SUB
 
 SUB QIndexDef c$
@@ -1500,7 +1564,7 @@ FUNCTION QParse%(s$)
   QReset
   IF QLex%(s$) = 0 THEN EXIT FUNCTION
   QExplain% = QKw%("EXPLAIN")
-  IF TkT%(QPos%) = TK_ID THEN c$ = UCASE$(TkRaw$(QPos%))
+  IF TkT%(QPos%) = TK_ID THEN c$ = UCASE$(MID$(QText$, TkP%(QPos%), TkL%(QPos%)))
   IF INSTR(" SELECT INSERT UPDATE DELETE CREATE DROP SHOW DESCRIBE VACUUM ", " " + c$ + " ") = 0 OR c$ = "" THEN
     QFail "unknown command" : EXIT FUNCTION
   ENDIF
@@ -1511,7 +1575,7 @@ FUNCTION QParse%(s$)
     CASE "UPDATE" : QUpdate
     CASE "DELETE"
       x% = QNeedKw%("FROM") : QCol$ = QColName$()
-      IF QKw%("WHERE") THEN x% = QOr%()
+      IF QKw%("WHERE") THEN x% = QCond%()
     CASE "CREATE", "DROP"
       IF QKw%("COLLECTION") THEN
         QCmd$ = c$ + " COLLECTION" : QCol$ = QColName$()
@@ -1525,7 +1589,7 @@ FUNCTION QParse%(s$)
   END SELECT
   IF QErr$ = "" THEN
     x% = QSym%(";")
-    IF TkT%(QPos%) <> TK_END THEN QFail "unexpected '" + TkRaw$(QPos%) + "'"
+    IF TkT%(QPos%) <> TK_END THEN QFail "unexpected '" + MID$(QText$, TkP%(QPos%), TkL%(QPos%)) + "'"
   ENDIF
   QParse% = (QErr$ = "")
 END FUNCTION
@@ -1694,20 +1758,6 @@ FUNCTION ExLeaf%(rec$, k%)
   END SELECT
 END FUNCTION
 
-' Evaluate the whole WHERE (RPN) against rec$
-FUNCTION ExMatch%(rec$)
-  LOCAL k%, sp% = 0
-  IF QNN% = 0 THEN ExMatch% = 1 : EXIT FUNCTION
-  FOR k% = 0 TO QNN% - 1
-    SELECT CASE QnOp%(k%)
-      CASE QO_AND : INC sp%, -1 : ExSt%(sp% - 1) = ExSt%(sp% - 1) AND ExSt%(sp%)
-      CASE QO_OR  : INC sp%, -1 : ExSt%(sp% - 1) = ExSt%(sp% - 1) OR ExSt%(sp%)
-      CASE QO_NOT : ExSt%(sp% - 1) = 1 - ExSt%(sp% - 1)
-      CASE ELSE   : ExSt%(sp%) = ExLeaf%(rec$, k%) : INC sp%
-    END SELECT
-  NEXT
-  ExMatch% = ExSt%(0)
-END FUNCTION
 
 ' ---------------- access path ----------------------------------------
 
@@ -1750,12 +1800,27 @@ END SUB
 
 ' Collect matching offsets into ExR%; stop after lim% (-1 = all)
 SUB ExCollect lim%
-  LOCAL i%, off%
+  LOCAL i%, off%, r$, m%, k%, stp%
   ExN% = 0
   IF lim% = 0 THEN EXIT SUB
   FOR i% = ExLo% TO ExHi% - 1
     IF ExSrc% = 2 THEN off% = SxO%(i%) ELSE off% = IxO%(i%)
-    IF ExMatch%(StRead$(off%)) THEN
+    ' evaluate the WHERE (RPN) on a stack; inlined here rather than a
+    ' separate function, to keep the call depth low
+    r$ = StRead$(off%) : m% = 1
+    IF QNN% > 0 THEN
+      stp% = 0
+      FOR k% = 0 TO QNN% - 1
+        SELECT CASE QnOp%(k%)
+          CASE QO_AND : INC stp%, -1 : ExSt%(stp% - 1) = ExSt%(stp% - 1) AND ExSt%(stp%)
+          CASE QO_OR  : INC stp%, -1 : ExSt%(stp% - 1) = ExSt%(stp% - 1) OR ExSt%(stp%)
+          CASE QO_NOT : ExSt%(stp% - 1) = 1 - ExSt%(stp% - 1)
+          CASE ELSE   : ExSt%(stp%) = ExLeaf%(r$, k%) : INC stp%
+        END SELECT
+      NEXT
+      m% = ExSt%(0)
+    ENDIF
+    IF m% THEN
       ExR%(ExN%) = off% : INC ExN%
       IF lim% > 0 AND ExN% >= lim% THEN EXIT SUB
     ENDIF
@@ -2065,6 +2130,12 @@ DIM UiPV%, UiPSel%, UiPTop%, UiFull% = 1
 DIM UiMsg$, UiMsgSt%, UiQuit%, UiOk%
 DIM UiRes%, UiQuery$, UiWhere$, UiCols$, UiTxtT$
 DIM DtRec$, DtN%
+' Work a key handler leaves for UiStep, which does it after the handler
+' returns. Running queries from there rather than from deep inside the
+' handlers keeps call chains short: the PicoMite has a small stack.
+'   UiPend%: 1 run console statement UiPendQ$, 2 filter (WHERE UiPendQ$),
+'            3 describe the open collection
+DIM UiPend%, UiPendQ$, UiReloadNow%, UiReselect$
 DIM UiHist$(7) LENGTH 128, UiHistN%
 
 ' ---------------- drawing --------------------------------------------
@@ -2197,7 +2268,7 @@ END FUNCTION
 
 FUNCTION UiHints$()
   SELECT CASE UiV%
-    CASE UV_COLL : UiHints$ = "Ent open N new Del drop / help F1 SQL F2"
+    CASE UV_COLL : UiHints$ = "Ent open N new Del drop / sql F1"
     CASE UV_RECS : UiHints$ = "Ent view F filter N new Del D / Esc"
     CASE UV_DET : UiHints$ = "Ent edit A add Del rm <> rec Esc"
     CASE UV_HELP : UiHints$ = "Ent read  F1 search  Esc back"
@@ -2515,15 +2586,13 @@ SUB UiKeyRecs k%
     CASE UK_ENT : UiOpenDet UiSel%(UV_RECS)
     CASE 70
       id$ = UiInput$("WHERE ", UiWhere$, 1)
-      IF UiOk% THEN UiFilter id$
+      IF UiOk% THEN UiPend% = 2 : UiPendQ$ = id$
     CASE 78
       id$ = UiInput$("New _id (blank = auto): ", "", 0)
       IF UiOk% = 0 THEN EXIT SUB
       IF id$ = "" THEN id$ = StNewId$()
       IF StWrite%(RcNew$(id$), 1) = 0 THEN UiSay StErr$, US_ERR : EXIT SUB
-      UiReload
-      x% = UiFind%(id$)
-      IF x% >= 0 THEN UiSel%(UV_RECS) = x%
+      UiReloadNow% = 1 : UiReselect$ = id$
       DtLoad StFetch$(id$) : UiGo UV_DET
       UiSay "created " + id$ + " - A adds fields", US_MSG
     CASE UK_DEL
@@ -2531,16 +2600,15 @@ SUB UiKeyRecs k%
       id$ = RcGet$(StRead$(UiOff%(UiSel%(UV_RECS))), "_id")
       IF UiAsk%("Delete " + id$ + "?") THEN
         IF StDelete%(id$) THEN
-          UiReload : UiSay "deleted " + id$, US_MSG
+          UiReloadNow% = 1 : UiSay "deleted " + id$, US_MSG
         ELSE
           UiSay StErr$, US_ERR
         ENDIF
       ENDIF
-    CASE 68
-      IF ExRun%("DESCRIBE " + StCol$) THEN UiText "Describe " + StCol$ ELSE UiSay ExErr$, US_ERR
+    CASE 68 : UiPend% = 3
     CASE UK_ESC
       IF UiRes% THEN
-        UiFilter ""
+        UiRes% = 0 : UiWhere$ = "" : UiCols$ = "" : UiFull% = 1
       ELSE
         UiListColl StCol$ : UiGo UV_COLL
       ENDIF
@@ -2552,9 +2620,7 @@ SUB UiSave k$, v$, t%
   LOCAL id$ = RcGet$(DtRec$, "_id"), x%
   IF StSetField%(id$, k$, v$, t%) = 0 THEN UiSay StErr$, US_ERR : EXIT SUB
   DtLoad StFetch$(id$)
-  UiReload
-  x% = UiFind%(id$)
-  IF x% >= 0 THEN UiSel%(UV_RECS) = x%
+  UiReloadNow% = 1 : UiReselect$ = id$
   UiFull% = 1 : UiSay "saved", US_MSG
 END SUB
 
@@ -2581,14 +2647,19 @@ SUB UiKeyDet kc%
       IF UiAsk%("Remove " + LEFT$(k$, 20) + "?") THEN UiSave k$, "", 0
     CASE UK_LT : UiOpenDet UiSel%(UV_RECS) - 1
     CASE UK_RT : UiOpenDet UiSel%(UV_RECS) + 1
-    CASE UK_ESC : UiReload : UiGo UV_RECS
+    CASE UK_ESC : UiReloadNow% = 1 : UiGo UV_RECS
   END SELECT
 END SUB
 
+' Read a statement; UiStep runs it (UiConsoleRun)
 SUB UiConsole
-  LOCAL q$, i%, id$
+  LOCAL q$
   q$ = UiInput$("sql> ", "", 1)
-  IF UiOk% = 0 OR q$ = "" THEN EXIT SUB
+  IF UiOk% AND q$ <> "" THEN UiPend% = 1 : UiPendQ$ = q$
+END SUB
+
+SUB UiConsoleRun q$
+  LOCAL i%, id$
   IF ExRun%(q$) = 0 THEN UiSay ExErr$, US_ERR : EXIT SUB
   SELECT CASE ExKind$
     CASE "ROWS"
@@ -2607,7 +2678,7 @@ SUB UiConsole
       IF StCol$ = "" AND UiV% <> UV_COLL THEN
         UiRes% = 0 : UiGo UV_COLL
       ELSEIF UiV% = UV_RECS OR UiV% = UV_DET THEN
-        UiReload
+        UiReloadNow% = 1
         IF UiV% = UV_DET THEN
           IF IxGet%(id$) < 0 THEN UiGo UV_RECS ELSE DtLoad StFetch$(id$)
         ENDIF
@@ -2655,33 +2726,49 @@ FUNCTION UiNav%(k%)
   UiNav% = 1
 END FUNCTION
 
-' Process one key press
+' Process one key press, then any work the handler left (see UiPend%)
 SUB UiStep
-  LOCAL k% = HalKey%()
+  LOCAL k% = HalKey%(), x%
   IF UiMsg$ <> "" THEN UiSay "", US_N
   UiKey k%
+  SELECT CASE UiPend%
+    CASE 1 : UiConsoleRun UiPendQ$
+    CASE 2 : UiFilter UiPendQ$
+    CASE 3
+      IF ExRun%("DESCRIBE " + StCol$) THEN UiText "Describe " + StCol$ ELSE UiSay ExErr$, US_ERR
+  END SELECT
+  UiPend% = 0
+  IF UiReloadNow% THEN
+    UiReloadNow% = 0 : UiReload
+    IF UiReselect$ <> "" THEN
+      x% = UiFind%(UiReselect$)
+      IF x% >= 0 THEN UiSel%(UV_RECS) = x%
+    ENDIF
+  ENDIF
+  UiReselect$ = ""
   UiPaint
 END SUB
 
-SUB UiMain
-  HalInit
-  HalCls
-  UiListColl ""
-  UiGo UV_COLL
-  UiPaint
-  DO WHILE UiQuit% = 0 : UiStep : LOOP
-  StClose
-  HalCls
-END SUB
 
 ' =====================================================================
 ' dbmain.bas - program entry. Load order: dbcore, dbstore, dbquery,
 ' dbexec, dbhal, dbgui, then this file (dbapp.bas is all of them
 ' merged; dbapp_min.bas is the same without comments, to save space).
+' The main loop is here at the top level rather than in a SUB, so the
+' explorer's calls start one level less deep (small PicoMite stack).
 ' =====================================================================
 StDir$ = "B:/db/"                 ' database folder on the SD card
 ON ERROR SKIP 1
 MKDIR "B:/db"
-UiMain
+HalInit
+HalCls
+UiListColl ""
+UiGo UV_COLL
+UiPaint
+DO WHILE UiQuit% = 0
+  UiStep
+LOOP
+StClose
+HalCls
 END
 

@@ -83,6 +83,44 @@ All properties share one line, so together they are limited to the 255-character
 
 `DbQuery%` is `ExRun%`. `DbRows%`/`DbRow$` read the executor's `ExN%`/`ExR%()`, `DbResult%` reads `ExCnt%`, and `DbLines%`/`DbLine$` read `ExOut$()`. The offset-based design described in [Executor](Executor.md#results) is what makes it safe to loop over `DbRow$(i%)` and update or delete those same records. The rows remain readable until the next `DbQuery%` or a vacuum, and each one shows the record as it was when the query ran.
 
+## Finding records without SQL
+
+Most lookups in a program are a single condition: the items in a room, the entries for a day, the record with this name. `DbFind%` does these without the SQL parser:
+
+```basic
+FUNCTION DbFind%(f$, op$, v$)
+  LOCAL opc%, t% = DbFT%
+  DbFT% = 1 : DbE$ = "" : ExN% = 0
+  IF StCol$ = "" THEN DbE$ = "no collection open" : EXIT FUNCTION
+  SELECT CASE op$
+    CASE "=" : opc% = QO_EQ
+    CASE "<>" : opc% = QO_NE
+    CASE "<" : opc% = QO_LT
+    CASE "<=" : opc% = QO_LE
+    CASE ">" : opc% = QO_GT
+    CASE ">=" : opc% = QO_GE
+    CASE "STARTS" : opc% = QO_LIKE
+    CASE ELSE : DbE$ = "bad operator " + op$ : EXIT FUNCTION
+  END SELECT
+  IF opc% = QO_LIKE AND t% <> 1 THEN DbE$ = "STARTS needs text" : EXIT FUNCTION
+  IF LEN(f$) = 0 OR LEN(f$) > 24 OR LEN(v$) > QNV_LEN - 1 THEN DbE$ = "field or value too long" : EXIT FUNCTION
+  ' a one-condition plan, as the parser would have made it
+  QCmd$ = "SELECT" : QAgg% = 0 : QFN% = 0 : QOrd$ = "" : QLim% = -1 : QOff% = 0
+  QNN% = 1 : QnOp%(0) = opc% : QnF$(0) = f$ : QnV$(0) = v$ : QnT%(0) = t% : QnTop%(0) = 1
+  IF opc% = QO_LIKE THEN QnV$(0) = v$ + "%"
+  ExKind$ = "ROWS"
+  ExPlanPath
+  ExCollect -1
+  DbFind% = ExN%
+END FUNCTION
+```
+
+It fills in the same plan variables the parser would produce for `SELECT * FROM c WHERE f op v`: one leaf node, flagged as index-eligible. Then it calls the executor's own `ExPlanPath` and `ExCollect`. So the results, the comparison rules and the use of indexes are exactly those of the equivalent SQL, and rows are read back with `DbRows%()`/`DbRow$()` as usual. `STARTS` becomes `LIKE` with a `%` added, so it uses the `_id` or secondary index prefix range. A `%` or `_` inside the value would act as a wildcard.
+
+The value is text unless `DbFindNum%` is used. That sets `DbFT%` to 2 and passes the number as text, so the comparison is numeric.
+
+Skipping the parser makes `DbFind%` cheaper in time and, more importantly on a PicoMite, in stack: at most 5 nested calls instead of 8 ([MMBasic notes](MMBasic-Notes.md#the-call-stack-is-small)). The almanac and the adventure framework use it for all their lookups.
+
 ## Why the library renames its local variables
 
 MMBasic gives SUB and FUNCTION names and local variable names one shared namespace. If a program has `SUB Rec` and any routine anywhere declares `LOCAL rec$`, the program stops with "A function/subroutine has the same name: REC". It does so only when that routine runs, which may be long after start-up. The engine has dozens of short local names (`rec$`, `id$`, `ok%`, `old$`, `lo%` …), each of which would be a trap for a program using the library.
@@ -90,8 +128,8 @@ MMBasic gives SUB and FUNCTION names and local variable names one shared namespa
 So in the generated `dblib.bas`, every local variable and parameter of every SUB and FUNCTION is renamed with a `z_` prefix:
 
 ```basic
-FUNCTION RcStr%(z_r$, z_i%, z_s$)
-LOCAL z_j% = z_i% + 1, z_q%, z_b%, z_c$, z_a%
+FUNCTION RcGet$(z_r$, z_k$)
+  LOCAL z_ip% = 1, z_fk$, z_fv$, z_ft%
 ```
 
 The renaming is per routine and whole-identifier only: text inside strings, numeric literals such as `4.9E10`, and global names are left alone. The module sources keep their readable names; only the merged library is transformed. User programs' global variables and constants do not need protecting, because a `LOCAL` simply shadows a global of the same name.
@@ -168,7 +206,9 @@ Generated from the routines and comments in `dbapi.bas`, grouped as in the sourc
 | Routine | Description |
 |---|---|
 | `DbQuery%(sql$)` | Run one SQL-like statement (see the user guide). Then: SELECT        DbRows%(), DbRow$(i)  (rows stay readable until VACUUM) COUNT(*)      DbResult%() SHOW/DESCRIBE/EXPLAIN  DbLines%(), DbLine$(i) others        DbMsg$()  e.g. "3 updated", "inserted 000012" The collection named in the statement becomes the open one. |
-| `DbRows%()` | Number of rows from the last SELECT |
+| `DbFind%(f$, op$, v$)` | Number of rows from the last SELECT Find records where field f$ op$ v$, without SQL. op$: = <> < <= > >= or STARTS (text beginning with v$). v$ is compared as text; use DbFindNum% for numbers. Uses an index when there is one. Results as for SELECT: DbRows%() and DbRow$(). Much shallower than DbQuery%: it skips the SQL parser, which matters on the PicoMite's small stack. |
+| `DbFindNum%(f$, op$, n!)` | — |
+| `DbRows%()` | — |
 | `DbRow$(i%)` | Row i% of the last SELECT: the record as it was when the query ran |
 | `DbResult%()` | Result of the last SELECT COUNT(*) |
 | `DbLines%()` | Number of text lines from the last SHOW, DESCRIBE or EXPLAIN |
@@ -198,6 +238,7 @@ Generated from the routines and comments in `dbapi.bas`, grouped as in the sourc
 - Use file numbers `#4` to `#10`; the engine uses `#1` to `#3`.
 - Don't name your own SUBs, FUNCTIONs or global variables with the engine's prefixes (`Db`, `Rc`, `Ix`, `Sx`, `St`, `Mt`, `Tk`, `Q`, `Ex`) or names starting with `z_`.
 - Only one collection is open at a time; `DbQuery%` opens the collection its statement names.
+- Call `Db…` routines from shallow places in your program, and prefer `DbFind%` to `DbQuery%` for single conditions. PicoMite's stack allows only about 15 nested calls on a Pico 2, and fewer on an RP2040. The library itself uses up to 8 ([MMBasic notes](MMBasic-Notes.md#the-call-stack-is-small)).
 - Call `DbClose` (or `DbFlush`) before the program ends. Nothing is lost if you don't, but the next open has to catch the index up.
 - Records are limited to 255 characters. The `DbWith…$` functions return `""` (and set `DbErr$()`) instead of building a longer one, so check for `""` before writing.
 

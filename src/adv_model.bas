@@ -92,8 +92,10 @@ END FUNCTION
 
 ' ---------------- game state -----------------------------------------
 
+' (The accessors below call DbGet$ directly rather than GmField$, to
+' keep call chains short: the PicoMite has a small stack.)
 FUNCTION GmAt$()
-  GmAt$ = GmField$("s.game", "at")
+  GmAt$ = DbStr$(DbGet$("s.game"), "at")
 END FUNCTION
 
 SUB GmSetAt room$
@@ -124,7 +126,7 @@ END SUB
 ' ---------------- world ----------------------------------------------
 
 FUNCTION GmLoc$(item$)
-  GmLoc$ = GmField$(item$, "loc")
+  GmLoc$ = DbStr$(DbGet$(item$), "loc")
 END FUNCTION
 
 SUB GmMove item$, loc$
@@ -133,7 +135,7 @@ END SUB
 
 ' Destination of an exit ("" if none)
 FUNCTION GmExit$(room$, dir$)
-  GmExit$ = GmField$(room$, dir$)
+  GmExit$ = DbStr$(DbGet$(room$), dir$)
 END FUNCTION
 
 SUB GmSetExit room$, dir$, dest$
@@ -144,13 +146,12 @@ END SUB
 ' Items at loc$ (a room _id or "player") -> GmList$(); returns count.
 ' add% = 1 appends to the current list instead of replacing it.
 FUNCTION GmItemsAt%(loc$, add%)
-  LOCAL i%
+  LOCAL i%, n%
   IF add% = 0 THEN GmListN% = 0
-  IF DbQuery%("SELECT * FROM " + GM_COL$ + " WHERE loc = '" + loc$ + "'") THEN
-    FOR i% = 0 TO DbRows%() - 1
-      IF GmListN% < GM_MAXL THEN GmList$(GmListN%) = DbStr$(DbRow$(i%), "_id") : INC GmListN%
-    NEXT
-  ENDIF
+  n% = DbFind%("loc", "=", loc$)
+  FOR i% = 0 TO n% - 1
+    IF GmListN% < GM_MAXL THEN GmList$(GmListN%) = DbStr$(DbRow$(i%), "_id") : INC GmListN%
+  NEXT
   GmItemsAt% = GmListN%
 END FUNCTION
 
@@ -163,10 +164,16 @@ FUNCTION GmWord$(w$)
   IF r$ <> "" THEN GmWord$ = DbStr$(r$, "is")
 END FUNCTION
 
-' Rules for verb$ and noun$ ("" = rules without a noun), in _id
-' order. Read them with DbRows%() / DbRow$(i%).
+' The _ids of the rules for verb$ and noun$ ("" = rules without a
+' noun) -> GmList$(), sorted into _id order; returns the count.
 FUNCTION GmRules%(verb$, noun$)
-  LOCAL q$ = "SELECT * FROM " + GM_COL$ + " WHERE verb = '" + verb$ + "' AND "
-  IF noun$ = "" THEN q$ = q$ + "noun IS NULL" ELSE q$ = q$ + "noun = '" + noun$ + "'"
-  IF DbQuery%(q$) THEN GmRules% = DbRows%()
+  LOCAL i%, n%, r$
+  GmListN% = 0
+  n% = DbFind%("verb", "=", verb$)
+  FOR i% = 0 TO n% - 1
+    r$ = DbRow$(i%)
+    IF DbStr$(r$, "noun") = noun$ AND GmListN% < GM_MAXL THEN GmList$(GmListN%) = DbStr$(r$, "_id") : INC GmListN%
+  NEXT
+  IF GmListN% > 1 THEN SORT GmList$(), , , 0, GmListN%
+  GmRules% = GmListN%
 END FUNCTION

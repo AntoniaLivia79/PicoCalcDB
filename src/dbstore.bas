@@ -70,16 +70,18 @@ FUNCTION StList%()
   StList% = StCatN%
 END FUNCTION
 
+' Writes the empty data file and the initial metadata line directly,
+' so the open collection (if any) is left alone.
 FUNCTION StCreate%(n$)
-  LOCAL sv$ = StCol$
+  LOCAL q$ = CHR$(34)
   StErr$ = ""
   IF StNameOk%(n$) = 0 THEN EXIT FUNCTION
   IF StExists%(StDir$ + n$ + ".jsonl") THEN StErr$ = "exists" : EXIT FUNCTION
-  IF sv$ <> "" THEN StClose
   OPEN StDir$ + n$ + ".jsonl" FOR OUTPUT AS #ST_TMP : CLOSE #ST_TMP
-  StCol$ = n$ : MtClear : MtSave : StCol$ = ""
+  OPEN StDir$ + n$ + ".meta" FOR OUTPUT AS #ST_TMP
+  PRINT #ST_TMP, "{" + q$ + "_id" + q$ + ":" + q$ + "@" + q$ + "," + q$ + "seq" + q$ + ":0," + q$ + "dead" + q$ + ":0}"
+  CLOSE #ST_TMP
   StCreate% = 1
-  IF sv$ <> "" THEN StCreate% = StOpen%(sv$)
 END FUNCTION
 
 FUNCTION StDrop%(n$)
@@ -126,19 +128,21 @@ SUB MtLoad
   CLOSE #ST_TMP
 END SUB
 
+' The lines are built directly as JSON text (not with RcSet$), which
+' keeps the call depth low when a collection is closed from deep inside
+' another operation.
 SUB MtSave
-  LOCAL r$, i%
-  r$ = RcNew$("@")
-  r$ = RcSet$(r$, "seq", STR$(MtSeq%), 2)
-  r$ = RcSet$(r$, "dead", STR$(MtDead%), 2)
+  LOCAL r$, i%, q$ = CHR$(34)
+  r$ = "{" + q$ + "_id" + q$ + ":" + q$ + "@" + q$ + "," + q$ + "seq" + q$ + ":" + STR$(MtSeq%)
+  r$ = r$ + "," + q$ + "dead" + q$ + ":" + STR$(MtDead%)
   FOR i% = 0 TO SX_SLOTS - 1
-    IF SxF$(i%) <> "" THEN r$ = RcSet$(r$, "i" + STR$(i%), SxF$(i%), 1)
+    IF SxF$(i%) <> "" THEN r$ = r$ + "," + q$ + "i" + STR$(i%) + q$ + ":" + RcEnc$(SxF$(i%))
   NEXT
   OPEN StPath$(".meta") FOR OUTPUT AS #ST_TMP
-  PRINT #ST_TMP, r$
-  IF RcCheck%(MtUser$) > 1 THEN PRINT #ST_TMP, MtUser$
+  PRINT #ST_TMP, r$ + "}"
+  IF MtUser$ <> "{" + q$ + "_id" + q$ + ":" + q$ + "@user" + q$ + "}" THEN PRINT #ST_TMP, MtUser$
   FOR i% = 0 TO MtN% - 1
-    PRINT #ST_TMP, RcSet$(RcNew$(MtF$(i%)), "t", MtT$(i%), 1)
+    PRINT #ST_TMP, "{" + q$ + "_id" + q$ + ":" + RcEnc$(MtF$(i%)) + "," + q$ + "t" + q$ + ":" + q$ + MtT$(i%) + q$ + "}"
   NEXT
   CLOSE #ST_TMP
   MtDirty% = 0
@@ -211,7 +215,7 @@ FUNCTION StVerify%()
     IF IxN% = 0 THEN EXIT FUNCTION
     i% = (IxN% - 1) * j% \ 7
     r$ = StRead$(IxO%(i%))
-    IF RcGet$(r$, "_id") <> IxK$(i%) OR RcIsDel%(r$) THEN StVerify% = 0 : EXIT FUNCTION
+    IF RcGet$(r$, "_id") <> IxK$(i%) OR INSTR(r$, CHR$(34) + "_del" + CHR$(34)) > 0 THEN StVerify% = 0 : EXIT FUNCTION
   NEXT
 END FUNCTION
 
@@ -291,20 +295,10 @@ FUNCTION StAppend%(r$)
   CLOSE #ST_WR
 END FUNCTION
 
-' Count secondary-index entries rec$ needs
-FUNCTION StSxNeed%(rec$)
-  LOCAL s%, v$
-  FOR s% = 0 TO SX_SLOTS - 1
-    IF SxF$(s%) <> "" THEN
-      v$ = RcGet$(rec$, SxF$(s%))
-      IF RcFound% THEN INC StSxNeed%
-    ENDIF
-  NEXT
-END FUNCTION
 
 ' Write a whole record. md%: 0 upsert, 1 insert only, 2 update only
 FUNCTION StWrite%(rec$, md%)
-  LOCAL id$, oo%, old$, off%
+  LOCAL id$, oo%, old$, off%, n%, s%, x$
   StErr$ = ""
   IF StCol$ = "" THEN StErr$ = "no collection open" : EXIT FUNCTION
   IF RcCheck%(rec$) < 0 OR INSTR(rec$, CHR$(10)) OR INSTR(rec$, CHR$(13)) THEN
@@ -313,13 +307,22 @@ FUNCTION StWrite%(rec$, md%)
   id$ = RcGet$(rec$, "_id")
   IF RcFound% = 0 OR RcT% <> 1 THEN StErr$ = "_id must be a string" : EXIT FUNCTION
   IF IxKeyOk%(id$) = 0 THEN StErr$ = IxErr$ : EXIT FUNCTION
-  IF RcIsDel%(rec$) THEN StErr$ = "_del is reserved" : EXIT FUNCTION
+  IF INSTR(rec$, CHR$(34) + "_del" + CHR$(34)) THEN StErr$ = "_del is reserved" : EXIT FUNCTION
   oo% = IxGet%(id$)
   IF md% = 1 AND oo% > 0 THEN StErr$ = "duplicate _id" : EXIT FUNCTION
   IF md% = 2 AND oo% < 0 THEN StErr$ = "not found" : EXIT FUNCTION
   IF oo% < 0 AND IxN% >= IX_MAX THEN StErr$ = "collection full" : EXIT FUNCTION
   IF oo% > 0 THEN old$ = StRead$(oo%)
-  IF SxN% + StSxNeed%(rec$) - StSxNeed%(old$) > SX_MAX THEN
+  ' index entries needed by the new version minus those of the old one
+  ' (counted here rather than in a function: one call level less)
+  n% = 0
+  FOR s% = 0 TO SX_SLOTS - 1
+    IF SxF$(s%) <> "" THEN
+      x$ = RcGet$(rec$, SxF$(s%)) : n% = n% + RcFound%
+      IF old$ <> "" THEN x$ = RcGet$(old$, SxF$(s%)) : n% = n% - RcFound%
+    ENDIF
+  NEXT
+  IF SxN% + n% > SX_MAX THEN
     StErr$ = "index space full" : EXIT FUNCTION
   ENDIF
   off% = StAppend%(rec$)

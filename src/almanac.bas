@@ -364,6 +364,7 @@ END FUNCTION
 
 ' ---------------- 1. maintain ----------------------------------------
 
+
 SUB AmMaintain
   LOCAL k%, r%
   DO
@@ -416,7 +417,9 @@ END SUB
 SUB AmBuildDay dn%
   LOCAL i%, r$, id$, v$, d$ = AmDate$(dn%)
   AmLN% = 0
-  IF DbQuery%("SELECT * FROM " + AM_COL$ + " WHERE _id LIKE '" + d$ + ".%'") = 0 THEN
+  ' a day's records are an _id range ("2026-10-01." ...); DbFind% reads
+  ' it from the index without the SQL parser (a much shorter call chain)
+  IF DbFind%("_id", "STARTS", d$ + ".") = 0 AND DbErr$() <> "" THEN
     AmAdd "Error: " + DbErr$(), 0, AS_ERR : EXIT SUB
   ENDIF
   FOR i% = 0 TO DbRows%() - 1
@@ -590,14 +593,12 @@ SUB AmMenu
   LOOP
 END SUB
 
-SUB AmMain
-  HalInit
-  HalCls
-  DbInit AM_DIR$
-  AmMenu
-  DbClose
-  HalCls
-END SUB
 
 ' ---- main ----
-AmMain
+' (AmMain's steps, at the top level: one call level less for everything)
+HalInit
+HalCls
+DbInit AM_DIR$
+AmMenu
+DbClose
+HalCls

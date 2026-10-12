@@ -48,16 +48,16 @@ The module files (`src/` in the repository) are what you edit. What runs on the 
 
 | File | Contents, in order | Lines |
 |---|---|---|
-| `dbapp.bas` | 2 comment lines, `OPTION EXPLICIT`, `OPTION DEFAULT NONE`, then `dbcore`, `dbstore`, `dbquery`, `dbexec`, `dbhal`, `dbgui`, `dbmain`, each unchanged | 2687 |
-| `dbapp_min.bas` | The two `OPTION` lines, then the same modules with comments removed | 2218 |
-| `dblib.bas` | A comment header, then `dbcore`, `dbstore`, `dbquery`, `dbexec`, `dbapi`, with local variables renamed | 2387 |
-| `dblib_min.bas` | One comment line, then the library with comments removed and locals renamed | 1871 |
-| `almanac_app.bas` | 2 comment lines, the two `OPTION` lines, the library (comments removed, locals renamed), `dbhal`, `almanac` (comments removed) | 2415 |
+| `dbapp.bas` | 2 comment lines, `OPTION EXPLICIT`, `OPTION DEFAULT NONE`, then `dbcore`, `dbstore`, `dbquery`, `dbexec`, `dbhal`, `dbgui`, `dbmain`, each unchanged | 2774 |
+| `dbapp_min.bas` | The two `OPTION` lines, then the same modules with comments removed | 2278 |
+| `dblib.bas` | A comment header, then `dbcore`, `dbstore`, `dbquery`, `dbexec`, `dbapi`, with local variables renamed | 2494 |
+| `dblib_min.bas` | One comment line, then the library with comments removed and locals renamed | 1951 |
+| `almanac_app.bas` | 2 comment lines, the two `OPTION` lines, the library (comments removed, locals renamed), `dbhal`, `almanac` (comments removed) | 2492 |
 
 ### Rules the modules follow so that they can be joined
 
 - **No module contains an `OPTION` statement.** `OPTION EXPLICIT` and `OPTION DEFAULT NONE` must come before any other statement in a program, so the merged application files put them first. They then apply to every module: every variable must be declared, with a type suffix (`%`, `$`, `!`) on every name. The library files contain no `OPTION` lines, so that a program can `#INCLUDE` them after its own.
-- **No module contains main-line code**, apart from its `CONST` and `DIM` declarations. The only statements that *do* something are in the last part: `dbmain.bas` sets the database folder, creates it if needed, calls `UiMain` and ends with `END`. `almanac.bas` ends with its call to `AmMain`. Because they come last, every module's declarations have run before the program starts.
+- **No module contains main-line code**, apart from its `CONST` and `DIM` declarations. The only statements that *do* something are in the last part: `dbmain.bas` sets the database folder, creates it if needed, runs the main loop and ends with `END`. `almanac.bas` ends with its main code, which runs the menu. Because they come last, every module's declarations have run before the program starts.
 - **Only `dbmain.bas` contains `END`.** The library must not contain one at all: when it is kept in flash with `LIBRARY SAVE`, its top-level code runs before every program, and an `END` there would stop the program before it began.
 - **Declarations appear in dependency order**, as described in [One program, no modules](#one-program-no-modules). That order is fixed in the list of parts above.
 

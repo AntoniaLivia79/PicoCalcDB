@@ -23,7 +23,7 @@ The storage engine turns files into collections. It is the only module that open
 ## Collections
 
 - `StList%()` fills `StCat$()` from `DIR$(StDir$ + "*.jsonl", FILE)` and sorts it.
-- `StCreate%(n$)` writes an empty data file and a fresh `.meta`. If another collection is open it is closed first (because `MtSave` works on the open collection's variables) and reopened afterwards.
+- `StCreate%(n$)` writes an empty data file and the first metadata line directly, so a collection that is open stays open.
 - `StDrop%(n$)` deletes all four possible files.
 - `StNameOk%` allows letters, digits and `_`, up to 16 characters, so that every name is a valid file name and fits `StCat$()`.
 
@@ -96,7 +96,7 @@ Every change goes through `StWrite%` (or `StDelete%`), which validates everythin
 
 ```basic
 FUNCTION StWrite%(rec$, md%)
-  LOCAL id$, oo%, old$, off%
+  LOCAL id$, oo%, old$, off%, n%, s%, x$
   StErr$ = ""
   IF StCol$ = "" THEN StErr$ = "no collection open" : EXIT FUNCTION
   IF RcCheck%(rec$) < 0 OR INSTR(rec$, CHR$(10)) OR INSTR(rec$, CHR$(13)) THEN
@@ -105,13 +105,22 @@ FUNCTION StWrite%(rec$, md%)
   id$ = RcGet$(rec$, "_id")
   IF RcFound% = 0 OR RcT% <> 1 THEN StErr$ = "_id must be a string" : EXIT FUNCTION
   IF IxKeyOk%(id$) = 0 THEN StErr$ = IxErr$ : EXIT FUNCTION
-  IF RcIsDel%(rec$) THEN StErr$ = "_del is reserved" : EXIT FUNCTION
+  IF INSTR(rec$, CHR$(34) + "_del" + CHR$(34)) THEN StErr$ = "_del is reserved" : EXIT FUNCTION
   oo% = IxGet%(id$)
   IF md% = 1 AND oo% > 0 THEN StErr$ = "duplicate _id" : EXIT FUNCTION
   IF md% = 2 AND oo% < 0 THEN StErr$ = "not found" : EXIT FUNCTION
   IF oo% < 0 AND IxN% >= IX_MAX THEN StErr$ = "collection full" : EXIT FUNCTION
   IF oo% > 0 THEN old$ = StRead$(oo%)
-  IF SxN% + StSxNeed%(rec$) - StSxNeed%(old$) > SX_MAX THEN
+  ' index entries needed by the new version minus those of the old one
+  ' (counted here rather than in a function: one call level less)
+  n% = 0
+  FOR s% = 0 TO SX_SLOTS - 1
+    IF SxF$(s%) <> "" THEN
+      x$ = RcGet$(rec$, SxF$(s%)) : n% = n% + RcFound%
+      IF old$ <> "" THEN x$ = RcGet$(old$, SxF$(s%)) : n% = n% - RcFound%
+    ENDIF
+  NEXT
+  IF SxN% + n% > SX_MAX THEN
     StErr$ = "index space full" : EXIT FUNCTION
   ENDIF
   off% = StAppend%(rec$)

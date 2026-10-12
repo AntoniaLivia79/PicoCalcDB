@@ -24,14 +24,14 @@ For using the program, see the [user guide](../../user/dbapp-user-guide.md); for
 
 | File | Prefix | Lines | Role |
 |---|---|---|---|
-| `dbcore.bas` | `Rc` `Ix` `Sx` | 622 | Record codec and index manager |
-| `dbstore.bas` | `St` `Mt` | 421 | Storage engine, catalogue, metadata |
-| `dbquery.bas` | `Tk` `Q` | 545 | Query tokenizer and parser |
-| `dbexec.bas` | `Ex` | 388 | Query executor |
-| `dbapi.bas` | `Db` | 398 | Public API for other programs |
+| `dbcore.bas` | `Rc` `Ix` `Sx` | 662 | Record codec and index manager |
+| `dbstore.bas` | `St` `Mt` | 424 | Storage engine, catalogue, metadata |
+| `dbquery.bas` | `Tk` `Q` | 566 | Query tokenizer and parser |
+| `dbexec.bas` | `Ex` | 389 | Query executor |
+| `dbapi.bas` | `Db` | 440 | Public API for other programs |
 | `dbhal.bas` | `Hal` | 46 | Display and keyboard layer |
-| `dbgui.bas` | `Ui` `Dt` `Hp` | 644 | Explorer screens |
-| `dbmain.bas` | | 10 | Program entry |
+| `dbgui.bas` | `Ui` `Dt` `Hp` | 655 | Explorer screens |
+| `dbmain.bas` | | 21 | Program entry |
 
 `dbapp.bas` is the explorer (all modules except `dbapi.bas`, merged into one file) and `dblib.bas` is the library (`dbcore` + `dbstore` + `dbquery` + `dbexec` + `dbapi`). Both are generated from the module files, which are the ones to edit. In the repository the modules are in `src/` and the generated files in `dist/`.
 

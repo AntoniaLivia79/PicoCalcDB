@@ -11,7 +11,7 @@ END SUB
 SUB Ck c%, m$
   IF c% = 0 THEN Bad m$ + "  [DbErr: " + DbErr$() + "]"
 END SUB
-DIM r$, i%, n%, ok%, x$, f$
+DIM r$, i%, n%, ok%, x$, f$, k%, o$
 ' User routines named like library locals (rec$, id$, old$): the
 ' library build renames its locals, so these must not clash.
 SUB Rec a$
@@ -159,6 +159,49 @@ Ck DbMetaSet%("a", "b") = 0, "meta needs open collection"
 Ck DbDrop%("pets"), "drop"
 Ck DbList%() = 1, "list after drop"
 DbClose
+PRINT "A7 DbFind% matches the equivalent SQL"
+Ck DbCreate%("finds"), "create finds"
+Ck DbOpen%("finds"), "open finds"
+FOR i% = 1 TO 40
+  r$ = DbWithText$(DbNew$("f" + STR$(i%, 2, 0, "0")), "name", MID$("annbobcyrdan", 1 + 3 * (i% MOD 4), 3) + STR$(i% MOD 7))
+  IF i% MOD 5 <> 0 THEN r$ = DbWithNum$(r$, "n", (i% MOD 9) - 3 + 0.5 * (i% MOD 2))
+  IF i% MOD 6 = 0 THEN r$ = DbWithText$(r$, "n", "x")
+  Ck DbPut%(r$), "put " + r$
+NEXT
+Ck DbIndexAdd%("n"), "index n"
+DIM ops$ = "=,<>,<,<=,>,>="
+SUB FindSame f$, op$, v$, num%, sql$
+  LOCAL a$, b$, i%, n%
+  IF num% THEN n% = DbFindNum%(f$, op$, VAL(v$)) ELSE n% = DbFind%(f$, op$, v$)
+  Ck DbErr$() = "", "find error " + DbErr$()
+  FOR i% = 0 TO n% - 1 : a$ = a$ + DbStr$(DbRow$(i%), "_id") + " " : NEXT
+  Ck DbQuery%(sql$), "sql " + sql$
+  FOR i% = 0 TO DbRows%() - 1 : b$ = b$ + DbStr$(DbRow$(i%), "_id") + " " : NEXT
+  ' same set (order may differ: index order vs _id order)
+  Ck LEN(a$) = LEN(b$), "count " + f$ + op$ + v$ + ": " + STR$(n%) + " vs " + STR$(DbRows%())
+  FOR i% = 1 TO LEN(a$) STEP 4
+    Ck INSTR(b$, MID$(a$, i%, 4)) > 0, "row " + MID$(a$, i%, 4) + " for " + f$ + op$ + v$
+  NEXT
+END SUB
+FOR k% = 1 TO 6
+  o$ = FIELD$(ops$, k%, ",")
+  FindSame "n", o$, "1.5", 1, "SELECT * FROM finds WHERE n " + o$ + " 1.5"
+  FindSame "n", o$, "-2", 1, "SELECT * FROM finds WHERE n " + o$ + " -2"
+  FindSame "n", o$, "x", 0, "SELECT * FROM finds WHERE n " + o$ + " 'x'"
+  FindSame "name", o$, "bob3", 0, "SELECT * FROM finds WHERE name " + o$ + " 'bob3'"
+  FindSame "_id", o$, "f20", 0, "SELECT * FROM finds WHERE _id " + o$ + " 'f20'"
+NEXT
+FindSame "name", "STARTS", "cyr", 0, "SELECT * FROM finds WHERE name LIKE 'cyr%'"
+FindSame "_id", "STARTS", "f1", 0, "SELECT * FROM finds WHERE _id LIKE 'f1%'"
+FindSame "n", "STARTS", "x", 0, "SELECT * FROM finds WHERE n LIKE 'x%'"
+Ck DbFind%("n", "~", "1") = 0 AND INSTR(DbErr$(), "bad operator") > 0, "bad operator"
+Ck DbFindNum%("n", "STARTS", 1) = 0 AND INSTR(DbErr$(), "STARTS needs text") > 0, "STARTS with a number"
+Ck DbFind%("n", "=", STRING$(80, "z")) = 0 AND INSTR(DbErr$(), "too long") > 0, "value too long"
+Ck DbFind%("name", "=", "nobody") = 0 AND DbErr$() = "", "no match is not an error"
+DbClose
+Ck DbFind%("n", "=", "1") = 0 AND DbErr$() = "no collection open", "find with nothing open"
+Ck DbDrop%("finds"), "drop finds"
+
 PRINT "A6 edge cases"
 Ck DbOpen%("people"), "open for edge cases"
 Ck DbPut%(DbWithText$(DbNew$("e1"), "@user", "data field")), "field named @user"

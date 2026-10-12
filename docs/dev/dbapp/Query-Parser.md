@@ -56,42 +56,100 @@ age >= 18 AND (name LIKE 'A%' OR vip = true)
 
 `QNode%` appends a node. A leaf is appended when it has been parsed, and an operator after its operands, which is exactly postfix order.
 
-### Grammar functions
+### Parsing a condition without recursion
 
-The precedence levels are `OR` (lowest), `AND`, `NOT`, and primaries (a comparison or a parenthesised condition). `QPrim%` handles `f op value`, `f [NOT] LIKE 'pattern'` and `f IS [NOT] NULL`. `NOT LIKE` is emitted as a `LIKE` leaf followed by a `NOT` node.
+The precedence levels are `OR` (lowest), `AND`, `NOT`, then single comparisons. `QLeaf%` parses one comparison: `f op value`, `f [NOT] LIKE 'pattern'` or `f IS [NOT] NULL`. `NOT LIKE` is emitted as a `LIKE` leaf followed by a `NOT` node.
 
-The OR level:
+`QCond%` parses the whole condition with the **shunting-yard** algorithm: one loop and an explicit operator stack, `os%()`, with no recursion:
 
 ```basic
-FUNCTION QOr%()
-  LOCAL st% = QNN%
-  IF QAnd%() = 0 THEN EXIT FUNCTION
-  IF QKw%("OR") THEN
-    QOr% = QOrRest%()
-    QNotTop st%
-  ELSE
-    QOr% = (QErr$ = "")
-  ENDIF
+FUNCTION QCond%()
+  LOCAL os%(TK_MAX \ 2), on% = 0, opnd% = 1, op%, k%, par% = 0
+  DO
+    IF QErr$ <> "" THEN EXIT FUNCTION
+    IF opnd% THEN
+      IF QKw%("NOT") THEN
+        os%(on%) = QO_NOT : INC on%
+      ELSEIF QSym%("(") THEN
+        INC par%
+        IF par% > 12 THEN QFail "too deeply nested" : EXIT FUNCTION
+        os%(on%) = 0 : INC on%
+      ELSE
+        IF QLeaf%() = 0 THEN EXIT FUNCTION
+        opnd% = 0
+      ENDIF
+    ELSE
+      op% = 0
+      IF QKw%("AND") THEN
+        op% = QO_AND
+      ELSEIF QKw%("OR") THEN
+        op% = QO_OR
+      ELSEIF par% > 0 THEN
+        IF QSym%(")") THEN op% = -1
+      ENDIF
+      IF op% = 0 THEN EXIT DO
+      ' release waiting operators: all of them back to the bracket for
+      ' ")", otherwise those of equal or higher precedence
+      DO WHILE on% > 0
+        k% = os%(on% - 1)
+        IF k% = 0 THEN EXIT DO
+        IF op% > 0 THEN
+          IF (k% = QO_NOT) * 3 + (k% = QO_AND) * 2 + (k% = QO_OR) < (op% = QO_AND) * 2 + (op% = QO_OR) THEN EXIT DO
+        ENDIF
+        IF QNode%(k%, "", "", 0) = 0 THEN EXIT FUNCTION
+        INC on%, -1
+      LOOP
+      IF op% = -1 THEN
+        INC on%, -1 : INC par%, -1
+      ELSE
+        os%(on%) = op% : INC on% : opnd% = 1
+      ENDIF
+    ENDIF
+  LOOP
+  DO WHILE on% > 0
+    k% = os%(on% - 1)
+    IF k% = 0 THEN QFail "expected )" : EXIT FUNCTION
+    IF QNode%(k%, "", "", 0) = 0 THEN EXIT FUNCTION
+    INC on%, -1
+  LOOP
+  QTopFlags
+  QCond% = (QErr$ = "")
 END FUNCTION
 ```
 
-```basic
-FUNCTION QOrRest%()
-  IF QAnd%() = 0 THEN EXIT FUNCTION
-  IF QNode%(QO_OR, "", "", 0) = 0 THEN EXIT FUNCTION
-  IF QKw%("OR") THEN QOrRest% = QOrRest%() ELSE QOrRest% = (QErr$ = "")
-END FUNCTION
-```
+- When an operand is expected (`opnd% = 1`), a `NOT` or `(` is pushed onto the stack; anything else must be a comparison, parsed by `QLeaf%` and emitted at once.
+- When an operator is expected, `AND` or `OR` first releases (emits) the waiting operators of equal or higher precedence, then waits itself. That ordering makes `a OR b AND c` come out as `a b c AND OR`, and keeps `a AND b AND c` left-associative: `a b AND c AND`. A `)` releases everything back to its `(`.
+- At the end, the remaining operators are released; a leftover `(` is the error `expected )`.
+- Brackets may be nested 12 deep (`par%`).
 
-The natural way to write this is a loop: "parse an AND-term; while the next word is OR, parse another and emit OR". It is written with **tail recursion** instead, because a `DO` loop does not work here. MMBasic identifies a running `DO` loop by its position in the program. In `a AND (b AND c)`, the parenthesised part re-enters the same functions while the outer loop is still running, and the inner loop's exit removes the outer loop's entry, giving "LOOP without a matching DO". `QOrRest%` and `QAndRest%` emit each operator after its right operand, which keeps `a OR b OR c` left-associative: `a b OR c OR`.
-
-Nesting is limited by `QDepth%` (12 levels), so a pathological query cannot exhaust the interpreter's stack.
+Why not the usual recursive descent, with one function per precedence level calling the next? Earlier versions did that, and it failed on a real PicoCalc. Every nested SUB or FUNCTION call uses part of the PicoMite's small stack, so the parser's call depth rose with each `AND`, `OR`, `NOT` and bracket, on top of the depth of whatever program was running the query. The shunting-yard parser's depth is the same for every condition. See [MMBasic notes](MMBasic-Notes.md#the-call-stack-is-small).
 
 ### Index-eligible terms: `QnTop%`
 
 A leaf whose result decides the whole condition through ANDs only – `age >= 18` in the example above – can be answered from an index: every matching record must satisfy it. A leaf under an `OR` or `NOT` cannot.
 
-Every leaf starts with `QnTop% = 1`. When `QOr%` has actually parsed an `OR`, or `QNot%` a `NOT`, it calls `QNotTop st%` to clear the flag on all nodes emitted since it started (`st%` = the node count on entry). Parentheses need no special handling: `(a AND b) AND c` keeps all three flags.
+The flags are set after parsing, from the finished RPN, by `QTopFlags`:
+
+```basic
+SUB QTopFlags
+  LOCAL pa%(QN_MAX - 1), sk%(QN_MAX - 1), stp% = 0, i%
+  IF QNN% = 0 THEN EXIT SUB
+  FOR i% = 0 TO QNN% - 1
+    IF QnOp%(i%) = QO_AND OR QnOp%(i%) = QO_OR THEN
+      pa%(sk%(stp% - 1)) = i% : pa%(sk%(stp% - 2)) = i% : INC stp%, -2
+    ELSEIF QnOp%(i%) = QO_NOT THEN
+      pa%(sk%(stp% - 1)) = i% : INC stp%, -1
+    ENDIF
+    sk%(stp%) = i% : INC stp%
+  NEXT
+  QnTop%(QNN% - 1) = (QnOp%(QNN% - 1) <> QO_OR AND QnOp%(QNN% - 1) <> QO_NOT)
+  FOR i% = QNN% - 2 TO 0 STEP -1
+    QnTop%(i%) = QnTop%(pa%(i%)) AND (QnOp%(pa%(i%)) = QO_AND)
+  NEXT
+END SUB
+```
+
+A first pass finds every node's parent: a stack of node numbers, where an operator pops its operands and becomes their parent. In RPN a parent always comes after its children, so a second pass backwards from the root can give each node its flag: a node is a top-level term if its parent is one and the parent is an `AND`. Brackets need no special handling: `(a AND b) AND c` keeps all three flags.
 
 ## The plan
 

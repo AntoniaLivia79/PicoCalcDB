@@ -22,21 +22,40 @@ INC z_j%
 LOOP
 RcSkip% = z_j%
 END FUNCTION
-FUNCTION RcStr%(z_r$, z_i%, z_s$)
-LOCAL z_j% = z_i% + 1, z_q%, z_b%, z_c$, z_a%
-z_s$ = ""
-DO
-z_q% = INSTR(z_j%, z_r$, CHR$(34))
-IF z_q% = 0 THEN RcStr% = -1 : EXIT FUNCTION
-z_b% = INSTR(z_j%, z_r$, "\")
-IF z_b% = 0 OR z_b% > z_q% THEN
-z_s$ = z_s$ + MID$(z_r$, z_j%, z_q% - z_j%)
-RcStr% = z_q% + 1
-EXIT FUNCTION
+FUNCTION RcNext%(z_r$, z_ip%, z_k$, z_v$, z_t%)
+LOCAL z_i% = z_ip%, z_n% = LEN(z_r$), z_e%, z_c$, z_s$, z_q%, z_b%, z_a%, z_d%, z_part%
+DO WHILE z_i% <= z_n%
+IF ASC(MID$(z_r$, z_i%, 1)) > 32 THEN EXIT DO
+INC z_i%
+LOOP
+z_c$ = MID$(z_r$, z_i%, 1)
+IF z_ip% = 1 THEN
+IF z_c$ <> "{" THEN RcNext% = -1 : EXIT FUNCTION
+ELSEIF z_c$ = "}" THEN
+RcNext% = 0 : EXIT FUNCTION
+ELSEIF z_c$ <> "," THEN
+RcNext% = -1 : EXIT FUNCTION
 ENDIF
-z_s$ = z_s$ + MID$(z_r$, z_j%, z_b% - z_j%)
+INC z_i%
+DO WHILE z_i% <= z_n%
+IF ASC(MID$(z_r$, z_i%, 1)) > 32 THEN EXIT DO
+INC z_i%
+LOOP
+z_c$ = MID$(z_r$, z_i%, 1)
+IF z_c$ = "}" AND z_ip% = 1 THEN RcNext% = 0 : EXIT FUNCTION
+IF z_c$ <> CHR$(34) THEN RcNext% = -1 : EXIT FUNCTION
+RcKS% = z_i%
+z_part% = 1
+DO
+z_s$ = "" : z_e% = z_i% + 1
+DO
+z_q% = INSTR(z_e%, z_r$, CHR$(34))
+IF z_q% = 0 THEN RcNext% = -1 : EXIT FUNCTION
+z_b% = INSTR(z_e%, z_r$, "\")
+IF z_b% = 0 OR z_b% > z_q% THEN z_s$ = z_s$ + MID$(z_r$, z_e%, z_q% - z_e%) : z_i% = z_q% + 1 : EXIT DO
+z_s$ = z_s$ + MID$(z_r$, z_e%, z_b% - z_e%)
 z_c$ = MID$(z_r$, z_b% + 1, 1)
-z_j% = z_b% + 2
+z_e% = z_b% + 2
 SELECT CASE z_c$
 CASE "n" : z_s$ = z_s$ + CHR$(10)
 CASE "t" : z_s$ = z_s$ + CHR$(9)
@@ -46,65 +65,66 @@ CASE "f" : z_s$ = z_s$ + CHR$(12)
 CASE "u"
 z_a% = VAL("&H" + MID$(z_r$, z_b% + 2, 4))
 IF z_a% > 255 THEN z_s$ = z_s$ + "?" ELSE z_s$ = z_s$ + CHR$(z_a%)
-z_j% = z_b% + 6
+z_e% = z_b% + 6
 CASE ELSE : z_s$ = z_s$ + z_c$
 END SELECT
 LOOP
-END FUNCTION
-FUNCTION RcNest%(z_r$, z_i%)
-LOCAL z_j% = z_i%, z_d% = 0, z_c$, z_s$
-DO WHILE z_j% <= LEN(z_r$)
-z_c$ = MID$(z_r$, z_j%, 1)
-IF z_c$ = CHR$(34) THEN
-z_j% = RcStr%(z_r$, z_j%, z_s$)
-IF z_j% < 0 THEN EXIT DO
-ELSE
-IF z_c$ = "{" OR z_c$ = "[" THEN INC z_d%
-IF z_c$ = "}" OR z_c$ = "]" THEN INC z_d%, -1
-INC z_j%
-IF z_d% = 0 THEN RcNest% = z_j% : EXIT FUNCTION
-ENDIF
+IF z_part% = 2 THEN z_v$ = z_s$ : z_t% = 1 : EXIT DO
+z_k$ = z_s$
+DO WHILE z_i% <= z_n%
+IF ASC(MID$(z_r$, z_i%, 1)) > 32 THEN EXIT DO
+INC z_i%
 LOOP
-RcNest% = -1
-END FUNCTION
-FUNCTION RcNext%(z_r$, z_ip%, z_k$, z_v$, z_t%)
-LOCAL z_i%, z_e%, z_c$
-z_i% = RcSkip%(z_r$, z_ip%)
-z_c$ = MID$(z_r$, z_i%, 1)
-IF z_ip% = 1 THEN
-IF z_c$ <> "{" THEN RcNext% = -1 : EXIT FUNCTION
-ELSEIF z_c$ = "}" THEN
-RcNext% = 0 : EXIT FUNCTION
-ELSEIF z_c$ <> "," THEN
-RcNext% = -1 : EXIT FUNCTION
-ENDIF
-z_i% = RcSkip%(z_r$, z_i% + 1)
-z_c$ = MID$(z_r$, z_i%, 1)
-IF z_c$ = "}" AND z_ip% = 1 THEN RcNext% = 0 : EXIT FUNCTION
-IF z_c$ <> CHR$(34) THEN RcNext% = -1 : EXIT FUNCTION
-RcKS% = z_i%
-z_i% = RcStr%(z_r$, z_i%, z_k$)
-IF z_i% < 0 THEN RcNext% = -1 : EXIT FUNCTION
-z_i% = RcSkip%(z_r$, z_i%)
 IF MID$(z_r$, z_i%, 1) <> ":" THEN RcNext% = -1 : EXIT FUNCTION
-z_i% = RcSkip%(z_r$, z_i% + 1)
+INC z_i%
+DO WHILE z_i% <= z_n%
+IF ASC(MID$(z_r$, z_i%, 1)) > 32 THEN EXIT DO
+INC z_i%
+LOOP
 RcVS% = z_i%
 z_c$ = MID$(z_r$, z_i%, 1)
 IF z_c$ = CHR$(34) THEN
-z_i% = RcStr%(z_r$, z_i%, z_v$) : z_t% = 1
+z_part% = 2
 ELSEIF z_c$ = "{" OR z_c$ = "[" THEN
-z_i% = RcNest%(z_r$, z_i%) : z_t% = 3
-IF z_i% > 0 THEN z_v$ = MID$(z_r$, RcVS%, z_i% - RcVS%)
+z_d% = 0
+DO WHILE z_i% <= z_n%
+z_c$ = MID$(z_r$, z_i%, 1)
+IF z_c$ = CHR$(34) THEN
+INC z_i%
+DO WHILE z_i% <= z_n%
+z_c$ = MID$(z_r$, z_i%, 1)
+IF z_c$ = "\" THEN
+INC z_i%, 2
+ELSEIF z_c$ = CHR$(34) THEN
+EXIT DO
+ELSE
+INC z_i%
+ENDIF
+LOOP
+IF z_i% > z_n% THEN RcNext% = -1 : EXIT FUNCTION
+INC z_i%
+ELSE
+IF z_c$ = "{" OR z_c$ = "[" THEN INC z_d%
+IF z_c$ = "}" OR z_c$ = "]" THEN INC z_d%, -1
+INC z_i%
+IF z_d% = 0 THEN EXIT DO
+ENDIF
+LOOP
+IF z_d% <> 0 THEN RcNext% = -1 : EXIT FUNCTION
+z_v$ = MID$(z_r$, RcVS%, z_i% - RcVS%) : z_t% = 3
+EXIT DO
 ELSE
 z_e% = z_i%
-DO WHILE z_e% <= LEN(z_r$)
+DO WHILE z_e% <= z_n%
 z_c$ = MID$(z_r$, z_e%, 1)
 IF z_c$ = "," OR z_c$ = "}" OR ASC(z_c$) <= 32 THEN EXIT DO
 INC z_e%
 LOOP
 IF z_e% = z_i% THEN RcNext% = -1 : EXIT FUNCTION
 z_v$ = MID$(z_r$, z_i%, z_e% - z_i%) : z_t% = 2 : z_i% = z_e%
+EXIT DO
 ENDIF
+LOOP
 RcVE% = z_i%
 RcNext% = z_i%
 END FUNCTION
@@ -306,7 +326,7 @@ NEXT
 END FUNCTION
 FUNCTION SxEnc$(z_s%, z_v$, z_t%)
 LOCAL z_n!, z_e%
-IF z_t% = 2 AND RcIsNum%(z_v$) THEN
+IF z_t% = 2 AND z_v$ <> "true" AND z_v$ <> "false" AND z_v$ <> "null" THEN
 z_n! = VAL(z_v$)
 IF z_n! > 4.9E10 THEN z_n! = 4.9E10
 IF z_n! < -4.9E10 THEN z_n! = -4.9E10
@@ -317,17 +337,23 @@ SxEnc$ = CHR$(65 + z_s%) + "S" + LEFT$(z_v$, SX_PW)
 ENDIF
 END FUNCTION
 FUNCTION SxAdd%(z_s%, z_v$, z_t%, z_off%)
-LOCAL z_k$ = SxEnc$(z_s%, z_v$, z_t%), z_i%, z_j%
+SxAdd% = SxAddK%(SxEnc$(z_s%, z_v$, z_t%), z_off%)
+END FUNCTION
+FUNCTION SxAddK%(z_k$, z_off%)
+LOCAL z_i%, z_j%
 IF SxN% >= SX_MAX THEN IxErr$ = "sec index full" : EXIT FUNCTION
 z_i% = IxBound%(SxV$(), SxN%, z_k$, 1)
 FOR z_j% = SxN% TO z_i% + 1 STEP -1
 SxV$(z_j%) = SxV$(z_j% - 1) : SxO%(z_j%) = SxO%(z_j% - 1)
 NEXT
 SxV$(z_i%) = z_k$ : SxO%(z_i%) = z_off% : INC SxN%
-SxAdd% = 1
+SxAddK% = 1
 END FUNCTION
 FUNCTION SxRemove%(z_s%, z_v$, z_t%, z_off%)
-LOCAL z_k$ = SxEnc$(z_s%, z_v$, z_t%), z_i%, z_j%
+SxRemove% = SxRemoveK%(SxEnc$(z_s%, z_v$, z_t%), z_off%)
+END FUNCTION
+FUNCTION SxRemoveK%(z_k$, z_off%)
+LOCAL z_i%, z_j%
 z_i% = IxBound%(SxV$(), SxN%, z_k$, 0)
 DO WHILE z_i% < SxN%
 IF SxV$(z_i%) <> z_k$ THEN EXIT DO
@@ -335,7 +361,7 @@ IF SxO%(z_i%) = z_off% THEN
 FOR z_j% = z_i% TO SxN% - 2
 SxV$(z_j%) = SxV$(z_j% + 1) : SxO%(z_j%) = SxO%(z_j% + 1)
 NEXT
-INC SxN%, -1 : SxRemove% = 1 : EXIT FUNCTION
+INC SxN%, -1 : SxRemoveK% = 1 : EXIT FUNCTION
 ENDIF
 INC z_i%
 LOOP
@@ -368,17 +394,20 @@ IF z_oo% > 0 AND z_old$ <> "" THEN
 FOR z_s% = 0 TO SX_SLOTS - 1
 IF SxF$(z_s%) <> "" THEN
 z_v$ = RcGet$(z_old$, SxF$(z_s%)) : z_ft% = RcT%
-IF RcFound% THEN z_v$ = STR$(SxRemove%(z_s%, z_v$, z_ft%, z_oo%))
+IF RcFound% THEN z_v$ = STR$(SxRemoveK%(SxEnc$(z_s%, z_v$, z_ft%), z_oo%))
 ENDIF
 NEXT
 ENDIF
-IF RcIsDel%(z_rec$) THEN z_v$ = STR$(IxRemove%(z_id$)) : IxApply% = 1 : EXIT FUNCTION
+IF INSTR(z_rec$, CHR$(34) + "_del" + CHR$(34)) THEN
+z_v$ = RcGet$(z_rec$, "_del")
+IF RcFound% AND z_v$ <> "0" AND z_v$ <> "false" THEN z_v$ = STR$(IxRemove%(z_id$)) : IxApply% = 1 : EXIT FUNCTION
+ENDIF
 IF IxPut%(z_id$, z_off%) = 0 THEN EXIT FUNCTION
 FOR z_s% = 0 TO SX_SLOTS - 1
 IF SxF$(z_s%) <> "" THEN
 z_v$ = RcGet$(z_rec$, SxF$(z_s%)) : z_ft% = RcT%
 IF RcFound% THEN
-IF SxAdd%(z_s%, z_v$, z_ft%, z_off%) = 0 THEN EXIT FUNCTION
+IF SxAddK%(SxEnc$(z_s%, z_v$, z_ft%), z_off%) = 0 THEN EXIT FUNCTION
 ENDIF
 ENDIF
 NEXT
@@ -393,10 +422,11 @@ IF z_r$ = CHR$(1) THEN IxLong% = 1
 IxLine$ = z_r$
 END FUNCTION
 FUNCTION IxReadAt$(z_fnum%, z_off%)
-LOCAL z_r$
+LOCAL z_r$ = CHR$(1)
 SEEK #z_fnum%, z_off%
-z_r$ = IxLine$(z_fnum%)
-IF IxLong% THEN z_r$ = ""
+ON ERROR SKIP 1
+LINE INPUT #z_fnum%, z_r$
+IF z_r$ = CHR$(1) THEN z_r$ = ""
 IxReadAt$ = z_r$
 END FUNCTION
 SUB IxCompact
@@ -436,7 +466,11 @@ IF RcFound% AND LEN(z_id$) > 0 AND LEN(z_id$) <= IX_KLEN THEN
 IF IxN% >= IX_MAX THEN IxCompact
 IF IxN% >= IX_MAX THEN IxErr$ = "index full" : EXIT FUNCTION
 IxK$(IxN%) = z_id$
-IF RcIsDel%(z_r$) THEN IxO%(IxN%) = -z_off% ELSE IxO%(IxN%) = z_off%
+IxO%(IxN%) = z_off%
+IF INSTR(z_r$, CHR$(34) + "_del" + CHR$(34)) THEN
+z_id$ = RcGet$(z_r$, "_del")
+IF RcFound% AND z_id$ <> "0" AND z_id$ <> "false" THEN IxO%(IxN%) = -z_off%
+ENDIF
 INC IxN%
 ELSE
 INC IxBad%
@@ -559,15 +593,15 @@ IF StCatN% > 1 THEN SORT StCat$(), , , 0, StCatN%
 StList% = StCatN%
 END FUNCTION
 FUNCTION StCreate%(z_n$)
-LOCAL z_sv$ = StCol$
+LOCAL z_q$ = CHR$(34)
 StErr$ = ""
 IF StNameOk%(z_n$) = 0 THEN EXIT FUNCTION
 IF StExists%(StDir$ + z_n$ + ".jsonl") THEN StErr$ = "exists" : EXIT FUNCTION
-IF z_sv$ <> "" THEN StClose
 OPEN StDir$ + z_n$ + ".jsonl" FOR OUTPUT AS #ST_TMP : CLOSE #ST_TMP
-StCol$ = z_n$ : MtClear : MtSave : StCol$ = ""
+OPEN StDir$ + z_n$ + ".meta" FOR OUTPUT AS #ST_TMP
+PRINT #ST_TMP, "{" + z_q$ + "_id" + z_q$ + ":" + z_q$ + "@" + z_q$ + "," + z_q$ + "seq" + z_q$ + ":0," + z_q$ + "dead" + z_q$ + ":0}"
+CLOSE #ST_TMP
 StCreate% = 1
-IF z_sv$ <> "" THEN StCreate% = StOpen%(z_sv$)
 END FUNCTION
 FUNCTION StDrop%(z_n$)
 StErr$ = ""
@@ -609,18 +643,17 @@ LOOP
 CLOSE #ST_TMP
 END SUB
 SUB MtSave
-LOCAL z_r$, z_i%
-z_r$ = RcNew$("@")
-z_r$ = RcSet$(z_r$, "seq", STR$(MtSeq%), 2)
-z_r$ = RcSet$(z_r$, "dead", STR$(MtDead%), 2)
+LOCAL z_r$, z_i%, z_q$ = CHR$(34)
+z_r$ = "{" + z_q$ + "_id" + z_q$ + ":" + z_q$ + "@" + z_q$ + "," + z_q$ + "seq" + z_q$ + ":" + STR$(MtSeq%)
+z_r$ = z_r$ + "," + z_q$ + "dead" + z_q$ + ":" + STR$(MtDead%)
 FOR z_i% = 0 TO SX_SLOTS - 1
-IF SxF$(z_i%) <> "" THEN z_r$ = RcSet$(z_r$, "i" + STR$(z_i%), SxF$(z_i%), 1)
+IF SxF$(z_i%) <> "" THEN z_r$ = z_r$ + "," + z_q$ + "i" + STR$(z_i%) + z_q$ + ":" + RcEnc$(SxF$(z_i%))
 NEXT
 OPEN StPath$(".meta") FOR OUTPUT AS #ST_TMP
-PRINT #ST_TMP, z_r$
-IF RcCheck%(MtUser$) > 1 THEN PRINT #ST_TMP, MtUser$
+PRINT #ST_TMP, z_r$ + "}"
+IF MtUser$ <> "{" + z_q$ + "_id" + z_q$ + ":" + z_q$ + "@user" + z_q$ + "}" THEN PRINT #ST_TMP, MtUser$
 FOR z_i% = 0 TO MtN% - 1
-PRINT #ST_TMP, RcSet$(RcNew$(MtF$(z_i%)), "t", MtT$(z_i%), 1)
+PRINT #ST_TMP, "{" + z_q$ + "_id" + z_q$ + ":" + RcEnc$(MtF$(z_i%)) + "," + z_q$ + "t" + z_q$ + ":" + z_q$ + MtT$(z_i%) + z_q$ + "}"
 NEXT
 CLOSE #ST_TMP
 MtDirty% = 0
@@ -681,7 +714,7 @@ FOR z_j% = 0 TO 7
 IF IxN% = 0 THEN EXIT FUNCTION
 z_i% = (IxN% - 1) * z_j% \ 7
 z_r$ = StRead$(IxO%(z_i%))
-IF RcGet$(z_r$, "_id") <> IxK$(z_i%) OR RcIsDel%(z_r$) THEN StVerify% = 0 : EXIT FUNCTION
+IF RcGet$(z_r$, "_id") <> IxK$(z_i%) OR INSTR(z_r$, CHR$(34) + "_del" + CHR$(34)) > 0 THEN StVerify% = 0 : EXIT FUNCTION
 NEXT
 END FUNCTION
 FUNCTION StOpen%(z_n$)
@@ -745,17 +778,8 @@ StAppend% = LOC(#ST_WR)
 PRINT #ST_WR, z_r$
 CLOSE #ST_WR
 END FUNCTION
-FUNCTION StSxNeed%(z_rec$)
-LOCAL z_s%, z_v$
-FOR z_s% = 0 TO SX_SLOTS - 1
-IF SxF$(z_s%) <> "" THEN
-z_v$ = RcGet$(z_rec$, SxF$(z_s%))
-IF RcFound% THEN INC StSxNeed%
-ENDIF
-NEXT
-END FUNCTION
 FUNCTION StWrite%(z_rec$, z_md%)
-LOCAL z_id$, z_oo%, z_old$, z_off%
+LOCAL z_id$, z_oo%, z_old$, z_off%, z_n%, z_s%, z_x$
 StErr$ = ""
 IF StCol$ = "" THEN StErr$ = "no collection open" : EXIT FUNCTION
 IF RcCheck%(z_rec$) < 0 OR INSTR(z_rec$, CHR$(10)) OR INSTR(z_rec$, CHR$(13)) THEN
@@ -764,13 +788,20 @@ ENDIF
 z_id$ = RcGet$(z_rec$, "_id")
 IF RcFound% = 0 OR RcT% <> 1 THEN StErr$ = "_id must be a string" : EXIT FUNCTION
 IF IxKeyOk%(z_id$) = 0 THEN StErr$ = IxErr$ : EXIT FUNCTION
-IF RcIsDel%(z_rec$) THEN StErr$ = "_del is reserved" : EXIT FUNCTION
+IF INSTR(z_rec$, CHR$(34) + "_del" + CHR$(34)) THEN StErr$ = "_del is reserved" : EXIT FUNCTION
 z_oo% = IxGet%(z_id$)
 IF z_md% = 1 AND z_oo% > 0 THEN StErr$ = "duplicate _id" : EXIT FUNCTION
 IF z_md% = 2 AND z_oo% < 0 THEN StErr$ = "not found" : EXIT FUNCTION
 IF z_oo% < 0 AND IxN% >= IX_MAX THEN StErr$ = "collection full" : EXIT FUNCTION
 IF z_oo% > 0 THEN z_old$ = StRead$(z_oo%)
-IF SxN% + StSxNeed%(z_rec$) - StSxNeed%(z_old$) > SX_MAX THEN
+z_n% = 0
+FOR z_s% = 0 TO SX_SLOTS - 1
+IF SxF$(z_s%) <> "" THEN
+z_x$ = RcGet$(z_rec$, SxF$(z_s%)) : z_n% = z_n% + RcFound%
+IF z_old$ <> "" THEN z_x$ = RcGet$(z_old$, SxF$(z_s%)) : z_n% = z_n% - RcFound%
+ENDIF
+NEXT
+IF SxN% + z_n% > SX_MAX THEN
 StErr$ = "index space full" : EXIT FUNCTION
 ENDIF
 z_off% = StAppend%(z_rec$)
@@ -865,7 +896,7 @@ CONST QO_EQ = 1, QO_NE = 2, QO_LT = 3, QO_LE = 4, QO_GT = 5, QO_GE = 6
 CONST QO_LIKE = 7, QO_NULL = 8, QO_NNULL = 9
 CONST QO_AND = 20, QO_OR = 21, QO_NOT = 22
 DIM TkT%(TK_MAX - 1), TkP%(TK_MAX - 1), TkL%(TK_MAX - 1), TkN%
-DIM QText$, QErr$, QPos%, QDepth%
+DIM QText$, QErr$, QPos%
 DIM QCmd$, QCol$, QExplain%, QAgg%, QFN%, QOrd$, QDesc%, QLim%, QOff%
 DIM QFld$(QF_MAX - 1) LENGTH 24
 DIM QVal$(QF_MAX - 1) LENGTH QV_LEN, QVT%(QF_MAX - 1)
@@ -941,7 +972,7 @@ END SUB
 FUNCTION QKw%(z_kwd$)
 IF QErr$ <> "" THEN EXIT FUNCTION
 IF TkT%(QPos%) = TK_ID THEN
-IF UCASE$(TkRaw$(QPos%)) = z_kwd$ THEN INC QPos% : QKw% = 1
+IF UCASE$(MID$(QText$, TkP%(QPos%), TkL%(QPos%))) = z_kwd$ THEN INC QPos% : QKw% = 1
 ENDIF
 END FUNCTION
 FUNCTION QNeedKw%(z_kwd$)
@@ -952,7 +983,7 @@ FUNCTION QSym%(z_s$)
 LOCAL z_r$
 IF QErr$ <> "" THEN EXIT FUNCTION
 IF TkT%(QPos%) = TK_SYM THEN
-z_r$ = TkRaw$(QPos%)
+z_r$ = MID$(QText$, TkP%(QPos%), TkL%(QPos%))
 IF z_r$ = "!=" THEN z_r$ = "<>"
 IF z_r$ = z_s$ THEN INC QPos% : QSym% = 1
 ENDIF
@@ -964,7 +995,7 @@ END FUNCTION
 FUNCTION QName$()
 LOCAL z_r$
 IF QErr$ <> "" THEN EXIT FUNCTION
-z_r$ = TkRaw$(QPos%)
+z_r$ = MID$(QText$, TkP%(QPos%), TkL%(QPos%))
 IF TkT%(QPos%) = TK_QID THEN
 z_r$ = MID$(z_r$, 2, LEN(z_r$) - 2)
 ELSEIF TkT%(QPos%) = TK_ID THEN
@@ -979,7 +1010,7 @@ END FUNCTION
 FUNCTION QColName$()
 LOCAL z_r$
 IF QErr$ <> "" THEN EXIT FUNCTION
-z_r$ = TkRaw$(QPos%)
+z_r$ = MID$(QText$, TkP%(QPos%), TkL%(QPos%))
 IF TkT%(QPos%) <> TK_ID OR INSTR(QRES$, " " + UCASE$(z_r$) + " ") > 0 THEN
 QFail "expected a collection name" : EXIT FUNCTION
 ENDIF
@@ -990,7 +1021,7 @@ END FUNCTION
 FUNCTION QValue%(z_v$, z_t%)
 LOCAL z_r$, z_i%
 IF QErr$ <> "" THEN EXIT FUNCTION
-z_r$ = TkRaw$(QPos%) : z_v$ = ""
+z_r$ = MID$(QText$, TkP%(QPos%), TkL%(QPos%)) : z_v$ = ""
 SELECT CASE TkT%(QPos%)
 CASE TK_STR
 z_r$ = MID$(z_r$, 2, LEN(z_r$) - 2) : z_t% = 1
@@ -1012,7 +1043,7 @@ INC QPos%
 QValue% = 1
 END FUNCTION
 FUNCTION QInt%()
-LOCAL z_r$ = TkRaw$(QPos%), z_i%
+LOCAL z_r$ = MID$(QText$, TkP%(QPos%), TkL%(QPos%)), z_i%
 IF QErr$ <> "" THEN EXIT FUNCTION
 IF TkT%(QPos%) = TK_NUM AND LEN(z_r$) <= 6 THEN
 FOR z_i% = 1 TO LEN(z_r$)
@@ -1048,61 +1079,12 @@ IF QErr$ <> "" THEN EXIT FUNCTION
 IF QNN% >= QN_MAX THEN QFail "condition too complex" : EXIT FUNCTION
 IF LEN(z_v$) > QNV_LEN THEN QFail "value too long" : EXIT FUNCTION
 QnOp%(QNN%) = z_op% : QnF$(QNN%) = z_f$ : QnV$(QNN%) = z_v$ : QnT%(QNN%) = z_t%
-QnTop%(QNN%) = (z_op% < QO_AND)
+QnTop%(QNN%) = 0
 INC QNN%
 QNode% = 1
 END FUNCTION
-SUB QNotTop z_st%
-LOCAL z_i%
-FOR z_i% = z_st% TO QNN% - 1 : QnTop%(z_i%) = 0 : NEXT
-END SUB
-FUNCTION QOr%()
-LOCAL z_st% = QNN%
-IF QAnd%() = 0 THEN EXIT FUNCTION
-IF QKw%("OR") THEN
-QOr% = QOrRest%()
-QNotTop z_st%
-ELSE
-QOr% = (QErr$ = "")
-ENDIF
-END FUNCTION
-FUNCTION QOrRest%()
-IF QAnd%() = 0 THEN EXIT FUNCTION
-IF QNode%(QO_OR, "", "", 0) = 0 THEN EXIT FUNCTION
-IF QKw%("OR") THEN QOrRest% = QOrRest%() ELSE QOrRest% = (QErr$ = "")
-END FUNCTION
-FUNCTION QAnd%()
-IF QNot%() = 0 THEN EXIT FUNCTION
-IF QKw%("AND") THEN QAnd% = QAndRest%() ELSE QAnd% = (QErr$ = "")
-END FUNCTION
-FUNCTION QAndRest%()
-IF QNot%() = 0 THEN EXIT FUNCTION
-IF QNode%(QO_AND, "", "", 0) = 0 THEN EXIT FUNCTION
-IF QKw%("AND") THEN QAndRest% = QAndRest%() ELSE QAndRest% = (QErr$ = "")
-END FUNCTION
-FUNCTION QNot%()
-LOCAL z_st% = QNN%
-IF QKw%("NOT") THEN
-INC QDepth%
-IF QDepth% > 12 THEN QFail "too deeply nested" : EXIT FUNCTION
-IF QNot%() = 0 THEN EXIT FUNCTION
-INC QDepth%, -1
-QNot% = QNode%(QO_NOT, "", "", 0)
-QNotTop z_st%
-ELSE
-QNot% = QPrim%()
-ENDIF
-END FUNCTION
-FUNCTION QPrim%()
-LOCAL z_f$, z_v$, z_t%, z_op%, z_neg%, z_st% = QNN%
-IF QErr$ <> "" THEN EXIT FUNCTION
-INC QDepth%
-IF QDepth% > 12 THEN QFail "too deeply nested" : EXIT FUNCTION
-IF QSym%("(") THEN
-IF QOr%() = 0 THEN EXIT FUNCTION
-IF QNeedSym%(")") = 0 THEN EXIT FUNCTION
-INC QDepth%, -1 : QPrim% = 1 : EXIT FUNCTION
-ENDIF
+FUNCTION QLeaf%()
+LOCAL z_f$, z_v$, z_t%, z_op%, z_neg%, z_r$
 z_f$ = QName$()
 IF QErr$ <> "" THEN EXIT FUNCTION
 IF QKw%("IS") THEN
@@ -1118,7 +1100,8 @@ ELSEIF QKw%("LIKE") THEN
 z_op% = QO_LIKE
 ELSE
 IF TkT%(QPos%) = TK_SYM THEN
-SELECT CASE TkRaw$(QPos%)
+z_r$ = MID$(QText$, TkP%(QPos%), TkL%(QPos%))
+SELECT CASE z_r$
 CASE "="       : z_op% = QO_EQ
 CASE "<>", "!=" : z_op% = QO_NE
 CASE "<"       : z_op% = QO_LT
@@ -1136,13 +1119,77 @@ ENDIF
 IF QNode%(z_op%, z_f$, z_v$, z_t%) = 0 THEN EXIT FUNCTION
 IF z_neg% AND z_op% = QO_LIKE THEN
 IF QNode%(QO_NOT, "", "", 0) = 0 THEN EXIT FUNCTION
-QNotTop z_st%
 ENDIF
-INC QDepth%, -1
-QPrim% = 1
+QLeaf% = 1
 END FUNCTION
+FUNCTION QCond%()
+LOCAL z_os%(TK_MAX \ 2), z_on% = 0, z_opnd% = 1, z_op%, z_k%, z_par% = 0
+DO
+IF QErr$ <> "" THEN EXIT FUNCTION
+IF z_opnd% THEN
+IF QKw%("NOT") THEN
+z_os%(z_on%) = QO_NOT : INC z_on%
+ELSEIF QSym%("(") THEN
+INC z_par%
+IF z_par% > 12 THEN QFail "too deeply nested" : EXIT FUNCTION
+z_os%(z_on%) = 0 : INC z_on%
+ELSE
+IF QLeaf%() = 0 THEN EXIT FUNCTION
+z_opnd% = 0
+ENDIF
+ELSE
+z_op% = 0
+IF QKw%("AND") THEN
+z_op% = QO_AND
+ELSEIF QKw%("OR") THEN
+z_op% = QO_OR
+ELSEIF z_par% > 0 THEN
+IF QSym%(")") THEN z_op% = -1
+ENDIF
+IF z_op% = 0 THEN EXIT DO
+DO WHILE z_on% > 0
+z_k% = z_os%(z_on% - 1)
+IF z_k% = 0 THEN EXIT DO
+IF z_op% > 0 THEN
+IF (z_k% = QO_NOT) * 3 + (z_k% = QO_AND) * 2 + (z_k% = QO_OR) < (z_op% = QO_AND) * 2 + (z_op% = QO_OR) THEN EXIT DO
+ENDIF
+IF QNode%(z_k%, "", "", 0) = 0 THEN EXIT FUNCTION
+INC z_on%, -1
+LOOP
+IF z_op% = -1 THEN
+INC z_on%, -1 : INC z_par%, -1
+ELSE
+z_os%(z_on%) = z_op% : INC z_on% : z_opnd% = 1
+ENDIF
+ENDIF
+LOOP
+DO WHILE z_on% > 0
+z_k% = z_os%(z_on% - 1)
+IF z_k% = 0 THEN QFail "expected )" : EXIT FUNCTION
+IF QNode%(z_k%, "", "", 0) = 0 THEN EXIT FUNCTION
+INC z_on%, -1
+LOOP
+QTopFlags
+QCond% = (QErr$ = "")
+END FUNCTION
+SUB QTopFlags
+LOCAL z_pa%(QN_MAX - 1), z_sk%(QN_MAX - 1), z_stp% = 0, z_i%
+IF QNN% = 0 THEN EXIT SUB
+FOR z_i% = 0 TO QNN% - 1
+IF QnOp%(z_i%) = QO_AND OR QnOp%(z_i%) = QO_OR THEN
+z_pa%(z_sk%(z_stp% - 1)) = z_i% : z_pa%(z_sk%(z_stp% - 2)) = z_i% : INC z_stp%, -2
+ELSEIF QnOp%(z_i%) = QO_NOT THEN
+z_pa%(z_sk%(z_stp% - 1)) = z_i% : INC z_stp%, -1
+ENDIF
+z_sk%(z_stp%) = z_i% : INC z_stp%
+NEXT
+QnTop%(QNN% - 1) = (QnOp%(QNN% - 1) <> QO_OR AND QnOp%(QNN% - 1) <> QO_NOT)
+FOR z_i% = QNN% - 2 TO 0 STEP -1
+QnTop%(z_i%) = QnTop%(z_pa%(z_i%)) AND (QnOp%(z_pa%(z_i%)) = QO_AND)
+NEXT
+END SUB
 SUB QReset
-QErr$ = "" : QPos% = 0 : QDepth% = 0 : QCmd$ = "" : QCol$ = ""
+QErr$ = "" : QPos% = 0 : QCmd$ = "" : QCol$ = ""
 QExplain% = 0 : QAgg% = 0 : QFN% = 0 : QNN% = 0
 QOrd$ = "" : QDesc% = 0 : QLim% = -1 : QOff% = 0
 END SUB
@@ -1156,7 +1203,7 @@ z_x% = QNames%(1)
 ENDIF
 z_x% = QNeedKw%("FROM")
 QCol$ = QColName$()
-IF QKw%("WHERE") THEN z_x% = QOr%()
+IF QKw%("WHERE") THEN z_x% = QCond%()
 IF QKw%("ORDER") THEN
 z_x% = QNeedKw%("BY")
 QOrd$ = QName$()
@@ -1206,7 +1253,7 @@ IF QFld$(z_i%) = "_id" THEN QFail "_id cannot be removed"
 NEXT
 ENDIF
 IF QFN% = 0 THEN QFail "expected SET or UNSET"
-IF QKw%("WHERE") THEN z_x% = QOr%()
+IF QKw%("WHERE") THEN z_x% = QCond%()
 END SUB
 SUB QIndexDef z_c$
 LOCAL z_x%
@@ -1220,7 +1267,7 @@ LOCAL z_x%, z_c$
 QReset
 IF QLex%(z_s$) = 0 THEN EXIT FUNCTION
 QExplain% = QKw%("EXPLAIN")
-IF TkT%(QPos%) = TK_ID THEN z_c$ = UCASE$(TkRaw$(QPos%))
+IF TkT%(QPos%) = TK_ID THEN z_c$ = UCASE$(MID$(QText$, TkP%(QPos%), TkL%(QPos%)))
 IF INSTR(" SELECT INSERT UPDATE DELETE CREATE DROP SHOW DESCRIBE VACUUM ", " " + z_c$ + " ") = 0 OR z_c$ = "" THEN
 QFail "unknown command" : EXIT FUNCTION
 ENDIF
@@ -1231,7 +1278,7 @@ CASE "INSERT" : QInsert
 CASE "UPDATE" : QUpdate
 CASE "DELETE"
 z_x% = QNeedKw%("FROM") : QCol$ = QColName$()
-IF QKw%("WHERE") THEN z_x% = QOr%()
+IF QKw%("WHERE") THEN z_x% = QCond%()
 CASE "CREATE", "DROP"
 IF QKw%("COLLECTION") THEN
 QCmd$ = z_c$ + " COLLECTION" : QCol$ = QColName$()
@@ -1245,7 +1292,7 @@ CASE ELSE : QCol$ = QColName$()
 END SELECT
 IF QErr$ = "" THEN
 z_x% = QSym%(";")
-IF TkT%(QPos%) <> TK_END THEN QFail "unexpected '" + TkRaw$(QPos%) + "'"
+IF TkT%(QPos%) <> TK_END THEN QFail "unexpected '" + MID$(QText$, TkP%(QPos%), TkL%(QPos%)) + "'"
 ENDIF
 QParse% = (QErr$ = "")
 END FUNCTION
@@ -1375,19 +1422,6 @@ CASE QO_GT : ExLeaf% = (z_c% = 1)
 CASE QO_GE : ExLeaf% = (z_c% = 1 OR z_c% = 0)
 END SELECT
 END FUNCTION
-FUNCTION ExMatch%(z_rec$)
-LOCAL z_k%, z_sp% = 0
-IF QNN% = 0 THEN ExMatch% = 1 : EXIT FUNCTION
-FOR z_k% = 0 TO QNN% - 1
-SELECT CASE QnOp%(z_k%)
-CASE QO_AND : INC z_sp%, -1 : ExSt%(z_sp% - 1) = ExSt%(z_sp% - 1) AND ExSt%(z_sp%)
-CASE QO_OR  : INC z_sp%, -1 : ExSt%(z_sp% - 1) = ExSt%(z_sp% - 1) OR ExSt%(z_sp%)
-CASE QO_NOT : ExSt%(z_sp% - 1) = 1 - ExSt%(z_sp% - 1)
-CASE ELSE   : ExSt%(z_sp%) = ExLeaf%(z_rec$, z_k%) : INC z_sp%
-END SELECT
-NEXT
-ExMatch% = ExSt%(0)
-END FUNCTION
 SUB ExPlanPath
 LOCAL z_k%, z_s%, z_op%, z_lo%, z_hi%, z_ok%, z_v$, z_t%
 ExSrc% = 0 : ExLo% = 0 : ExHi% = IxN% : ExPath$ = "full scan"
@@ -1423,12 +1457,25 @@ ENDIF
 NEXT
 END SUB
 SUB ExCollect z_lim%
-LOCAL z_i%, z_off%
+LOCAL z_i%, z_off%, z_r$, z_m%, z_k%, z_stp%
 ExN% = 0
 IF z_lim% = 0 THEN EXIT SUB
 FOR z_i% = ExLo% TO ExHi% - 1
 IF ExSrc% = 2 THEN z_off% = SxO%(z_i%) ELSE z_off% = IxO%(z_i%)
-IF ExMatch%(StRead$(z_off%)) THEN
+z_r$ = StRead$(z_off%) : z_m% = 1
+IF QNN% > 0 THEN
+z_stp% = 0
+FOR z_k% = 0 TO QNN% - 1
+SELECT CASE QnOp%(z_k%)
+CASE QO_AND : INC z_stp%, -1 : ExSt%(z_stp% - 1) = ExSt%(z_stp% - 1) AND ExSt%(z_stp%)
+CASE QO_OR  : INC z_stp%, -1 : ExSt%(z_stp% - 1) = ExSt%(z_stp% - 1) OR ExSt%(z_stp%)
+CASE QO_NOT : ExSt%(z_stp% - 1) = 1 - ExSt%(z_stp% - 1)
+CASE ELSE   : ExSt%(z_stp%) = ExLeaf%(z_r$, z_k%) : INC z_stp%
+END SELECT
+NEXT
+z_m% = ExSt%(0)
+ENDIF
+IF z_m% THEN
 ExR%(ExN%) = z_off% : INC ExN%
 IF z_lim% > 0 AND ExN% >= z_lim% THEN EXIT SUB
 ENDIF
@@ -1629,6 +1676,7 @@ ENDIF
 ExRowText$ = z_s$
 END FUNCTION
 DIM DbE$
+DIM DbFT% = 1
 FUNCTION DbErr$()
 DbErr$ = DbE$
 END FUNCTION
@@ -1681,8 +1729,12 @@ IF z_i% < 0 OR z_i% >= IxN% THEN DbE$ = "position out of range" : EXIT FUNCTION
 DbAt$ = StAt$(z_i%) : DbE$ = ""
 END FUNCTION
 FUNCTION DbGet$(z_id$)
-DbGet$ = StFetch$(z_id$)
-DbE$ = StErr$
+LOCAL z_o% = IxGet%(z_id$)
+IF z_o% < 0 THEN
+DbE$ = "not found"
+ELSE
+DbE$ = "" : DbGet$ = StRead$(z_o%)
+ENDIF
 END FUNCTION
 FUNCTION DbExists%(z_id$)
 DbExists% = (IxGet%(z_id$) > 0)
@@ -1793,6 +1845,34 @@ LOOP
 END FUNCTION
 FUNCTION DbQuery%(z_sql$)
 DbQuery% = DbOk%(ExRun%(z_sql$), ExErr$)
+END FUNCTION
+FUNCTION DbFind%(z_f$, z_op$, z_v$)
+LOCAL z_opc%, z_t% = DbFT%
+DbFT% = 1 : DbE$ = "" : ExN% = 0
+IF StCol$ = "" THEN DbE$ = "no collection open" : EXIT FUNCTION
+SELECT CASE z_op$
+CASE "=" : z_opc% = QO_EQ
+CASE "<>" : z_opc% = QO_NE
+CASE "<" : z_opc% = QO_LT
+CASE "<=" : z_opc% = QO_LE
+CASE ">" : z_opc% = QO_GT
+CASE ">=" : z_opc% = QO_GE
+CASE "STARTS" : z_opc% = QO_LIKE
+CASE ELSE : DbE$ = "bad operator " + z_op$ : EXIT FUNCTION
+END SELECT
+IF z_opc% = QO_LIKE AND z_t% <> 1 THEN DbE$ = "STARTS needs text" : EXIT FUNCTION
+IF LEN(z_f$) = 0 OR LEN(z_f$) > 24 OR LEN(z_v$) > QNV_LEN - 1 THEN DbE$ = "field or value too long" : EXIT FUNCTION
+QCmd$ = "SELECT" : QAgg% = 0 : QFN% = 0 : QOrd$ = "" : QLim% = -1 : QOff% = 0
+QNN% = 1 : QnOp%(0) = z_opc% : QnF$(0) = z_f$ : QnV$(0) = z_v$ : QnT%(0) = z_t% : QnTop%(0) = 1
+IF z_opc% = QO_LIKE THEN QnV$(0) = z_v$ + "%"
+ExKind$ = "ROWS"
+ExPlanPath
+ExCollect -1
+DbFind% = ExN%
+END FUNCTION
+FUNCTION DbFindNum%(z_f$, z_op$, z_n!)
+DbFT% = 2
+DbFindNum% = DbFind%(z_f$, z_op$, DbNumStr$(z_n!))
 END FUNCTION
 FUNCTION DbRows%()
 DbRows% = ExN%

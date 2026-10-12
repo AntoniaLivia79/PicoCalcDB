@@ -66,6 +66,7 @@ SUITES = {
     'api':     (STRICT, ['dblib_min.bas', 'test_api.bas'],
                 lambda: shutil.rmtree('/tmp/dbl', ignore_errors=True), 300),
     'almanac': (STRICT, ['dblib_min.bas', almanac_for_test, 'test_almanac.bas'], prep_almanac, 400),
+    'depth':   None,                            # call-depth budgets (tools/check_depth.py)
     'adventure': (STRICT, ['dblib_min.bas', 'adv_model.bas', 'adv_view.bas', 'adv_ctrl.bas',
                            'test_adventure.bas'], prep_adventure, 400),
 }
@@ -101,6 +102,14 @@ def run_program(path, timeout):
 
 
 def run_suite(name):
+    if name == 'depth':                     # static check, no interpreter needed
+        t0 = time.time()
+        r = subprocess.run([sys.executable, os.path.join(ROOT, 'tools', 'check_depth.py')],
+                           capture_output=True, text=True)
+        print(f"{name:9} {'PASS' if r.returncode == 0 else 'FAIL'}  {time.time() - t0:5.0f}s")
+        if r.returncode:
+            print('\n'.join('    ' + l for l in r.stdout.split('\n') if 'OVER' in l or 'MISSING' in l))
+        return r.returncode == 0
     opts, parts, prep, timeout = SUITES[name]
     if prep:
         prep()
@@ -124,7 +133,7 @@ def run_suite(name):
 def main(args):
     if '--list' in args:
         print('\n'.join(SUITES)); return 0
-    if not os.path.exists(MMBASIC):
+    if not os.path.exists(MMBASIC) and [n for n in (args or SUITES) if n != 'depth']:
         print(f'MMB4L not found at {MMBASIC} (set MMBASIC to the interpreter path)')
         return 2
     names = args or list(SUITES)

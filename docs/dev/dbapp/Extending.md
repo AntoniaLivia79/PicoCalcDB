@@ -24,7 +24,7 @@ The library picks the statement up automatically, because `DbQuery%` is `ExRun%`
 ## A new comparison operator
 
 1. Add a `QO_…` constant below `QO_AND` (operators below 20 are leaves).
-2. Recognise it in `QPrim%`, and give it a name in `QOpName$`.
+2. Recognise it in `QLeaf%`, and give it a name in `QOpName$`. If it should also work in `DbFind%`, add it to the operator list there.
 3. Evaluate it in `ExLeaf%`.
 4. If an index can help with it, handle it in `ExPlanPath` and `SxRange`/`IxRange`. Remember that secondary ranges must be conservative: the executor re-checks every candidate, but it can't recover a record the range left out.
 

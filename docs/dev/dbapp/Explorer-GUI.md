@@ -35,26 +35,58 @@ Because everything goes through these routines, the GUI can be moved to another 
 ' dbmain.bas - program entry. Load order: dbcore, dbstore, dbquery,
 ' dbexec, dbhal, dbgui, then this file (dbapp.bas is all of them
 ' merged; dbapp_min.bas is the same without comments, to save space).
+' The main loop is here at the top level rather than in a SUB, so the
+' explorer's calls start one level less deep (small PicoMite stack).
 ' =====================================================================
 StDir$ = "B:/db/"                 ' database folder on the SD card
 ON ERROR SKIP 1
 MKDIR "B:/db"
-UiMain
+HalInit
+HalCls
+UiListColl ""
+UiGo UV_COLL
+UiPaint
+DO WHILE UiQuit% = 0
+  UiStep
+LOOP
+StClose
+HalCls
 END
 ```
 
-`UiMain` initialises the display, lists the collections, then runs `UiStep` until `UiQuit%` is set:
+The main loop is in the main program rather than in a SUB, so every call the explorer makes starts one level shallower. Each pass of the loop is one key press:
 
 ```basic
 SUB UiStep
-  LOCAL k% = HalKey%()
+  LOCAL k% = HalKey%(), x%
   IF UiMsg$ <> "" THEN UiSay "", US_N
   UiKey k%
+  SELECT CASE UiPend%
+    CASE 1 : UiConsoleRun UiPendQ$
+    CASE 2 : UiFilter UiPendQ$
+    CASE 3
+      IF ExRun%("DESCRIBE " + StCol$) THEN UiText "Describe " + StCol$ ELSE UiSay ExErr$, US_ERR
+  END SELECT
+  UiPend% = 0
+  IF UiReloadNow% THEN
+    UiReloadNow% = 0 : UiReload
+    IF UiReselect$ <> "" THEN
+      x% = UiFind%(UiReselect$)
+      IF x% >= 0 THEN UiSel%(UV_RECS) = x%
+    ENDIF
+  ENDIF
+  UiReselect$ = ""
   UiPaint
 END SUB
 ```
 
-One key press is one step: clear the previous message, handle the key, repaint.
+1. Clear the previous message, and handle the key (`UiKey`).
+2. Do any work the key handler **left** for this step:
+   - `UiPend%`: run a SQL statement typed at the console (1), apply a filter (2), or describe the collection (3), with the text in `UiPendQ$`;
+   - `UiReloadNow%`: re-run the list's query, then re-select the record named in `UiReselect$`.
+3. Repaint.
+
+Key handlers record this work instead of doing it, so queries and reloads always run two levels from the top, not from inside a handler, a prompt and an edit. This keeps the explorer's deepest call chain to 9 levels ([MMBasic notes](MMBasic-Notes.md#the-call-stack-is-small)).
 
 ## Screen layout
 

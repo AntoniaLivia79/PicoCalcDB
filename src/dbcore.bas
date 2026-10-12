@@ -45,62 +45,17 @@ FUNCTION RcSkip%(r$, i%)
   RcSkip% = j%
 END FUNCTION
 
-' Decode the JSON string whose opening quote is at i% into s$.
-' Returns position after the closing quote, or -1 if malformed.
-FUNCTION RcStr%(r$, i%, s$)
-  LOCAL j% = i% + 1, q%, b%, c$, a%
-  s$ = ""
-  DO
-    q% = INSTR(j%, r$, CHR$(34))
-    IF q% = 0 THEN RcStr% = -1 : EXIT FUNCTION
-    b% = INSTR(j%, r$, "\")
-    IF b% = 0 OR b% > q% THEN
-      s$ = s$ + MID$(r$, j%, q% - j%)
-      RcStr% = q% + 1
-      EXIT FUNCTION
-    ENDIF
-    s$ = s$ + MID$(r$, j%, b% - j%)
-    c$ = MID$(r$, b% + 1, 1)
-    j% = b% + 2
-    SELECT CASE c$
-      CASE "n" : s$ = s$ + CHR$(10)
-      CASE "t" : s$ = s$ + CHR$(9)
-      CASE "r" : s$ = s$ + CHR$(13)
-      CASE "b" : s$ = s$ + CHR$(8)
-      CASE "f" : s$ = s$ + CHR$(12)
-      CASE "u"
-        a% = VAL("&H" + MID$(r$, b% + 2, 4))
-        IF a% > 255 THEN s$ = s$ + "?" ELSE s$ = s$ + CHR$(a%)
-        j% = b% + 6
-      CASE ELSE : s$ = s$ + c$   ' \" \\ \/
-    END SELECT
-  LOOP
-END FUNCTION
-
-' Skip a nested {...} or [...] starting at i%; returns pos after it
-FUNCTION RcNest%(r$, i%)
-  LOCAL j% = i%, d% = 0, c$, s$
-  DO WHILE j% <= LEN(r$)
-    c$ = MID$(r$, j%, 1)
-    IF c$ = CHR$(34) THEN
-      j% = RcStr%(r$, j%, s$)
-      IF j% < 0 THEN EXIT DO
-    ELSE
-      IF c$ = "{" OR c$ = "[" THEN INC d%
-      IF c$ = "}" OR c$ = "]" THEN INC d%, -1
-      INC j%
-      IF d% = 0 THEN RcNest% = j% : EXIT FUNCTION
-    ENDIF
-  LOOP
-  RcNest% = -1
-END FUNCTION
-
 ' Field iterator. Start with ip% = 1; pass back the returned value.
 ' Returns next position (>0) with k$, v$, t% filled in,
 ' 0 at end of record, -1 if the record is malformed or truncated.
+' It calls no other routine: it is at the bottom of almost every call
+' chain, and each nested call uses part of the PicoMite's small stack.
 FUNCTION RcNext%(r$, ip%, k$, v$, t%)
-  LOCAL i%, e%, c$
-  i% = RcSkip%(r$, ip%)
+  LOCAL i% = ip%, n% = LEN(r$), e%, c$, s$, q%, b%, a%, d%, part%
+  DO WHILE i% <= n%
+    IF ASC(MID$(r$, i%, 1)) > 32 THEN EXIT DO
+    INC i%
+  LOOP
   c$ = MID$(r$, i%, 1)
   IF ip% = 1 THEN
     IF c$ <> "{" THEN RcNext% = -1 : EXIT FUNCTION
@@ -109,33 +64,97 @@ FUNCTION RcNext%(r$, ip%, k$, v$, t%)
   ELSEIF c$ <> "," THEN
     RcNext% = -1 : EXIT FUNCTION
   ENDIF
-  i% = RcSkip%(r$, i% + 1)
+  INC i%
+  DO WHILE i% <= n%
+    IF ASC(MID$(r$, i%, 1)) > 32 THEN EXIT DO
+    INC i%
+  LOOP
   c$ = MID$(r$, i%, 1)
   IF c$ = "}" AND ip% = 1 THEN RcNext% = 0 : EXIT FUNCTION
   IF c$ <> CHR$(34) THEN RcNext% = -1 : EXIT FUNCTION
   RcKS% = i%
-  i% = RcStr%(r$, i%, k$)
-  IF i% < 0 THEN RcNext% = -1 : EXIT FUNCTION
-  i% = RcSkip%(r$, i%)
-  IF MID$(r$, i%, 1) <> ":" THEN RcNext% = -1 : EXIT FUNCTION
-  i% = RcSkip%(r$, i% + 1)
-  RcVS% = i%
-  c$ = MID$(r$, i%, 1)
-  IF c$ = CHR$(34) THEN
-    i% = RcStr%(r$, i%, v$) : t% = 1
-  ELSEIF c$ = "{" OR c$ = "[" THEN
-    i% = RcNest%(r$, i%) : t% = 3
-    IF i% > 0 THEN v$ = MID$(r$, RcVS%, i% - RcVS%)
-  ELSE
-    e% = i%
-    DO WHILE e% <= LEN(r$)
-      c$ = MID$(r$, e%, 1)
-      IF c$ = "," OR c$ = "}" OR ASC(c$) <= 32 THEN EXIT DO
-      INC e%
+  part% = 1                             ' 1 = the key, 2 = a "text" value
+  DO
+    ' decode the string whose opening quote is at i% into s$
+    s$ = "" : e% = i% + 1
+    DO
+      q% = INSTR(e%, r$, CHR$(34))
+      IF q% = 0 THEN RcNext% = -1 : EXIT FUNCTION
+      b% = INSTR(e%, r$, "\")
+      IF b% = 0 OR b% > q% THEN s$ = s$ + MID$(r$, e%, q% - e%) : i% = q% + 1 : EXIT DO
+      s$ = s$ + MID$(r$, e%, b% - e%)
+      c$ = MID$(r$, b% + 1, 1)
+      e% = b% + 2
+      SELECT CASE c$
+        CASE "n" : s$ = s$ + CHR$(10)
+        CASE "t" : s$ = s$ + CHR$(9)
+        CASE "r" : s$ = s$ + CHR$(13)
+        CASE "b" : s$ = s$ + CHR$(8)
+        CASE "f" : s$ = s$ + CHR$(12)
+        CASE "u"
+          a% = VAL("&H" + MID$(r$, b% + 2, 4))
+          IF a% > 255 THEN s$ = s$ + "?" ELSE s$ = s$ + CHR$(a%)
+          e% = b% + 6
+        CASE ELSE : s$ = s$ + c$   ' \" \\ \/
+      END SELECT
     LOOP
-    IF e% = i% THEN RcNext% = -1 : EXIT FUNCTION
-    v$ = MID$(r$, i%, e% - i%) : t% = 2 : i% = e%
-  ENDIF
+    IF part% = 2 THEN v$ = s$ : t% = 1 : EXIT DO
+    k$ = s$
+    DO WHILE i% <= n%
+      IF ASC(MID$(r$, i%, 1)) > 32 THEN EXIT DO
+      INC i%
+    LOOP
+    IF MID$(r$, i%, 1) <> ":" THEN RcNext% = -1 : EXIT FUNCTION
+    INC i%
+    DO WHILE i% <= n%
+      IF ASC(MID$(r$, i%, 1)) > 32 THEN EXIT DO
+      INC i%
+    LOOP
+    RcVS% = i%
+    c$ = MID$(r$, i%, 1)
+    IF c$ = CHR$(34) THEN
+      part% = 2
+    ELSEIF c$ = "{" OR c$ = "[" THEN
+      ' nested list or object: skip to its matching bracket
+      d% = 0
+      DO WHILE i% <= n%
+        c$ = MID$(r$, i%, 1)
+        IF c$ = CHR$(34) THEN
+          INC i%
+          DO WHILE i% <= n%
+            c$ = MID$(r$, i%, 1)
+            IF c$ = "\" THEN
+              INC i%, 2
+            ELSEIF c$ = CHR$(34) THEN
+              EXIT DO
+            ELSE
+              INC i%
+            ENDIF
+          LOOP
+          IF i% > n% THEN RcNext% = -1 : EXIT FUNCTION
+          INC i%
+        ELSE
+          IF c$ = "{" OR c$ = "[" THEN INC d%
+          IF c$ = "}" OR c$ = "]" THEN INC d%, -1
+          INC i%
+          IF d% = 0 THEN EXIT DO
+        ENDIF
+      LOOP
+      IF d% <> 0 THEN RcNext% = -1 : EXIT FUNCTION
+      v$ = MID$(r$, RcVS%, i% - RcVS%) : t% = 3
+      EXIT DO
+    ELSE
+      e% = i%
+      DO WHILE e% <= n%
+        c$ = MID$(r$, e%, 1)
+        IF c$ = "," OR c$ = "}" OR ASC(c$) <= 32 THEN EXIT DO
+        INC e%
+      LOOP
+      IF e% = i% THEN RcNext% = -1 : EXIT FUNCTION
+      v$ = MID$(r$, i%, e% - i%) : t% = 2 : i% = e%
+      EXIT DO
+    ENDIF
+  LOOP
   RcVE% = i%
   RcNext% = i%
 END FUNCTION
@@ -380,7 +399,9 @@ END FUNCTION
 ' Numbers map to floor(n) + 5e10, zero padded, clamped to +-4.9e10.
 FUNCTION SxEnc$(s%, v$, t%)
   LOCAL n!, e%
-  IF t% = 2 AND RcIsNum%(v$) THEN
+  ' values reaching here are validated, so a literal that is not true,
+  ' false or null is a number (no RcIsNum% call: one level less)
+  IF t% = 2 AND v$ <> "true" AND v$ <> "false" AND v$ <> "null" THEN
     n! = VAL(v$)
     IF n! > 4.9E10 THEN n! = 4.9E10
     IF n! < -4.9E10 THEN n! = -4.9E10
@@ -392,18 +413,28 @@ FUNCTION SxEnc$(s%, v$, t%)
 END FUNCTION
 
 FUNCTION SxAdd%(s%, v$, t%, off%)
-  LOCAL k$ = SxEnc$(s%, v$, t%), i%, j%
+  SxAdd% = SxAddK%(SxEnc$(s%, v$, t%), off%)
+END FUNCTION
+
+' Add encoded key k$ (from SxEnc$) for offset off%
+FUNCTION SxAddK%(k$, off%)
+  LOCAL i%, j%
   IF SxN% >= SX_MAX THEN IxErr$ = "sec index full" : EXIT FUNCTION
   i% = IxBound%(SxV$(), SxN%, k$, 1)
   FOR j% = SxN% TO i% + 1 STEP -1
     SxV$(j%) = SxV$(j% - 1) : SxO%(j%) = SxO%(j% - 1)
   NEXT
   SxV$(i%) = k$ : SxO%(i%) = off% : INC SxN%
-  SxAdd% = 1
+  SxAddK% = 1
 END FUNCTION
 
 FUNCTION SxRemove%(s%, v$, t%, off%)
-  LOCAL k$ = SxEnc$(s%, v$, t%), i%, j%
+  SxRemove% = SxRemoveK%(SxEnc$(s%, v$, t%), off%)
+END FUNCTION
+
+' Remove the entry with encoded key k$ and offset off%
+FUNCTION SxRemoveK%(k$, off%)
+  LOCAL i%, j%
   i% = IxBound%(SxV$(), SxN%, k$, 0)
   DO WHILE i% < SxN%
     IF SxV$(i%) <> k$ THEN EXIT DO
@@ -411,7 +442,7 @@ FUNCTION SxRemove%(s%, v$, t%, off%)
       FOR j% = i% TO SxN% - 2
         SxV$(j%) = SxV$(j% + 1) : SxO%(j%) = SxO%(j% + 1)
       NEXT
-      INC SxN%, -1 : SxRemove% = 1 : EXIT FUNCTION
+      INC SxN%, -1 : SxRemoveK% = 1 : EXIT FUNCTION
     ENDIF
     INC i%
   LOOP
@@ -453,17 +484,21 @@ FUNCTION IxApply%(rec$, off%, old$)
     FOR s% = 0 TO SX_SLOTS - 1
       IF SxF$(s%) <> "" THEN
         v$ = RcGet$(old$, SxF$(s%)) : ft% = RcT%
-        IF RcFound% THEN v$ = STR$(SxRemove%(s%, v$, ft%, oo%))
+        IF RcFound% THEN v$ = STR$(SxRemoveK%(SxEnc$(s%, v$, ft%), oo%))
       ENDIF
     NEXT
   ENDIF
-  IF RcIsDel%(rec$) THEN v$ = STR$(IxRemove%(id$)) : IxApply% = 1 : EXIT FUNCTION
+  ' tombstone? (RcIsDel% inlined: one call level less)
+  IF INSTR(rec$, CHR$(34) + "_del" + CHR$(34)) THEN
+    v$ = RcGet$(rec$, "_del")
+    IF RcFound% AND v$ <> "0" AND v$ <> "false" THEN v$ = STR$(IxRemove%(id$)) : IxApply% = 1 : EXIT FUNCTION
+  ENDIF
   IF IxPut%(id$, off%) = 0 THEN EXIT FUNCTION
   FOR s% = 0 TO SX_SLOTS - 1
     IF SxF$(s%) <> "" THEN
       v$ = RcGet$(rec$, SxF$(s%)) : ft% = RcT%
       IF RcFound% THEN
-        IF SxAdd%(s%, v$, ft%, off%) = 0 THEN EXIT FUNCTION
+        IF SxAddK%(SxEnc$(s%, v$, ft%), off%) = 0 THEN EXIT FUNCTION
       ENDIF
     ENDIF
   NEXT
@@ -484,10 +519,11 @@ END FUNCTION
 
 ' Read the line at offset off% ("" if it is unreadable)
 FUNCTION IxReadAt$(fnum%, off%)
-  LOCAL r$
+  LOCAL r$ = CHR$(1)
   SEEK #fnum%, off%
-  r$ = IxLine$(fnum%)
-  IF IxLong% THEN r$ = ""
+  ON ERROR SKIP 1
+  LINE INPUT #fnum%, r$
+  IF r$ = CHR$(1) THEN r$ = ""
   IxReadAt$ = r$
 END FUNCTION
 
@@ -535,7 +571,11 @@ FUNCTION IxScan%(fnum%, from%)
         IF IxN% >= IX_MAX THEN IxCompact
         IF IxN% >= IX_MAX THEN IxErr$ = "index full" : EXIT FUNCTION
         IxK$(IxN%) = id$
-        IF RcIsDel%(r$) THEN IxO%(IxN%) = -off% ELSE IxO%(IxN%) = off%
+        IxO%(IxN%) = off%
+        IF INSTR(r$, CHR$(34) + "_del" + CHR$(34)) THEN
+          id$ = RcGet$(r$, "_del")
+          IF RcFound% AND id$ <> "0" AND id$ <> "false" THEN IxO%(IxN%) = -off%
+        ENDIF
         INC IxN%
       ELSE
         INC IxBad%

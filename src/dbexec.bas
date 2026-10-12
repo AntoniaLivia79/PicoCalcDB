@@ -99,20 +99,6 @@ FUNCTION ExLeaf%(rec$, k%)
   END SELECT
 END FUNCTION
 
-' Evaluate the whole WHERE (RPN) against rec$
-FUNCTION ExMatch%(rec$)
-  LOCAL k%, sp% = 0
-  IF QNN% = 0 THEN ExMatch% = 1 : EXIT FUNCTION
-  FOR k% = 0 TO QNN% - 1
-    SELECT CASE QnOp%(k%)
-      CASE QO_AND : INC sp%, -1 : ExSt%(sp% - 1) = ExSt%(sp% - 1) AND ExSt%(sp%)
-      CASE QO_OR  : INC sp%, -1 : ExSt%(sp% - 1) = ExSt%(sp% - 1) OR ExSt%(sp%)
-      CASE QO_NOT : ExSt%(sp% - 1) = 1 - ExSt%(sp% - 1)
-      CASE ELSE   : ExSt%(sp%) = ExLeaf%(rec$, k%) : INC sp%
-    END SELECT
-  NEXT
-  ExMatch% = ExSt%(0)
-END FUNCTION
 
 ' ---------------- access path ----------------------------------------
 
@@ -155,12 +141,27 @@ END SUB
 
 ' Collect matching offsets into ExR%; stop after lim% (-1 = all)
 SUB ExCollect lim%
-  LOCAL i%, off%
+  LOCAL i%, off%, r$, m%, k%, stp%
   ExN% = 0
   IF lim% = 0 THEN EXIT SUB
   FOR i% = ExLo% TO ExHi% - 1
     IF ExSrc% = 2 THEN off% = SxO%(i%) ELSE off% = IxO%(i%)
-    IF ExMatch%(StRead$(off%)) THEN
+    ' evaluate the WHERE (RPN) on a stack; inlined here rather than a
+    ' separate function, to keep the call depth low
+    r$ = StRead$(off%) : m% = 1
+    IF QNN% > 0 THEN
+      stp% = 0
+      FOR k% = 0 TO QNN% - 1
+        SELECT CASE QnOp%(k%)
+          CASE QO_AND : INC stp%, -1 : ExSt%(stp% - 1) = ExSt%(stp% - 1) AND ExSt%(stp%)
+          CASE QO_OR  : INC stp%, -1 : ExSt%(stp% - 1) = ExSt%(stp% - 1) OR ExSt%(stp%)
+          CASE QO_NOT : ExSt%(stp% - 1) = 1 - ExSt%(stp% - 1)
+          CASE ELSE   : ExSt%(stp%) = ExLeaf%(r$, k%) : INC stp%
+        END SELECT
+      NEXT
+      m% = ExSt%(0)
+    ENDIF
+    IF m% THEN
       ExR%(ExN%) = off% : INC ExN%
       IF lim% > 0 AND ExN% >= lim% THEN EXIT SUB
     ENDIF

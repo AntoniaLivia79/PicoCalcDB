@@ -42,7 +42,7 @@ CONST QO_LIKE = 7, QO_NULL = 8, QO_NNULL = 9
 CONST QO_AND = 20, QO_OR = 21, QO_NOT = 22
 
 DIM TkT%(TK_MAX - 1), TkP%(TK_MAX - 1), TkL%(TK_MAX - 1), TkN%
-DIM QText$, QErr$, QPos%, QDepth%
+DIM QText$, QErr$, QPos%
 DIM QCmd$, QCol$, QExplain%, QAgg%, QFN%, QOrd$, QDesc%, QLim%, QOff%
 DIM QFld$(QF_MAX - 1) LENGTH 24
 DIM QVal$(QF_MAX - 1) LENGTH QV_LEN, QVT%(QF_MAX - 1)
@@ -130,7 +130,7 @@ END SUB
 FUNCTION QKw%(kwd$)
   IF QErr$ <> "" THEN EXIT FUNCTION
   IF TkT%(QPos%) = TK_ID THEN
-    IF UCASE$(TkRaw$(QPos%)) = kwd$ THEN INC QPos% : QKw% = 1
+    IF UCASE$(MID$(QText$, TkP%(QPos%), TkL%(QPos%))) = kwd$ THEN INC QPos% : QKw% = 1
   ENDIF
 END FUNCTION
 
@@ -144,7 +144,7 @@ FUNCTION QSym%(s$)
   LOCAL r$
   IF QErr$ <> "" THEN EXIT FUNCTION
   IF TkT%(QPos%) = TK_SYM THEN
-    r$ = TkRaw$(QPos%)
+    r$ = MID$(QText$, TkP%(QPos%), TkL%(QPos%))
     IF r$ = "!=" THEN r$ = "<>"
     IF r$ = s$ THEN INC QPos% : QSym% = 1
   ENDIF
@@ -159,7 +159,7 @@ END FUNCTION
 FUNCTION QName$()
   LOCAL r$
   IF QErr$ <> "" THEN EXIT FUNCTION
-  r$ = TkRaw$(QPos%)
+  r$ = MID$(QText$, TkP%(QPos%), TkL%(QPos%))
   IF TkT%(QPos%) = TK_QID THEN
     r$ = MID$(r$, 2, LEN(r$) - 2)
   ELSEIF TkT%(QPos%) = TK_ID THEN
@@ -176,7 +176,7 @@ END FUNCTION
 FUNCTION QColName$()
   LOCAL r$
   IF QErr$ <> "" THEN EXIT FUNCTION
-  r$ = TkRaw$(QPos%)
+  r$ = MID$(QText$, TkP%(QPos%), TkL%(QPos%))
   IF TkT%(QPos%) <> TK_ID OR INSTR(QRES$, " " + UCASE$(r$) + " ") > 0 THEN
     QFail "expected a collection name" : EXIT FUNCTION
   ENDIF
@@ -189,7 +189,7 @@ END FUNCTION
 FUNCTION QValue%(v$, t%)
   LOCAL r$, i%
   IF QErr$ <> "" THEN EXIT FUNCTION
-  r$ = TkRaw$(QPos%) : v$ = ""
+  r$ = MID$(QText$, TkP%(QPos%), TkL%(QPos%)) : v$ = ""
   SELECT CASE TkT%(QPos%)
     CASE TK_STR
       r$ = MID$(r$, 2, LEN(r$) - 2) : t% = 1
@@ -213,7 +213,7 @@ END FUNCTION
 
 ' A whole number for LIMIT / OFFSET
 FUNCTION QInt%()
-  LOCAL r$ = TkRaw$(QPos%), i%
+  LOCAL r$ = MID$(QText$, TkP%(QPos%), TkL%(QPos%)), i%
   IF QErr$ <> "" THEN EXIT FUNCTION
   IF TkT%(QPos%) = TK_NUM AND LEN(r$) <= 6 THEN
     FOR i% = 1 TO LEN(r$)
@@ -252,79 +252,24 @@ FUNCTION QSetVal%(i%, v$, t%)
 END FUNCTION
 
 ' ---------------- WHERE expression -> RPN ----------------------------
+' The condition is parsed iteratively (shunting-yard) with an explicit
+' operator stack: no recursion, so the call depth does not grow with
+' the length or nesting of the condition. MMBasic programs run on a
+' small fixed stack, and every nested SUB/FUNCTION call uses part of it.
 
 FUNCTION QNode%(op%, f$, v$, t%)
   IF QErr$ <> "" THEN EXIT FUNCTION
   IF QNN% >= QN_MAX THEN QFail "condition too complex" : EXIT FUNCTION
   IF LEN(v$) > QNV_LEN THEN QFail "value too long" : EXIT FUNCTION
   QnOp%(QNN%) = op% : QnF$(QNN%) = f$ : QnV$(QNN%) = v$ : QnT%(QNN%) = t%
-  QnTop%(QNN%) = (op% < QO_AND)
+  QnTop%(QNN%) = 0
   INC QNN%
   QNode% = 1
 END FUNCTION
 
-' Leaves from node st% on are not top-level AND terms
-SUB QNotTop st%
-  LOCAL i%
-  FOR i% = st% TO QNN% - 1 : QnTop%(i%) = 0 : NEXT
-END SUB
-
-' NOTE: these recursive functions must not use DO/FOR loops: MMBasic
-' tracks loops by program position, so a loop re-entered through
-' recursion ("a AND (b AND c)") breaks the outer one.
-FUNCTION QOr%()
-  LOCAL st% = QNN%
-  IF QAnd%() = 0 THEN EXIT FUNCTION
-  IF QKw%("OR") THEN
-    QOr% = QOrRest%()
-    QNotTop st%
-  ELSE
-    QOr% = (QErr$ = "")
-  ENDIF
-END FUNCTION
-
-' After an OR: operand, emit OR, repeat (keeps left associativity)
-FUNCTION QOrRest%()
-  IF QAnd%() = 0 THEN EXIT FUNCTION
-  IF QNode%(QO_OR, "", "", 0) = 0 THEN EXIT FUNCTION
-  IF QKw%("OR") THEN QOrRest% = QOrRest%() ELSE QOrRest% = (QErr$ = "")
-END FUNCTION
-
-FUNCTION QAnd%()
-  IF QNot%() = 0 THEN EXIT FUNCTION
-  IF QKw%("AND") THEN QAnd% = QAndRest%() ELSE QAnd% = (QErr$ = "")
-END FUNCTION
-
-FUNCTION QAndRest%()
-  IF QNot%() = 0 THEN EXIT FUNCTION
-  IF QNode%(QO_AND, "", "", 0) = 0 THEN EXIT FUNCTION
-  IF QKw%("AND") THEN QAndRest% = QAndRest%() ELSE QAndRest% = (QErr$ = "")
-END FUNCTION
-
-FUNCTION QNot%()
-  LOCAL st% = QNN%
-  IF QKw%("NOT") THEN
-    INC QDepth%
-    IF QDepth% > 12 THEN QFail "too deeply nested" : EXIT FUNCTION
-    IF QNot%() = 0 THEN EXIT FUNCTION
-    INC QDepth%, -1
-    QNot% = QNode%(QO_NOT, "", "", 0)
-    QNotTop st%
-  ELSE
-    QNot% = QPrim%()
-  ENDIF
-END FUNCTION
-
-FUNCTION QPrim%()
-  LOCAL f$, v$, t%, op%, neg%, st% = QNN%
-  IF QErr$ <> "" THEN EXIT FUNCTION
-  INC QDepth%
-  IF QDepth% > 12 THEN QFail "too deeply nested" : EXIT FUNCTION
-  IF QSym%("(") THEN
-    IF QOr%() = 0 THEN EXIT FUNCTION
-    IF QNeedSym%(")") = 0 THEN EXIT FUNCTION
-    INC QDepth%, -1 : QPrim% = 1 : EXIT FUNCTION
-  ENDIF
+' One comparison: f op value | f [NOT] LIKE 'p' | f IS [NOT] NULL
+FUNCTION QLeaf%()
+  LOCAL f$, v$, t%, op%, neg%, r$
   f$ = QName$()
   IF QErr$ <> "" THEN EXIT FUNCTION
   IF QKw%("IS") THEN
@@ -340,7 +285,8 @@ FUNCTION QPrim%()
       op% = QO_LIKE
     ELSE
       IF TkT%(QPos%) = TK_SYM THEN
-        SELECT CASE TkRaw$(QPos%)
+        r$ = MID$(QText$, TkP%(QPos%), TkL%(QPos%))
+        SELECT CASE r$
           CASE "="       : op% = QO_EQ
           CASE "<>", "!=" : op% = QO_NE
           CASE "<"       : op% = QO_LT
@@ -358,16 +304,91 @@ FUNCTION QPrim%()
   IF QNode%(op%, f$, v$, t%) = 0 THEN EXIT FUNCTION
   IF neg% AND op% = QO_LIKE THEN
     IF QNode%(QO_NOT, "", "", 0) = 0 THEN EXIT FUNCTION
-    QNotTop st%
   ENDIF
-  INC QDepth%, -1
-  QPrim% = 1
+  QLeaf% = 1
 END FUNCTION
+
+' A whole condition. Operators wait on os%() until an operator of
+' lower precedence (or the end, or a closing bracket) releases them:
+' NOT 3, AND 2, OR 1; 0 on the stack marks an open bracket.
+FUNCTION QCond%()
+  LOCAL os%(TK_MAX \ 2), on% = 0, opnd% = 1, op%, k%, par% = 0
+  DO
+    IF QErr$ <> "" THEN EXIT FUNCTION
+    IF opnd% THEN
+      IF QKw%("NOT") THEN
+        os%(on%) = QO_NOT : INC on%
+      ELSEIF QSym%("(") THEN
+        INC par%
+        IF par% > 12 THEN QFail "too deeply nested" : EXIT FUNCTION
+        os%(on%) = 0 : INC on%
+      ELSE
+        IF QLeaf%() = 0 THEN EXIT FUNCTION
+        opnd% = 0
+      ENDIF
+    ELSE
+      op% = 0
+      IF QKw%("AND") THEN
+        op% = QO_AND
+      ELSEIF QKw%("OR") THEN
+        op% = QO_OR
+      ELSEIF par% > 0 THEN
+        IF QSym%(")") THEN op% = -1
+      ENDIF
+      IF op% = 0 THEN EXIT DO
+      ' release waiting operators: all of them back to the bracket for
+      ' ")", otherwise those of equal or higher precedence
+      DO WHILE on% > 0
+        k% = os%(on% - 1)
+        IF k% = 0 THEN EXIT DO
+        IF op% > 0 THEN
+          IF (k% = QO_NOT) * 3 + (k% = QO_AND) * 2 + (k% = QO_OR) < (op% = QO_AND) * 2 + (op% = QO_OR) THEN EXIT DO
+        ENDIF
+        IF QNode%(k%, "", "", 0) = 0 THEN EXIT FUNCTION
+        INC on%, -1
+      LOOP
+      IF op% = -1 THEN
+        INC on%, -1 : INC par%, -1
+      ELSE
+        os%(on%) = op% : INC on% : opnd% = 1
+      ENDIF
+    ENDIF
+  LOOP
+  DO WHILE on% > 0
+    k% = os%(on% - 1)
+    IF k% = 0 THEN QFail "expected )" : EXIT FUNCTION
+    IF QNode%(k%, "", "", 0) = 0 THEN EXIT FUNCTION
+    INC on%, -1
+  LOOP
+  QTopFlags
+  QCond% = (QErr$ = "")
+END FUNCTION
+
+' Mark the leaves that are top-level AND terms (QnTop% = 1): those
+' whose ancestors in the expression tree are all ANDs. Parents are
+' found from the RPN with a stack; a parent always follows its
+' children, so one backward pass sets every flag.
+SUB QTopFlags
+  LOCAL pa%(QN_MAX - 1), sk%(QN_MAX - 1), stp% = 0, i%
+  IF QNN% = 0 THEN EXIT SUB
+  FOR i% = 0 TO QNN% - 1
+    IF QnOp%(i%) = QO_AND OR QnOp%(i%) = QO_OR THEN
+      pa%(sk%(stp% - 1)) = i% : pa%(sk%(stp% - 2)) = i% : INC stp%, -2
+    ELSEIF QnOp%(i%) = QO_NOT THEN
+      pa%(sk%(stp% - 1)) = i% : INC stp%, -1
+    ENDIF
+    sk%(stp%) = i% : INC stp%
+  NEXT
+  QnTop%(QNN% - 1) = (QnOp%(QNN% - 1) <> QO_OR AND QnOp%(QNN% - 1) <> QO_NOT)
+  FOR i% = QNN% - 2 TO 0 STEP -1
+    QnTop%(i%) = QnTop%(pa%(i%)) AND (QnOp%(pa%(i%)) = QO_AND)
+  NEXT
+END SUB
 
 ' ---------------- statements -----------------------------------------
 
 SUB QReset
-  QErr$ = "" : QPos% = 0 : QDepth% = 0 : QCmd$ = "" : QCol$ = ""
+  QErr$ = "" : QPos% = 0 : QCmd$ = "" : QCol$ = ""
   QExplain% = 0 : QAgg% = 0 : QFN% = 0 : QNN% = 0
   QOrd$ = "" : QDesc% = 0 : QLim% = -1 : QOff% = 0
 END SUB
@@ -382,7 +403,7 @@ SUB QSelect
   ENDIF
   x% = QNeedKw%("FROM")
   QCol$ = QColName$()
-  IF QKw%("WHERE") THEN x% = QOr%()
+  IF QKw%("WHERE") THEN x% = QCond%()
   IF QKw%("ORDER") THEN
     x% = QNeedKw%("BY")
     QOrd$ = QName$()
@@ -434,7 +455,7 @@ SUB QUpdate
     NEXT
   ENDIF
   IF QFN% = 0 THEN QFail "expected SET or UNSET"
-  IF QKw%("WHERE") THEN x% = QOr%()
+  IF QKw%("WHERE") THEN x% = QCond%()
 END SUB
 
 SUB QIndexDef c$
@@ -451,7 +472,7 @@ FUNCTION QParse%(s$)
   QReset
   IF QLex%(s$) = 0 THEN EXIT FUNCTION
   QExplain% = QKw%("EXPLAIN")
-  IF TkT%(QPos%) = TK_ID THEN c$ = UCASE$(TkRaw$(QPos%))
+  IF TkT%(QPos%) = TK_ID THEN c$ = UCASE$(MID$(QText$, TkP%(QPos%), TkL%(QPos%)))
   IF INSTR(" SELECT INSERT UPDATE DELETE CREATE DROP SHOW DESCRIBE VACUUM ", " " + c$ + " ") = 0 OR c$ = "" THEN
     QFail "unknown command" : EXIT FUNCTION
   ENDIF
@@ -462,7 +483,7 @@ FUNCTION QParse%(s$)
     CASE "UPDATE" : QUpdate
     CASE "DELETE"
       x% = QNeedKw%("FROM") : QCol$ = QColName$()
-      IF QKw%("WHERE") THEN x% = QOr%()
+      IF QKw%("WHERE") THEN x% = QCond%()
     CASE "CREATE", "DROP"
       IF QKw%("COLLECTION") THEN
         QCmd$ = c$ + " COLLECTION" : QCol$ = QColName$()
@@ -476,7 +497,7 @@ FUNCTION QParse%(s$)
   END SELECT
   IF QErr$ = "" THEN
     x% = QSym%(";")
-    IF TkT%(QPos%) <> TK_END THEN QFail "unexpected '" + TkRaw$(QPos%) + "'"
+    IF TkT%(QPos%) <> TK_END THEN QFail "unexpected '" + MID$(QText$, TkP%(QPos%), TkL%(QPos%)) + "'"
   ENDIF
   QParse% = (QErr$ = "")
 END FUNCTION

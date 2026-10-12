@@ -14,11 +14,16 @@ The library supplies the database through the `Db…` API, and `dbhal.bas` suppl
 
 In `almanac_app.bas` all three parts have their comments removed, and the library part has its local variables renamed with `z_`. The dbapp guide explains [how the merged files are put together](../dbapp/Architecture.md#how-the-merged-files-are-put-together).
 
-The last line of `almanac.bas` starts the program:
+The main code at the end of `almanac.bas` starts the program. It is at the top level rather than in a SUB, so every call the almanac makes starts one level shallower (the PicoMite's stack is small; see [MMBasic notes](../dbapp/MMBasic-Notes.md#the-call-stack-is-small)):
 
 ```basic
 ' ---- main ----
-AmMain
+HalInit
+HalCls
+DbInit AM_DIR$
+AmMenu
+DbClose
+HalCls
 ```
 
 ## Constants
@@ -53,7 +58,7 @@ All names start with `Am` (or `AK_`/`AS_` for constants), clear of the library's
 
 ```mermaid
 flowchart TD
-    Main[AmMain] --> Menu[AmMenu]
+    Main[main code] --> Menu[AmMenu]
     Menu -->|1| Maint[AmMaintain]
     Menu -->|2| Browse[AmBrowse]
     Menu -->|3| Search[AmSearch]
@@ -64,17 +69,6 @@ flowchart TD
 Each screen is a SUB with its own loop: draw the frame, wait for a key, act on it. Esc leaves the loop and returns to the caller. Moving "back" is simply returning from a SUB, so no screen stack is needed.
 
 One rule keeps this safe: **no screen calls a screen that can lead back to itself.** Search may open Browse, but Browse never opens Search. As explained in [MMBasic notes](../dbapp/MMBasic-Notes.md#loops-and-recursion), re-entering a routine whose `DO` loop is still running would break that loop.
-
-```basic
-SUB AmMain
-  HalInit
-  HalCls
-  DbInit AM_DIR$
-  AmMenu
-  DbClose
-  HalCls
-END SUB
-```
 
 `AmMenu` reopens the collection (`AmOpen%`) every time it draws. That is cheap when the collection is already open (`DbOpen%` returns at once), and it means the menu always shows the current date range after an import.
 

@@ -60,7 +60,9 @@ Up to `SX_SLOTS` (4) fields can be indexed. Rather than one array per field (whi
 ```basic
 FUNCTION SxEnc$(s%, v$, t%)
   LOCAL n!, e%
-  IF t% = 2 AND RcIsNum%(v$) THEN
+  ' values reaching here are validated, so a literal that is not true,
+  ' false or null is a number (no RcIsNum% call: one level less)
+  IF t% = 2 AND v$ <> "true" AND v$ <> "false" AND v$ <> "null" THEN
     n! = VAL(v$)
     IF n! > 4.9E10 THEN n! = 4.9E10
     IF n! < -4.9E10 THEN n! = -4.9E10
@@ -128,17 +130,21 @@ FUNCTION IxApply%(rec$, off%, old$)
     FOR s% = 0 TO SX_SLOTS - 1
       IF SxF$(s%) <> "" THEN
         v$ = RcGet$(old$, SxF$(s%)) : ft% = RcT%
-        IF RcFound% THEN v$ = STR$(SxRemove%(s%, v$, ft%, oo%))
+        IF RcFound% THEN v$ = STR$(SxRemoveK%(SxEnc$(s%, v$, ft%), oo%))
       ENDIF
     NEXT
   ENDIF
-  IF RcIsDel%(rec$) THEN v$ = STR$(IxRemove%(id$)) : IxApply% = 1 : EXIT FUNCTION
+  ' tombstone? (RcIsDel% inlined: one call level less)
+  IF INSTR(rec$, CHR$(34) + "_del" + CHR$(34)) THEN
+    v$ = RcGet$(rec$, "_del")
+    IF RcFound% AND v$ <> "0" AND v$ <> "false" THEN v$ = STR$(IxRemove%(id$)) : IxApply% = 1 : EXIT FUNCTION
+  ENDIF
   IF IxPut%(id$, off%) = 0 THEN EXIT FUNCTION
   FOR s% = 0 TO SX_SLOTS - 1
     IF SxF$(s%) <> "" THEN
       v$ = RcGet$(rec$, SxF$(s%)) : ft% = RcT%
       IF RcFound% THEN
-        IF SxAdd%(s%, v$, ft%, off%) = 0 THEN EXIT FUNCTION
+        IF SxAddK%(SxEnc$(s%, v$, ft%), off%) = 0 THEN EXIT FUNCTION
       ENDIF
     ENDIF
   NEXT
@@ -178,7 +184,11 @@ FUNCTION IxScan%(fnum%, from%)
         IF IxN% >= IX_MAX THEN IxCompact
         IF IxN% >= IX_MAX THEN IxErr$ = "index full" : EXIT FUNCTION
         IxK$(IxN%) = id$
-        IF RcIsDel%(r$) THEN IxO%(IxN%) = -off% ELSE IxO%(IxN%) = off%
+        IxO%(IxN%) = off%
+        IF INSTR(r$, CHR$(34) + "_del" + CHR$(34)) THEN
+          id$ = RcGet$(r$, "_del")
+          IF RcFound% AND id$ <> "0" AND id$ <> "false" THEN IxO%(IxN%) = -off%
+        ENDIF
         INC IxN%
       ELSE
         INC IxBad%

@@ -53,62 +53,17 @@ FUNCTION RcSkip%(z_r$, z_i%)
   RcSkip% = z_j%
 END FUNCTION
 
-' Decode the JSON string whose opening quote is at i% into s$.
-' Returns position after the closing quote, or -1 if malformed.
-FUNCTION RcStr%(z_r$, z_i%, z_s$)
-  LOCAL z_j% = z_i% + 1, z_q%, z_b%, z_c$, z_a%
-  z_s$ = ""
-  DO
-    z_q% = INSTR(z_j%, z_r$, CHR$(34))
-    IF z_q% = 0 THEN RcStr% = -1 : EXIT FUNCTION
-    z_b% = INSTR(z_j%, z_r$, "\")
-    IF z_b% = 0 OR z_b% > z_q% THEN
-      z_s$ = z_s$ + MID$(z_r$, z_j%, z_q% - z_j%)
-      RcStr% = z_q% + 1
-      EXIT FUNCTION
-    ENDIF
-    z_s$ = z_s$ + MID$(z_r$, z_j%, z_b% - z_j%)
-    z_c$ = MID$(z_r$, z_b% + 1, 1)
-    z_j% = z_b% + 2
-    SELECT CASE z_c$
-      CASE "n" : z_s$ = z_s$ + CHR$(10)
-      CASE "t" : z_s$ = z_s$ + CHR$(9)
-      CASE "r" : z_s$ = z_s$ + CHR$(13)
-      CASE "b" : z_s$ = z_s$ + CHR$(8)
-      CASE "f" : z_s$ = z_s$ + CHR$(12)
-      CASE "u"
-        z_a% = VAL("&H" + MID$(z_r$, z_b% + 2, 4))
-        IF z_a% > 255 THEN z_s$ = z_s$ + "?" ELSE z_s$ = z_s$ + CHR$(z_a%)
-        z_j% = z_b% + 6
-      CASE ELSE : z_s$ = z_s$ + z_c$   ' \" \\ \/
-    END SELECT
-  LOOP
-END FUNCTION
-
-' Skip a nested {...} or [...] starting at i%; returns pos after it
-FUNCTION RcNest%(z_r$, z_i%)
-  LOCAL z_j% = z_i%, z_d% = 0, z_c$, z_s$
-  DO WHILE z_j% <= LEN(z_r$)
-    z_c$ = MID$(z_r$, z_j%, 1)
-    IF z_c$ = CHR$(34) THEN
-      z_j% = RcStr%(z_r$, z_j%, z_s$)
-      IF z_j% < 0 THEN EXIT DO
-    ELSE
-      IF z_c$ = "{" OR z_c$ = "[" THEN INC z_d%
-      IF z_c$ = "}" OR z_c$ = "]" THEN INC z_d%, -1
-      INC z_j%
-      IF z_d% = 0 THEN RcNest% = z_j% : EXIT FUNCTION
-    ENDIF
-  LOOP
-  RcNest% = -1
-END FUNCTION
-
 ' Field iterator. Start with ip% = 1; pass back the returned value.
 ' Returns next position (>0) with k$, v$, t% filled in,
 ' 0 at end of record, -1 if the record is malformed or truncated.
+' It calls no other routine: it is at the bottom of almost every call
+' chain, and each nested call uses part of the PicoMite's small stack.
 FUNCTION RcNext%(z_r$, z_ip%, z_k$, z_v$, z_t%)
-  LOCAL z_i%, z_e%, z_c$
-  z_i% = RcSkip%(z_r$, z_ip%)
+  LOCAL z_i% = z_ip%, z_n% = LEN(z_r$), z_e%, z_c$, z_s$, z_q%, z_b%, z_a%, z_d%, z_part%
+  DO WHILE z_i% <= z_n%
+    IF ASC(MID$(z_r$, z_i%, 1)) > 32 THEN EXIT DO
+    INC z_i%
+  LOOP
   z_c$ = MID$(z_r$, z_i%, 1)
   IF z_ip% = 1 THEN
     IF z_c$ <> "{" THEN RcNext% = -1 : EXIT FUNCTION
@@ -117,33 +72,97 @@ FUNCTION RcNext%(z_r$, z_ip%, z_k$, z_v$, z_t%)
   ELSEIF z_c$ <> "," THEN
     RcNext% = -1 : EXIT FUNCTION
   ENDIF
-  z_i% = RcSkip%(z_r$, z_i% + 1)
+  INC z_i%
+  DO WHILE z_i% <= z_n%
+    IF ASC(MID$(z_r$, z_i%, 1)) > 32 THEN EXIT DO
+    INC z_i%
+  LOOP
   z_c$ = MID$(z_r$, z_i%, 1)
   IF z_c$ = "}" AND z_ip% = 1 THEN RcNext% = 0 : EXIT FUNCTION
   IF z_c$ <> CHR$(34) THEN RcNext% = -1 : EXIT FUNCTION
   RcKS% = z_i%
-  z_i% = RcStr%(z_r$, z_i%, z_k$)
-  IF z_i% < 0 THEN RcNext% = -1 : EXIT FUNCTION
-  z_i% = RcSkip%(z_r$, z_i%)
-  IF MID$(z_r$, z_i%, 1) <> ":" THEN RcNext% = -1 : EXIT FUNCTION
-  z_i% = RcSkip%(z_r$, z_i% + 1)
-  RcVS% = z_i%
-  z_c$ = MID$(z_r$, z_i%, 1)
-  IF z_c$ = CHR$(34) THEN
-    z_i% = RcStr%(z_r$, z_i%, z_v$) : z_t% = 1
-  ELSEIF z_c$ = "{" OR z_c$ = "[" THEN
-    z_i% = RcNest%(z_r$, z_i%) : z_t% = 3
-    IF z_i% > 0 THEN z_v$ = MID$(z_r$, RcVS%, z_i% - RcVS%)
-  ELSE
-    z_e% = z_i%
-    DO WHILE z_e% <= LEN(z_r$)
-      z_c$ = MID$(z_r$, z_e%, 1)
-      IF z_c$ = "," OR z_c$ = "}" OR ASC(z_c$) <= 32 THEN EXIT DO
-      INC z_e%
+  z_part% = 1                             ' 1 = the key, 2 = a "text" value
+  DO
+    ' decode the string whose opening quote is at i% into s$
+    z_s$ = "" : z_e% = z_i% + 1
+    DO
+      z_q% = INSTR(z_e%, z_r$, CHR$(34))
+      IF z_q% = 0 THEN RcNext% = -1 : EXIT FUNCTION
+      z_b% = INSTR(z_e%, z_r$, "\")
+      IF z_b% = 0 OR z_b% > z_q% THEN z_s$ = z_s$ + MID$(z_r$, z_e%, z_q% - z_e%) : z_i% = z_q% + 1 : EXIT DO
+      z_s$ = z_s$ + MID$(z_r$, z_e%, z_b% - z_e%)
+      z_c$ = MID$(z_r$, z_b% + 1, 1)
+      z_e% = z_b% + 2
+      SELECT CASE z_c$
+        CASE "n" : z_s$ = z_s$ + CHR$(10)
+        CASE "t" : z_s$ = z_s$ + CHR$(9)
+        CASE "r" : z_s$ = z_s$ + CHR$(13)
+        CASE "b" : z_s$ = z_s$ + CHR$(8)
+        CASE "f" : z_s$ = z_s$ + CHR$(12)
+        CASE "u"
+          z_a% = VAL("&H" + MID$(z_r$, z_b% + 2, 4))
+          IF z_a% > 255 THEN z_s$ = z_s$ + "?" ELSE z_s$ = z_s$ + CHR$(z_a%)
+          z_e% = z_b% + 6
+        CASE ELSE : z_s$ = z_s$ + z_c$   ' \" \\ \/
+      END SELECT
     LOOP
-    IF z_e% = z_i% THEN RcNext% = -1 : EXIT FUNCTION
-    z_v$ = MID$(z_r$, z_i%, z_e% - z_i%) : z_t% = 2 : z_i% = z_e%
-  ENDIF
+    IF z_part% = 2 THEN z_v$ = z_s$ : z_t% = 1 : EXIT DO
+    z_k$ = z_s$
+    DO WHILE z_i% <= z_n%
+      IF ASC(MID$(z_r$, z_i%, 1)) > 32 THEN EXIT DO
+      INC z_i%
+    LOOP
+    IF MID$(z_r$, z_i%, 1) <> ":" THEN RcNext% = -1 : EXIT FUNCTION
+    INC z_i%
+    DO WHILE z_i% <= z_n%
+      IF ASC(MID$(z_r$, z_i%, 1)) > 32 THEN EXIT DO
+      INC z_i%
+    LOOP
+    RcVS% = z_i%
+    z_c$ = MID$(z_r$, z_i%, 1)
+    IF z_c$ = CHR$(34) THEN
+      z_part% = 2
+    ELSEIF z_c$ = "{" OR z_c$ = "[" THEN
+      ' nested list or object: skip to its matching bracket
+      z_d% = 0
+      DO WHILE z_i% <= z_n%
+        z_c$ = MID$(z_r$, z_i%, 1)
+        IF z_c$ = CHR$(34) THEN
+          INC z_i%
+          DO WHILE z_i% <= z_n%
+            z_c$ = MID$(z_r$, z_i%, 1)
+            IF z_c$ = "\" THEN
+              INC z_i%, 2
+            ELSEIF z_c$ = CHR$(34) THEN
+              EXIT DO
+            ELSE
+              INC z_i%
+            ENDIF
+          LOOP
+          IF z_i% > z_n% THEN RcNext% = -1 : EXIT FUNCTION
+          INC z_i%
+        ELSE
+          IF z_c$ = "{" OR z_c$ = "[" THEN INC z_d%
+          IF z_c$ = "}" OR z_c$ = "]" THEN INC z_d%, -1
+          INC z_i%
+          IF z_d% = 0 THEN EXIT DO
+        ENDIF
+      LOOP
+      IF z_d% <> 0 THEN RcNext% = -1 : EXIT FUNCTION
+      z_v$ = MID$(z_r$, RcVS%, z_i% - RcVS%) : z_t% = 3
+      EXIT DO
+    ELSE
+      z_e% = z_i%
+      DO WHILE z_e% <= z_n%
+        z_c$ = MID$(z_r$, z_e%, 1)
+        IF z_c$ = "," OR z_c$ = "}" OR ASC(z_c$) <= 32 THEN EXIT DO
+        INC z_e%
+      LOOP
+      IF z_e% = z_i% THEN RcNext% = -1 : EXIT FUNCTION
+      z_v$ = MID$(z_r$, z_i%, z_e% - z_i%) : z_t% = 2 : z_i% = z_e%
+      EXIT DO
+    ENDIF
+  LOOP
   RcVE% = z_i%
   RcNext% = z_i%
 END FUNCTION
@@ -388,7 +407,9 @@ END FUNCTION
 ' Numbers map to floor(n) + 5e10, zero padded, clamped to +-4.9e10.
 FUNCTION SxEnc$(z_s%, z_v$, z_t%)
   LOCAL z_n!, z_e%
-  IF z_t% = 2 AND RcIsNum%(z_v$) THEN
+  ' values reaching here are validated, so a literal that is not true,
+  ' false or null is a number (no RcIsNum% call: one level less)
+  IF z_t% = 2 AND z_v$ <> "true" AND z_v$ <> "false" AND z_v$ <> "null" THEN
     z_n! = VAL(z_v$)
     IF z_n! > 4.9E10 THEN z_n! = 4.9E10
     IF z_n! < -4.9E10 THEN z_n! = -4.9E10
@@ -400,18 +421,28 @@ FUNCTION SxEnc$(z_s%, z_v$, z_t%)
 END FUNCTION
 
 FUNCTION SxAdd%(z_s%, z_v$, z_t%, z_off%)
-  LOCAL z_k$ = SxEnc$(z_s%, z_v$, z_t%), z_i%, z_j%
+  SxAdd% = SxAddK%(SxEnc$(z_s%, z_v$, z_t%), z_off%)
+END FUNCTION
+
+' Add encoded key k$ (from SxEnc$) for offset off%
+FUNCTION SxAddK%(z_k$, z_off%)
+  LOCAL z_i%, z_j%
   IF SxN% >= SX_MAX THEN IxErr$ = "sec index full" : EXIT FUNCTION
   z_i% = IxBound%(SxV$(), SxN%, z_k$, 1)
   FOR z_j% = SxN% TO z_i% + 1 STEP -1
     SxV$(z_j%) = SxV$(z_j% - 1) : SxO%(z_j%) = SxO%(z_j% - 1)
   NEXT
   SxV$(z_i%) = z_k$ : SxO%(z_i%) = z_off% : INC SxN%
-  SxAdd% = 1
+  SxAddK% = 1
 END FUNCTION
 
 FUNCTION SxRemove%(z_s%, z_v$, z_t%, z_off%)
-  LOCAL z_k$ = SxEnc$(z_s%, z_v$, z_t%), z_i%, z_j%
+  SxRemove% = SxRemoveK%(SxEnc$(z_s%, z_v$, z_t%), z_off%)
+END FUNCTION
+
+' Remove the entry with encoded key k$ and offset off%
+FUNCTION SxRemoveK%(z_k$, z_off%)
+  LOCAL z_i%, z_j%
   z_i% = IxBound%(SxV$(), SxN%, z_k$, 0)
   DO WHILE z_i% < SxN%
     IF SxV$(z_i%) <> z_k$ THEN EXIT DO
@@ -419,7 +450,7 @@ FUNCTION SxRemove%(z_s%, z_v$, z_t%, z_off%)
       FOR z_j% = z_i% TO SxN% - 2
         SxV$(z_j%) = SxV$(z_j% + 1) : SxO%(z_j%) = SxO%(z_j% + 1)
       NEXT
-      INC SxN%, -1 : SxRemove% = 1 : EXIT FUNCTION
+      INC SxN%, -1 : SxRemoveK% = 1 : EXIT FUNCTION
     ENDIF
     INC z_i%
   LOOP
@@ -461,17 +492,21 @@ FUNCTION IxApply%(z_rec$, z_off%, z_old$)
     FOR z_s% = 0 TO SX_SLOTS - 1
       IF SxF$(z_s%) <> "" THEN
         z_v$ = RcGet$(z_old$, SxF$(z_s%)) : z_ft% = RcT%
-        IF RcFound% THEN z_v$ = STR$(SxRemove%(z_s%, z_v$, z_ft%, z_oo%))
+        IF RcFound% THEN z_v$ = STR$(SxRemoveK%(SxEnc$(z_s%, z_v$, z_ft%), z_oo%))
       ENDIF
     NEXT
   ENDIF
-  IF RcIsDel%(z_rec$) THEN z_v$ = STR$(IxRemove%(z_id$)) : IxApply% = 1 : EXIT FUNCTION
+  ' tombstone? (RcIsDel% inlined: one call level less)
+  IF INSTR(z_rec$, CHR$(34) + "_del" + CHR$(34)) THEN
+    z_v$ = RcGet$(z_rec$, "_del")
+    IF RcFound% AND z_v$ <> "0" AND z_v$ <> "false" THEN z_v$ = STR$(IxRemove%(z_id$)) : IxApply% = 1 : EXIT FUNCTION
+  ENDIF
   IF IxPut%(z_id$, z_off%) = 0 THEN EXIT FUNCTION
   FOR z_s% = 0 TO SX_SLOTS - 1
     IF SxF$(z_s%) <> "" THEN
       z_v$ = RcGet$(z_rec$, SxF$(z_s%)) : z_ft% = RcT%
       IF RcFound% THEN
-        IF SxAdd%(z_s%, z_v$, z_ft%, z_off%) = 0 THEN EXIT FUNCTION
+        IF SxAddK%(SxEnc$(z_s%, z_v$, z_ft%), z_off%) = 0 THEN EXIT FUNCTION
       ENDIF
     ENDIF
   NEXT
@@ -492,10 +527,11 @@ END FUNCTION
 
 ' Read the line at offset off% ("" if it is unreadable)
 FUNCTION IxReadAt$(z_fnum%, z_off%)
-  LOCAL z_r$
+  LOCAL z_r$ = CHR$(1)
   SEEK #z_fnum%, z_off%
-  z_r$ = IxLine$(z_fnum%)
-  IF IxLong% THEN z_r$ = ""
+  ON ERROR SKIP 1
+  LINE INPUT #z_fnum%, z_r$
+  IF z_r$ = CHR$(1) THEN z_r$ = ""
   IxReadAt$ = z_r$
 END FUNCTION
 
@@ -543,7 +579,11 @@ FUNCTION IxScan%(z_fnum%, z_from%)
         IF IxN% >= IX_MAX THEN IxCompact
         IF IxN% >= IX_MAX THEN IxErr$ = "index full" : EXIT FUNCTION
         IxK$(IxN%) = z_id$
-        IF RcIsDel%(z_r$) THEN IxO%(IxN%) = -z_off% ELSE IxO%(IxN%) = z_off%
+        IxO%(IxN%) = z_off%
+        IF INSTR(z_r$, CHR$(34) + "_del" + CHR$(34)) THEN
+          z_id$ = RcGet$(z_r$, "_del")
+          IF RcFound% AND z_id$ <> "0" AND z_id$ <> "false" THEN IxO%(IxN%) = -z_off%
+        ENDIF
         INC IxN%
       ELSE
         INC IxBad%
@@ -701,16 +741,18 @@ FUNCTION StList%()
   StList% = StCatN%
 END FUNCTION
 
+' Writes the empty data file and the initial metadata line directly,
+' so the open collection (if any) is left alone.
 FUNCTION StCreate%(z_n$)
-  LOCAL z_sv$ = StCol$
+  LOCAL z_q$ = CHR$(34)
   StErr$ = ""
   IF StNameOk%(z_n$) = 0 THEN EXIT FUNCTION
   IF StExists%(StDir$ + z_n$ + ".jsonl") THEN StErr$ = "exists" : EXIT FUNCTION
-  IF z_sv$ <> "" THEN StClose
   OPEN StDir$ + z_n$ + ".jsonl" FOR OUTPUT AS #ST_TMP : CLOSE #ST_TMP
-  StCol$ = z_n$ : MtClear : MtSave : StCol$ = ""
+  OPEN StDir$ + z_n$ + ".meta" FOR OUTPUT AS #ST_TMP
+  PRINT #ST_TMP, "{" + z_q$ + "_id" + z_q$ + ":" + z_q$ + "@" + z_q$ + "," + z_q$ + "seq" + z_q$ + ":0," + z_q$ + "dead" + z_q$ + ":0}"
+  CLOSE #ST_TMP
   StCreate% = 1
-  IF z_sv$ <> "" THEN StCreate% = StOpen%(z_sv$)
 END FUNCTION
 
 FUNCTION StDrop%(z_n$)
@@ -757,19 +799,21 @@ SUB MtLoad
   CLOSE #ST_TMP
 END SUB
 
+' The lines are built directly as JSON text (not with RcSet$), which
+' keeps the call depth low when a collection is closed from deep inside
+' another operation.
 SUB MtSave
-  LOCAL z_r$, z_i%
-  z_r$ = RcNew$("@")
-  z_r$ = RcSet$(z_r$, "seq", STR$(MtSeq%), 2)
-  z_r$ = RcSet$(z_r$, "dead", STR$(MtDead%), 2)
+  LOCAL z_r$, z_i%, z_q$ = CHR$(34)
+  z_r$ = "{" + z_q$ + "_id" + z_q$ + ":" + z_q$ + "@" + z_q$ + "," + z_q$ + "seq" + z_q$ + ":" + STR$(MtSeq%)
+  z_r$ = z_r$ + "," + z_q$ + "dead" + z_q$ + ":" + STR$(MtDead%)
   FOR z_i% = 0 TO SX_SLOTS - 1
-    IF SxF$(z_i%) <> "" THEN z_r$ = RcSet$(z_r$, "i" + STR$(z_i%), SxF$(z_i%), 1)
+    IF SxF$(z_i%) <> "" THEN z_r$ = z_r$ + "," + z_q$ + "i" + STR$(z_i%) + z_q$ + ":" + RcEnc$(SxF$(z_i%))
   NEXT
   OPEN StPath$(".meta") FOR OUTPUT AS #ST_TMP
-  PRINT #ST_TMP, z_r$
-  IF RcCheck%(MtUser$) > 1 THEN PRINT #ST_TMP, MtUser$
+  PRINT #ST_TMP, z_r$ + "}"
+  IF MtUser$ <> "{" + z_q$ + "_id" + z_q$ + ":" + z_q$ + "@user" + z_q$ + "}" THEN PRINT #ST_TMP, MtUser$
   FOR z_i% = 0 TO MtN% - 1
-    PRINT #ST_TMP, RcSet$(RcNew$(MtF$(z_i%)), "t", MtT$(z_i%), 1)
+    PRINT #ST_TMP, "{" + z_q$ + "_id" + z_q$ + ":" + RcEnc$(MtF$(z_i%)) + "," + z_q$ + "t" + z_q$ + ":" + z_q$ + MtT$(z_i%) + z_q$ + "}"
   NEXT
   CLOSE #ST_TMP
   MtDirty% = 0
@@ -842,7 +886,7 @@ FUNCTION StVerify%()
     IF IxN% = 0 THEN EXIT FUNCTION
     z_i% = (IxN% - 1) * z_j% \ 7
     z_r$ = StRead$(IxO%(z_i%))
-    IF RcGet$(z_r$, "_id") <> IxK$(z_i%) OR RcIsDel%(z_r$) THEN StVerify% = 0 : EXIT FUNCTION
+    IF RcGet$(z_r$, "_id") <> IxK$(z_i%) OR INSTR(z_r$, CHR$(34) + "_del" + CHR$(34)) > 0 THEN StVerify% = 0 : EXIT FUNCTION
   NEXT
 END FUNCTION
 
@@ -922,20 +966,10 @@ FUNCTION StAppend%(z_r$)
   CLOSE #ST_WR
 END FUNCTION
 
-' Count secondary-index entries rec$ needs
-FUNCTION StSxNeed%(z_rec$)
-  LOCAL z_s%, z_v$
-  FOR z_s% = 0 TO SX_SLOTS - 1
-    IF SxF$(z_s%) <> "" THEN
-      z_v$ = RcGet$(z_rec$, SxF$(z_s%))
-      IF RcFound% THEN INC StSxNeed%
-    ENDIF
-  NEXT
-END FUNCTION
 
 ' Write a whole record. md%: 0 upsert, 1 insert only, 2 update only
 FUNCTION StWrite%(z_rec$, z_md%)
-  LOCAL z_id$, z_oo%, z_old$, z_off%
+  LOCAL z_id$, z_oo%, z_old$, z_off%, z_n%, z_s%, z_x$
   StErr$ = ""
   IF StCol$ = "" THEN StErr$ = "no collection open" : EXIT FUNCTION
   IF RcCheck%(z_rec$) < 0 OR INSTR(z_rec$, CHR$(10)) OR INSTR(z_rec$, CHR$(13)) THEN
@@ -944,13 +978,22 @@ FUNCTION StWrite%(z_rec$, z_md%)
   z_id$ = RcGet$(z_rec$, "_id")
   IF RcFound% = 0 OR RcT% <> 1 THEN StErr$ = "_id must be a string" : EXIT FUNCTION
   IF IxKeyOk%(z_id$) = 0 THEN StErr$ = IxErr$ : EXIT FUNCTION
-  IF RcIsDel%(z_rec$) THEN StErr$ = "_del is reserved" : EXIT FUNCTION
+  IF INSTR(z_rec$, CHR$(34) + "_del" + CHR$(34)) THEN StErr$ = "_del is reserved" : EXIT FUNCTION
   z_oo% = IxGet%(z_id$)
   IF z_md% = 1 AND z_oo% > 0 THEN StErr$ = "duplicate _id" : EXIT FUNCTION
   IF z_md% = 2 AND z_oo% < 0 THEN StErr$ = "not found" : EXIT FUNCTION
   IF z_oo% < 0 AND IxN% >= IX_MAX THEN StErr$ = "collection full" : EXIT FUNCTION
   IF z_oo% > 0 THEN z_old$ = StRead$(z_oo%)
-  IF SxN% + StSxNeed%(z_rec$) - StSxNeed%(z_old$) > SX_MAX THEN
+  ' index entries needed by the new version minus those of the old one
+  ' (counted here rather than in a function: one call level less)
+  z_n% = 0
+  FOR z_s% = 0 TO SX_SLOTS - 1
+    IF SxF$(z_s%) <> "" THEN
+      z_x$ = RcGet$(z_rec$, SxF$(z_s%)) : z_n% = z_n% + RcFound%
+      IF z_old$ <> "" THEN z_x$ = RcGet$(z_old$, SxF$(z_s%)) : z_n% = z_n% - RcFound%
+    ENDIF
+  NEXT
+  IF SxN% + z_n% > SX_MAX THEN
     StErr$ = "index space full" : EXIT FUNCTION
   ENDIF
   z_off% = StAppend%(z_rec$)
@@ -1095,7 +1138,7 @@ CONST QO_LIKE = 7, QO_NULL = 8, QO_NNULL = 9
 CONST QO_AND = 20, QO_OR = 21, QO_NOT = 22
 
 DIM TkT%(TK_MAX - 1), TkP%(TK_MAX - 1), TkL%(TK_MAX - 1), TkN%
-DIM QText$, QErr$, QPos%, QDepth%
+DIM QText$, QErr$, QPos%
 DIM QCmd$, QCol$, QExplain%, QAgg%, QFN%, QOrd$, QDesc%, QLim%, QOff%
 DIM QFld$(QF_MAX - 1) LENGTH 24
 DIM QVal$(QF_MAX - 1) LENGTH QV_LEN, QVT%(QF_MAX - 1)
@@ -1183,7 +1226,7 @@ END SUB
 FUNCTION QKw%(z_kwd$)
   IF QErr$ <> "" THEN EXIT FUNCTION
   IF TkT%(QPos%) = TK_ID THEN
-    IF UCASE$(TkRaw$(QPos%)) = z_kwd$ THEN INC QPos% : QKw% = 1
+    IF UCASE$(MID$(QText$, TkP%(QPos%), TkL%(QPos%))) = z_kwd$ THEN INC QPos% : QKw% = 1
   ENDIF
 END FUNCTION
 
@@ -1197,7 +1240,7 @@ FUNCTION QSym%(z_s$)
   LOCAL z_r$
   IF QErr$ <> "" THEN EXIT FUNCTION
   IF TkT%(QPos%) = TK_SYM THEN
-    z_r$ = TkRaw$(QPos%)
+    z_r$ = MID$(QText$, TkP%(QPos%), TkL%(QPos%))
     IF z_r$ = "!=" THEN z_r$ = "<>"
     IF z_r$ = z_s$ THEN INC QPos% : QSym% = 1
   ENDIF
@@ -1212,7 +1255,7 @@ END FUNCTION
 FUNCTION QName$()
   LOCAL z_r$
   IF QErr$ <> "" THEN EXIT FUNCTION
-  z_r$ = TkRaw$(QPos%)
+  z_r$ = MID$(QText$, TkP%(QPos%), TkL%(QPos%))
   IF TkT%(QPos%) = TK_QID THEN
     z_r$ = MID$(z_r$, 2, LEN(z_r$) - 2)
   ELSEIF TkT%(QPos%) = TK_ID THEN
@@ -1229,7 +1272,7 @@ END FUNCTION
 FUNCTION QColName$()
   LOCAL z_r$
   IF QErr$ <> "" THEN EXIT FUNCTION
-  z_r$ = TkRaw$(QPos%)
+  z_r$ = MID$(QText$, TkP%(QPos%), TkL%(QPos%))
   IF TkT%(QPos%) <> TK_ID OR INSTR(QRES$, " " + UCASE$(z_r$) + " ") > 0 THEN
     QFail "expected a collection name" : EXIT FUNCTION
   ENDIF
@@ -1242,7 +1285,7 @@ END FUNCTION
 FUNCTION QValue%(z_v$, z_t%)
   LOCAL z_r$, z_i%
   IF QErr$ <> "" THEN EXIT FUNCTION
-  z_r$ = TkRaw$(QPos%) : z_v$ = ""
+  z_r$ = MID$(QText$, TkP%(QPos%), TkL%(QPos%)) : z_v$ = ""
   SELECT CASE TkT%(QPos%)
     CASE TK_STR
       z_r$ = MID$(z_r$, 2, LEN(z_r$) - 2) : z_t% = 1
@@ -1266,7 +1309,7 @@ END FUNCTION
 
 ' A whole number for LIMIT / OFFSET
 FUNCTION QInt%()
-  LOCAL z_r$ = TkRaw$(QPos%), z_i%
+  LOCAL z_r$ = MID$(QText$, TkP%(QPos%), TkL%(QPos%)), z_i%
   IF QErr$ <> "" THEN EXIT FUNCTION
   IF TkT%(QPos%) = TK_NUM AND LEN(z_r$) <= 6 THEN
     FOR z_i% = 1 TO LEN(z_r$)
@@ -1305,79 +1348,24 @@ FUNCTION QSetVal%(z_i%, z_v$, z_t%)
 END FUNCTION
 
 ' ---------------- WHERE expression -> RPN ----------------------------
+' The condition is parsed iteratively (shunting-yard) with an explicit
+' operator stack: no recursion, so the call depth does not grow with
+' the length or nesting of the condition. MMBasic programs run on a
+' small fixed stack, and every nested SUB/FUNCTION call uses part of it.
 
 FUNCTION QNode%(z_op%, z_f$, z_v$, z_t%)
   IF QErr$ <> "" THEN EXIT FUNCTION
   IF QNN% >= QN_MAX THEN QFail "condition too complex" : EXIT FUNCTION
   IF LEN(z_v$) > QNV_LEN THEN QFail "value too long" : EXIT FUNCTION
   QnOp%(QNN%) = z_op% : QnF$(QNN%) = z_f$ : QnV$(QNN%) = z_v$ : QnT%(QNN%) = z_t%
-  QnTop%(QNN%) = (z_op% < QO_AND)
+  QnTop%(QNN%) = 0
   INC QNN%
   QNode% = 1
 END FUNCTION
 
-' Leaves from node st% on are not top-level AND terms
-SUB QNotTop z_st%
-  LOCAL z_i%
-  FOR z_i% = z_st% TO QNN% - 1 : QnTop%(z_i%) = 0 : NEXT
-END SUB
-
-' NOTE: these recursive functions must not use DO/FOR loops: MMBasic
-' tracks loops by program position, so a loop re-entered through
-' recursion ("a AND (b AND c)") breaks the outer one.
-FUNCTION QOr%()
-  LOCAL z_st% = QNN%
-  IF QAnd%() = 0 THEN EXIT FUNCTION
-  IF QKw%("OR") THEN
-    QOr% = QOrRest%()
-    QNotTop z_st%
-  ELSE
-    QOr% = (QErr$ = "")
-  ENDIF
-END FUNCTION
-
-' After an OR: operand, emit OR, repeat (keeps left associativity)
-FUNCTION QOrRest%()
-  IF QAnd%() = 0 THEN EXIT FUNCTION
-  IF QNode%(QO_OR, "", "", 0) = 0 THEN EXIT FUNCTION
-  IF QKw%("OR") THEN QOrRest% = QOrRest%() ELSE QOrRest% = (QErr$ = "")
-END FUNCTION
-
-FUNCTION QAnd%()
-  IF QNot%() = 0 THEN EXIT FUNCTION
-  IF QKw%("AND") THEN QAnd% = QAndRest%() ELSE QAnd% = (QErr$ = "")
-END FUNCTION
-
-FUNCTION QAndRest%()
-  IF QNot%() = 0 THEN EXIT FUNCTION
-  IF QNode%(QO_AND, "", "", 0) = 0 THEN EXIT FUNCTION
-  IF QKw%("AND") THEN QAndRest% = QAndRest%() ELSE QAndRest% = (QErr$ = "")
-END FUNCTION
-
-FUNCTION QNot%()
-  LOCAL z_st% = QNN%
-  IF QKw%("NOT") THEN
-    INC QDepth%
-    IF QDepth% > 12 THEN QFail "too deeply nested" : EXIT FUNCTION
-    IF QNot%() = 0 THEN EXIT FUNCTION
-    INC QDepth%, -1
-    QNot% = QNode%(QO_NOT, "", "", 0)
-    QNotTop z_st%
-  ELSE
-    QNot% = QPrim%()
-  ENDIF
-END FUNCTION
-
-FUNCTION QPrim%()
-  LOCAL z_f$, z_v$, z_t%, z_op%, z_neg%, z_st% = QNN%
-  IF QErr$ <> "" THEN EXIT FUNCTION
-  INC QDepth%
-  IF QDepth% > 12 THEN QFail "too deeply nested" : EXIT FUNCTION
-  IF QSym%("(") THEN
-    IF QOr%() = 0 THEN EXIT FUNCTION
-    IF QNeedSym%(")") = 0 THEN EXIT FUNCTION
-    INC QDepth%, -1 : QPrim% = 1 : EXIT FUNCTION
-  ENDIF
+' One comparison: f op value | f [NOT] LIKE 'p' | f IS [NOT] NULL
+FUNCTION QLeaf%()
+  LOCAL z_f$, z_v$, z_t%, z_op%, z_neg%, z_r$
   z_f$ = QName$()
   IF QErr$ <> "" THEN EXIT FUNCTION
   IF QKw%("IS") THEN
@@ -1393,7 +1381,8 @@ FUNCTION QPrim%()
       z_op% = QO_LIKE
     ELSE
       IF TkT%(QPos%) = TK_SYM THEN
-        SELECT CASE TkRaw$(QPos%)
+        z_r$ = MID$(QText$, TkP%(QPos%), TkL%(QPos%))
+        SELECT CASE z_r$
           CASE "="       : z_op% = QO_EQ
           CASE "<>", "!=" : z_op% = QO_NE
           CASE "<"       : z_op% = QO_LT
@@ -1411,16 +1400,91 @@ FUNCTION QPrim%()
   IF QNode%(z_op%, z_f$, z_v$, z_t%) = 0 THEN EXIT FUNCTION
   IF z_neg% AND z_op% = QO_LIKE THEN
     IF QNode%(QO_NOT, "", "", 0) = 0 THEN EXIT FUNCTION
-    QNotTop z_st%
   ENDIF
-  INC QDepth%, -1
-  QPrim% = 1
+  QLeaf% = 1
 END FUNCTION
+
+' A whole condition. Operators wait on os%() until an operator of
+' lower precedence (or the end, or a closing bracket) releases them:
+' NOT 3, AND 2, OR 1; 0 on the stack marks an open bracket.
+FUNCTION QCond%()
+  LOCAL z_os%(TK_MAX \ 2), z_on% = 0, z_opnd% = 1, z_op%, z_k%, z_par% = 0
+  DO
+    IF QErr$ <> "" THEN EXIT FUNCTION
+    IF z_opnd% THEN
+      IF QKw%("NOT") THEN
+        z_os%(z_on%) = QO_NOT : INC z_on%
+      ELSEIF QSym%("(") THEN
+        INC z_par%
+        IF z_par% > 12 THEN QFail "too deeply nested" : EXIT FUNCTION
+        z_os%(z_on%) = 0 : INC z_on%
+      ELSE
+        IF QLeaf%() = 0 THEN EXIT FUNCTION
+        z_opnd% = 0
+      ENDIF
+    ELSE
+      z_op% = 0
+      IF QKw%("AND") THEN
+        z_op% = QO_AND
+      ELSEIF QKw%("OR") THEN
+        z_op% = QO_OR
+      ELSEIF z_par% > 0 THEN
+        IF QSym%(")") THEN z_op% = -1
+      ENDIF
+      IF z_op% = 0 THEN EXIT DO
+      ' release waiting operators: all of them back to the bracket for
+      ' ")", otherwise those of equal or higher precedence
+      DO WHILE z_on% > 0
+        z_k% = z_os%(z_on% - 1)
+        IF z_k% = 0 THEN EXIT DO
+        IF z_op% > 0 THEN
+          IF (z_k% = QO_NOT) * 3 + (z_k% = QO_AND) * 2 + (z_k% = QO_OR) < (z_op% = QO_AND) * 2 + (z_op% = QO_OR) THEN EXIT DO
+        ENDIF
+        IF QNode%(z_k%, "", "", 0) = 0 THEN EXIT FUNCTION
+        INC z_on%, -1
+      LOOP
+      IF z_op% = -1 THEN
+        INC z_on%, -1 : INC z_par%, -1
+      ELSE
+        z_os%(z_on%) = z_op% : INC z_on% : z_opnd% = 1
+      ENDIF
+    ENDIF
+  LOOP
+  DO WHILE z_on% > 0
+    z_k% = z_os%(z_on% - 1)
+    IF z_k% = 0 THEN QFail "expected )" : EXIT FUNCTION
+    IF QNode%(z_k%, "", "", 0) = 0 THEN EXIT FUNCTION
+    INC z_on%, -1
+  LOOP
+  QTopFlags
+  QCond% = (QErr$ = "")
+END FUNCTION
+
+' Mark the leaves that are top-level AND terms (QnTop% = 1): those
+' whose ancestors in the expression tree are all ANDs. Parents are
+' found from the RPN with a stack; a parent always follows its
+' children, so one backward pass sets every flag.
+SUB QTopFlags
+  LOCAL z_pa%(QN_MAX - 1), z_sk%(QN_MAX - 1), z_stp% = 0, z_i%
+  IF QNN% = 0 THEN EXIT SUB
+  FOR z_i% = 0 TO QNN% - 1
+    IF QnOp%(z_i%) = QO_AND OR QnOp%(z_i%) = QO_OR THEN
+      z_pa%(z_sk%(z_stp% - 1)) = z_i% : z_pa%(z_sk%(z_stp% - 2)) = z_i% : INC z_stp%, -2
+    ELSEIF QnOp%(z_i%) = QO_NOT THEN
+      z_pa%(z_sk%(z_stp% - 1)) = z_i% : INC z_stp%, -1
+    ENDIF
+    z_sk%(z_stp%) = z_i% : INC z_stp%
+  NEXT
+  QnTop%(QNN% - 1) = (QnOp%(QNN% - 1) <> QO_OR AND QnOp%(QNN% - 1) <> QO_NOT)
+  FOR z_i% = QNN% - 2 TO 0 STEP -1
+    QnTop%(z_i%) = QnTop%(z_pa%(z_i%)) AND (QnOp%(z_pa%(z_i%)) = QO_AND)
+  NEXT
+END SUB
 
 ' ---------------- statements -----------------------------------------
 
 SUB QReset
-  QErr$ = "" : QPos% = 0 : QDepth% = 0 : QCmd$ = "" : QCol$ = ""
+  QErr$ = "" : QPos% = 0 : QCmd$ = "" : QCol$ = ""
   QExplain% = 0 : QAgg% = 0 : QFN% = 0 : QNN% = 0
   QOrd$ = "" : QDesc% = 0 : QLim% = -1 : QOff% = 0
 END SUB
@@ -1435,7 +1499,7 @@ SUB QSelect
   ENDIF
   z_x% = QNeedKw%("FROM")
   QCol$ = QColName$()
-  IF QKw%("WHERE") THEN z_x% = QOr%()
+  IF QKw%("WHERE") THEN z_x% = QCond%()
   IF QKw%("ORDER") THEN
     z_x% = QNeedKw%("BY")
     QOrd$ = QName$()
@@ -1487,7 +1551,7 @@ SUB QUpdate
     NEXT
   ENDIF
   IF QFN% = 0 THEN QFail "expected SET or UNSET"
-  IF QKw%("WHERE") THEN z_x% = QOr%()
+  IF QKw%("WHERE") THEN z_x% = QCond%()
 END SUB
 
 SUB QIndexDef z_c$
@@ -1504,7 +1568,7 @@ FUNCTION QParse%(z_s$)
   QReset
   IF QLex%(z_s$) = 0 THEN EXIT FUNCTION
   QExplain% = QKw%("EXPLAIN")
-  IF TkT%(QPos%) = TK_ID THEN z_c$ = UCASE$(TkRaw$(QPos%))
+  IF TkT%(QPos%) = TK_ID THEN z_c$ = UCASE$(MID$(QText$, TkP%(QPos%), TkL%(QPos%)))
   IF INSTR(" SELECT INSERT UPDATE DELETE CREATE DROP SHOW DESCRIBE VACUUM ", " " + z_c$ + " ") = 0 OR z_c$ = "" THEN
     QFail "unknown command" : EXIT FUNCTION
   ENDIF
@@ -1515,7 +1579,7 @@ FUNCTION QParse%(z_s$)
     CASE "UPDATE" : QUpdate
     CASE "DELETE"
       z_x% = QNeedKw%("FROM") : QCol$ = QColName$()
-      IF QKw%("WHERE") THEN z_x% = QOr%()
+      IF QKw%("WHERE") THEN z_x% = QCond%()
     CASE "CREATE", "DROP"
       IF QKw%("COLLECTION") THEN
         QCmd$ = z_c$ + " COLLECTION" : QCol$ = QColName$()
@@ -1529,7 +1593,7 @@ FUNCTION QParse%(z_s$)
   END SELECT
   IF QErr$ = "" THEN
     z_x% = QSym%(";")
-    IF TkT%(QPos%) <> TK_END THEN QFail "unexpected '" + TkRaw$(QPos%) + "'"
+    IF TkT%(QPos%) <> TK_END THEN QFail "unexpected '" + MID$(QText$, TkP%(QPos%), TkL%(QPos%)) + "'"
   ENDIF
   QParse% = (QErr$ = "")
 END FUNCTION
@@ -1698,20 +1762,6 @@ FUNCTION ExLeaf%(z_rec$, z_k%)
   END SELECT
 END FUNCTION
 
-' Evaluate the whole WHERE (RPN) against rec$
-FUNCTION ExMatch%(z_rec$)
-  LOCAL z_k%, z_sp% = 0
-  IF QNN% = 0 THEN ExMatch% = 1 : EXIT FUNCTION
-  FOR z_k% = 0 TO QNN% - 1
-    SELECT CASE QnOp%(z_k%)
-      CASE QO_AND : INC z_sp%, -1 : ExSt%(z_sp% - 1) = ExSt%(z_sp% - 1) AND ExSt%(z_sp%)
-      CASE QO_OR  : INC z_sp%, -1 : ExSt%(z_sp% - 1) = ExSt%(z_sp% - 1) OR ExSt%(z_sp%)
-      CASE QO_NOT : ExSt%(z_sp% - 1) = 1 - ExSt%(z_sp% - 1)
-      CASE ELSE   : ExSt%(z_sp%) = ExLeaf%(z_rec$, z_k%) : INC z_sp%
-    END SELECT
-  NEXT
-  ExMatch% = ExSt%(0)
-END FUNCTION
 
 ' ---------------- access path ----------------------------------------
 
@@ -1754,12 +1804,27 @@ END SUB
 
 ' Collect matching offsets into ExR%; stop after lim% (-1 = all)
 SUB ExCollect z_lim%
-  LOCAL z_i%, z_off%
+  LOCAL z_i%, z_off%, z_r$, z_m%, z_k%, z_stp%
   ExN% = 0
   IF z_lim% = 0 THEN EXIT SUB
   FOR z_i% = ExLo% TO ExHi% - 1
     IF ExSrc% = 2 THEN z_off% = SxO%(z_i%) ELSE z_off% = IxO%(z_i%)
-    IF ExMatch%(StRead$(z_off%)) THEN
+    ' evaluate the WHERE (RPN) on a stack; inlined here rather than a
+    ' separate function, to keep the call depth low
+    z_r$ = StRead$(z_off%) : z_m% = 1
+    IF QNN% > 0 THEN
+      z_stp% = 0
+      FOR z_k% = 0 TO QNN% - 1
+        SELECT CASE QnOp%(z_k%)
+          CASE QO_AND : INC z_stp%, -1 : ExSt%(z_stp% - 1) = ExSt%(z_stp% - 1) AND ExSt%(z_stp%)
+          CASE QO_OR  : INC z_stp%, -1 : ExSt%(z_stp% - 1) = ExSt%(z_stp% - 1) OR ExSt%(z_stp%)
+          CASE QO_NOT : ExSt%(z_stp% - 1) = 1 - ExSt%(z_stp% - 1)
+          CASE ELSE   : ExSt%(z_stp%) = ExLeaf%(z_r$, z_k%) : INC z_stp%
+        END SELECT
+      NEXT
+      z_m% = ExSt%(0)
+    ENDIF
+    IF z_m% THEN
       ExR%(ExN%) = z_off% : INC ExN%
       IF z_lim% > 0 AND ExN% >= z_lim% THEN EXIT SUB
     ENDIF
@@ -1997,6 +2062,7 @@ END FUNCTION
 ' =====================================================================
 
 DIM DbE$                              ' last error message
+DIM DbFT% = 1                     ' value type for the next DbFind% (DbFindNum% sets 2)
 
 ' Reason the last call failed, or "" after a success
 FUNCTION DbErr$()
@@ -2083,8 +2149,13 @@ END FUNCTION
 
 ' Record with _id id$, or "" (DbErr$() = "not found")
 FUNCTION DbGet$(z_id$)
-  DbGet$ = StFetch$(z_id$)
-  DbE$ = StErr$
+  LOCAL z_o% = IxGet%(z_id$)
+  ' (StFetch$ inlined: one call level less)
+  IF z_o% < 0 THEN
+    DbE$ = "not found"
+  ELSE
+    DbE$ = "" : DbGet$ = StRead$(z_o%)
+  ENDIF
 END FUNCTION
 
 ' 1 if a record with this _id exists (an index lookup, no file read)
@@ -2269,6 +2340,42 @@ FUNCTION DbQuery%(z_sql$)
 END FUNCTION
 
 ' Number of rows from the last SELECT
+' Find records where field f$ op$ v$, without SQL. op$: = <> < <= >
+' >= or STARTS (text beginning with v$). v$ is compared as text; use
+' DbFindNum% for numbers. Uses an index when there is one. Results as
+' for SELECT: DbRows%() and DbRow$(). Much shallower than DbQuery%:
+' it skips the SQL parser, which matters on the PicoMite's small stack.
+FUNCTION DbFind%(z_f$, z_op$, z_v$)
+  LOCAL z_opc%, z_t% = DbFT%
+  DbFT% = 1 : DbE$ = "" : ExN% = 0
+  IF StCol$ = "" THEN DbE$ = "no collection open" : EXIT FUNCTION
+  SELECT CASE z_op$
+    CASE "=" : z_opc% = QO_EQ
+    CASE "<>" : z_opc% = QO_NE
+    CASE "<" : z_opc% = QO_LT
+    CASE "<=" : z_opc% = QO_LE
+    CASE ">" : z_opc% = QO_GT
+    CASE ">=" : z_opc% = QO_GE
+    CASE "STARTS" : z_opc% = QO_LIKE
+    CASE ELSE : DbE$ = "bad operator " + z_op$ : EXIT FUNCTION
+  END SELECT
+  IF z_opc% = QO_LIKE AND z_t% <> 1 THEN DbE$ = "STARTS needs text" : EXIT FUNCTION
+  IF LEN(z_f$) = 0 OR LEN(z_f$) > 24 OR LEN(z_v$) > QNV_LEN - 1 THEN DbE$ = "field or value too long" : EXIT FUNCTION
+  ' a one-condition plan, as the parser would have made it
+  QCmd$ = "SELECT" : QAgg% = 0 : QFN% = 0 : QOrd$ = "" : QLim% = -1 : QOff% = 0
+  QNN% = 1 : QnOp%(0) = z_opc% : QnF$(0) = z_f$ : QnV$(0) = z_v$ : QnT%(0) = z_t% : QnTop%(0) = 1
+  IF z_opc% = QO_LIKE THEN QnV$(0) = z_v$ + "%"
+  ExKind$ = "ROWS"
+  ExPlanPath
+  ExCollect -1
+  DbFind% = ExN%
+END FUNCTION
+
+FUNCTION DbFindNum%(z_f$, z_op$, z_n!)
+  DbFT% = 2
+  DbFindNum% = DbFind%(z_f$, z_op$, DbNumStr$(z_n!))
+END FUNCTION
+
 FUNCTION DbRows%()
   DbRows% = ExN%
 END FUNCTION

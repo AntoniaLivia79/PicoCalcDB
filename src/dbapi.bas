@@ -9,6 +9,7 @@
 ' =====================================================================
 
 DIM DbE$                              ' last error message
+DIM DbFT% = 1                     ' value type for the next DbFind% (DbFindNum% sets 2)
 
 ' Reason the last call failed, or "" after a success
 FUNCTION DbErr$()
@@ -95,8 +96,13 @@ END FUNCTION
 
 ' Record with _id id$, or "" (DbErr$() = "not found")
 FUNCTION DbGet$(id$)
-  DbGet$ = StFetch$(id$)
-  DbE$ = StErr$
+  LOCAL o% = IxGet%(id$)
+  ' (StFetch$ inlined: one call level less)
+  IF o% < 0 THEN
+    DbE$ = "not found"
+  ELSE
+    DbE$ = "" : DbGet$ = StRead$(o%)
+  ENDIF
 END FUNCTION
 
 ' 1 if a record with this _id exists (an index lookup, no file read)
@@ -281,6 +287,42 @@ FUNCTION DbQuery%(sql$)
 END FUNCTION
 
 ' Number of rows from the last SELECT
+' Find records where field f$ op$ v$, without SQL. op$: = <> < <= >
+' >= or STARTS (text beginning with v$). v$ is compared as text; use
+' DbFindNum% for numbers. Uses an index when there is one. Results as
+' for SELECT: DbRows%() and DbRow$(). Much shallower than DbQuery%:
+' it skips the SQL parser, which matters on the PicoMite's small stack.
+FUNCTION DbFind%(f$, op$, v$)
+  LOCAL opc%, t% = DbFT%
+  DbFT% = 1 : DbE$ = "" : ExN% = 0
+  IF StCol$ = "" THEN DbE$ = "no collection open" : EXIT FUNCTION
+  SELECT CASE op$
+    CASE "=" : opc% = QO_EQ
+    CASE "<>" : opc% = QO_NE
+    CASE "<" : opc% = QO_LT
+    CASE "<=" : opc% = QO_LE
+    CASE ">" : opc% = QO_GT
+    CASE ">=" : opc% = QO_GE
+    CASE "STARTS" : opc% = QO_LIKE
+    CASE ELSE : DbE$ = "bad operator " + op$ : EXIT FUNCTION
+  END SELECT
+  IF opc% = QO_LIKE AND t% <> 1 THEN DbE$ = "STARTS needs text" : EXIT FUNCTION
+  IF LEN(f$) = 0 OR LEN(f$) > 24 OR LEN(v$) > QNV_LEN - 1 THEN DbE$ = "field or value too long" : EXIT FUNCTION
+  ' a one-condition plan, as the parser would have made it
+  QCmd$ = "SELECT" : QAgg% = 0 : QFN% = 0 : QOrd$ = "" : QLim% = -1 : QOff% = 0
+  QNN% = 1 : QnOp%(0) = opc% : QnF$(0) = f$ : QnV$(0) = v$ : QnT%(0) = t% : QnTop%(0) = 1
+  IF opc% = QO_LIKE THEN QnV$(0) = v$ + "%"
+  ExKind$ = "ROWS"
+  ExPlanPath
+  ExCollect -1
+  DbFind% = ExN%
+END FUNCTION
+
+FUNCTION DbFindNum%(f$, op$, n!)
+  DbFT% = 2
+  DbFindNum% = DbFind%(f$, op$, DbNumStr$(n!))
+END FUNCTION
+
 FUNCTION DbRows%()
   DbRows% = ExN%
 END FUNCTION

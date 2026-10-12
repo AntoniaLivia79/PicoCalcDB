@@ -177,6 +177,26 @@ What you read afterwards depends on the statement:
 
 Text values in SQL go in single quotes, written twice inside the text: `"… WHERE name = 'O''Brien'"`. When you build a statement from a variable, double any `'` in it first.
 
+### Finding records without SQL
+
+For a single condition, `DbFind%` is simpler and lighter than a query. It works on the open collection, uses an index when there is one, and returns the number of matches. Read the records with `DbRows%()` and `DbRow$(i%)`, as after a SELECT.
+
+| Function | Finds records where |
+|---|---|
+| `DbFind%(f$, op$, v$)` | field `f$` compared with the **text** `v$` |
+| `DbFindNum%(f$, op$, n!)` | field `f$` compared with the **number** `n!` |
+
+`op$` is one of `=`, `<>`, `<`, `<=`, `>`, `>=`, or `STARTS` (text beginning with `v$`; `%` and `_` in `v$` act as wildcards). The rules are those of a WHERE clause: a record without the field never matches, and text never equals a number.
+
+```basic
+n% = DbFind%("city", "=", "Leeds")
+FOR i% = 0 TO n% - 1 : PRINT DbStr$(DbRow$(i%), "name") : NEXT
+n% = DbFindNum%("age", ">=", 18)
+n% = DbFind%("_id", "STARTS", "2026-10-")
+```
+
+Text values need no quoting, unlike in SQL. Rows from an index other than `_id` come in that index's order, not `_id` order.
+
 ### Metadata (open collection)
 
 | Function | Returns / does |
@@ -216,6 +236,7 @@ Properties are stored in the collection's `.meta` file and saved by `DbFlush` or
 - **File numbers.** The library uses `#1`–`#3`. Use `#4` and above in your program.
 - **Memory.** With default settings the library's indexes use about 47 KB. Sorting with `ORDER BY` needs about 32 bytes per matching row while it runs.
 - **Speed.** Searching by `_id`, or by an indexed field with `=`, `<`, `>`, `LIKE 'abc%'` and so on, reads only the matching records. Other searches read every record. Prefix a query with `EXPLAIN` to see which way it will run.
+- **Call depth.** PicoMite runs BASIC on a small stack: a program stops with `Stack overflow ... at depth N` if too many SUBs and FUNCTIONs are active at once (about 15 on a Pico 2, probably fewer on an RP2040). The library uses up to 8 levels itself for `DbQuery%`, and 5 for `DbFind%`. So call the library from shallow places in your program, avoid recursion, and use `DbFind%` for single conditions.
 - **Single-line IF.** MMBasic does not accept `IF … THEN a : b ELSE c` on one line. Use a block `IF … ENDIF`.
 - **AND and OR in BASIC.** In BASIC itself, AND and OR have the same precedence and are read left to right, so add brackets: `IF (a OR b) AND c`. The query language is different: there, AND goes before OR, as in SQL.
 - **Sharing with the app.** Close the collection (`DbClose`) before the app or another program opens it. Files edited on a PC are fine: a changed file is detected and its index rebuilt.
